@@ -8,72 +8,72 @@ tmax = 15.0
 
 t = []
 
-for i in range(numIntervals):
-    t.append(0.1*(np.exp(float(i)/numIntervals*np.log(1+10*tmax))-1.0))
+for i in range(numIntervals-1):
+    t.append(0.1*(np.exp(float(i)/(numIntervals-1)*np.log(1+10*tmax))-1.0))
 t.append(tmax)
+t.append(float('inf'))
 
 t = np.array(t)
 
 def pi_k(k, t):
+    if k >= len(t)-1:
+        return None
     t1 = t[k]
-    if k < len(t)-1:
-        t2 = t[k+1]
+    t2 = t[k+1]
+    if t2 != float('inf'):
         pik = 1.0/8.0*(np.exp(-3.0*t2)-np.exp(-3.0*t1)+np.exp(-t1)*(9.0+6.0*t1)-3.0*np.exp(-t2)*(3.0+2.0*t2))
         return pik
-    elif k == len(t)-1:
+    elif t2 == float('inf'):
         pik = 1.0/8.0*np.exp(-3.0*t1)*(-1.0+np.exp(2.0*t1)*(9.0+6.0*t1))
         return pik
 
 def sigma_k(k, t):
-    if k < len(t)-1:
-        t1 = t[k]
-        t2 = t[k+1]
-        sigmak = np.exp(-t1)-np.exp(-t2)
-        return sigmak
-    if k == len(t)-1:
-        t1 = t[k]
-        sigmak = np.exp(-t1)-np.exp(-float('Inf'))
-        return sigmak
+    if k >= len(t)-1:
+        return None
+    t1 = t[k]
+    t2 = t[k+1]
+    sigmak = np.exp(-t1)-np.exp(-t2)
+    return sigmak
 
 def qkl(k,l,t):
+    if k >= len(t)-1 or l >= len(t)-1:
+        return None
     tk1 = t[k]
     tl1 = t[l]
-    if k < len(t)-1:
-        tk2 = t[k+1]
-    if l < len(t)-1:
-        tl2 = t[l+1]
+    tk2 = t[k+1]
+    tl2 = t[l+1]
     if k < l:
-        if l < len(t)-1:
+        if tl2 != float('inf'):
             qkl_integral = 3.0/8.0*np.exp(-2.0*tk1-2.0*tk2-tl1-tl2)*(np.exp(tl1)-np.exp(tl2))*(np.exp(2*tk2)-np.exp(2*tk1)+2.0*np.exp(2.0*(tk1+tk2))*(tk1-tk2))
             qkl = qkl_integral/pi_k(k,t)
             return qkl
-        elif l == len(t)-1:
+        elif tl2 == float('inf'):
             qkl_integral = 3.0/8.0 * np.exp(-tl1)*(-np.exp(-2.0*tk1)+np.exp(-2.0*tk2)-2.0*tk1+2.0*tk2)
             qkl = qkl_integral/pi_k(k,t)
             return qkl
     if k > l:
-        if k < len(t)-1:
+        if tk2 < float('inf'):
             qkl_integral = 3.0/8.0*np.exp(-2.0*tl1-2.0*tl2-tk1-tk2)*(np.exp(tk1)-np.exp(tk2))*(np.exp(2*tl2)-np.exp(2*tl1)+2.0*np.exp(2.0*(tl1+tl2))*(tl1-tl2))
             qkl = qkl_integral/pi_k(k,t)
             return qkl
-        elif k == len(t)-1:
+        elif tk2 == float('inf'):
             qkl_integral = 3.0/8*np.exp(-tk1)*(-np.exp(-2.0*tl1)+np.exp(-2.0*tl2)-2.0*tl1+2*tl2)
             qkl = qkl_integral/pi_k(k,t)
             return qkl
     if k == l:
         t1 = tk1
-        if k < len(t)-1:
-            t2 = tk2
+        t2 = tk2
+        if t2 != float('inf'):
             qkl_integral = 1./4.*np.exp(-3.0*(t1+t2))*(-np.exp(3*t1)+2.0*np.exp(3.0*t2)*(3.0*np.exp(2.0*t1)-1)+3.0*np.exp(t1+2.0*t2)*(1.0+2.0*np.exp(2*t1)*(-1+t1-t2)))
             qkl = qkl_integral/pi_k(k,t)
             return qkl
-        elif k == len(t)-1:
+        elif t2 == float('inf'):
             qkl_integral = 1./2.*np.exp(-3.*t1)*(-1.+3.*np.exp(2.*t1))
             qkl = qkl_integral/pi_k(k,t)
             return qkl
 
-[sum([qkl(j,l,t) for l in range(numIntervals+1)]) for j in range(numIntervals+1)]
-# beautiful
+[sum([qkl(j,l,t) for l in range(numIntervals)]) for j in range(numIntervals)]
+# beautiful, working again
 
 def lambda_(s):
     return 1./4.*(1.-np.exp(-2.*s)+2.*s)
@@ -81,18 +81,13 @@ def lambda_(s):
 def pkLTl_integrand(t,s,rho):
     return (1.0-np.exp(-lambda_(s)*rho))*(2.0*np.exp(s-t)*(1.0-np.exp(-2.0*s)))/(1.0-np.exp(-2.*s)+2.*s)*np.exp(-s)
 
-
 def pkLTl(k,l,t,rho):
+    if k >= len(t)-1 or l >= len(t)-1:
+        return None
     tk1 = t[k]
     tl1 = t[l]
-    if k < len(t)-1:
-        tk2 = t[k+1]
-    elif k == len(t)-1:
-        tk2 = float('inf')
-    if l < len(t)-1:
-        tl2 = t[l+1]
-    elif l == len(t)-1:
-        tl2 = float('inf')
+    tk2 = t[k+1]
+    tl2 = t[l+1]
     integral, err = scipy.integrate.dblquad(pkLTl_integrand, tk1,tk2, lambda x: tl1, lambda x: tl2, args=(rho,))
     pkl = integral/sigma_k(k,t)
     return pkl
@@ -101,16 +96,12 @@ def pkGTl_integrand(t,s,rho):
     return (1.0-np.exp(-lambda_(s)*rho))*(2.0*(1.0-np.exp(-2.0*t)))/(1.0-np.exp(-2.*s)+2.*s)*np.exp(-s)
 
 def pkGTl(k,l,t,rho):
+    if k >= len(t)-1 or l >= len(t)-1:
+        return None
     tk1 = t[k]
     tl1 = t[l]
-    if k < len(t)-1:
-        tk2 = t[k+1]
-    elif k == len(t)-1:
-        tk2 = float('inf')
-    if l < len(t)-1:
-        tl2 = t[l+1]
-    elif l == len(t)-1:
-        tl2 = float('inf')
+    tk2 = t[k+1]
+    tl2 = t[l+1]
     integral, err = scipy.integrate.dblquad(pkGTl_integrand, tk1,tk2, lambda x: tl1, lambda x: tl2, args=(rho,))
     pkl = integral/sigma_k(k,t)
     return pkl
@@ -121,11 +112,10 @@ def pkEQl_integrand(s,rho):
 def pkEQl(k, l, t, rho):
     if k != l:
         return None
+    if k >= len(t)-1 or l >= len(t)-1:
+        return None
     t1 = t[k]
-    if k < len(t)-1:
-        t2 = t[k+1]
-    elif k == len(t)-1:
-        t2 = float('inf')
+    t2 = t[k+1]
 
     integral = 0.0
 
@@ -133,7 +123,7 @@ def pkEQl(k, l, t, rho):
 
     integral += integral0
 
-    integral1, err1 = scipy.integrate.dblquad(pkGTl_integrand, t1,t2, lambda x: x, lambda x: t2, args=(rho,))
+    integral1, err1 = scipy.integrate.dblquad(pkLTl_integrand, t1,t2, lambda x: x, lambda x: t2, args=(rho,))
     
     integral += integral1
 
@@ -154,8 +144,5 @@ def pkl(k, l, t, rho):
     if k == l:
         return pkEQl(k,l,t,rho)
 
-[sum([pkl(j,l,t, 0.25) for l in range(numIntervals+1)]) for j in range(numIntervals+1)]
-
-
-
-
+[sum([pkl(j,l,t, 0.25) for l in range(numIntervals)]) for j in range(numIntervals)]
+# score
