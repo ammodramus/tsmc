@@ -72,7 +72,7 @@ def qkl(k,l,t):
             qkl = qkl_integral/pi_k(k,t)
             return qkl
 
-[sum([qkl(j,l,t) for l in range(numIntervals)]) for j in range(numIntervals)]
+#print [sum([qkl(j,l,t) for l in range(numIntervals)]) for j in range(numIntervals)]
 # beautiful, working again
 
 def lambda_(s):
@@ -144,5 +144,70 @@ def pkl(k, l, t, rho):
     if k == l:
         return pkEQl(k,l,t,rho)
 
-[sum([pkl(j,l,t, 0.25) for l in range(numIntervals)]) for j in range(numIntervals)]
+#print [sum([pkl(j,l,t, 0.25) for l in range(numIntervals)]) for j in range(numIntervals)]
 # score
+
+def ek1(k, t, theta, P):
+    ek1 = 0
+    if k >= len(t)-1:
+        return None
+    tk1 = t[k]
+    tk2 = t[k+1]
+    
+    ek1 = np.exp(-tk1)-np.exp(-tk2)
+
+    ek1 -= np.exp(-P*theta-tk1*(1+theta))/(1.0+theta)
+
+    ek1 += np.exp(-P*theta-tk2*(1+theta))/(1.0+theta)
+
+    return ek1
+
+examplePositions = []
+
+examplePosIn = open('example_data', 'r')
+for line in examplePosIn:
+    line = line.strip()
+    examplePositions.append(float(line))
+
+examplePositions = np.array(examplePositions)
+
+# Li and Durbin uses rho ~ 0.01 per bin
+# (1 cM per Mb, rho = 0.01*10000 per 1000000, which is 0.01 per 100 bp)
+
+# example data has rho = 50, so 500 bins
+# has theta = 50
+# and P = 0.3
+
+intervals = np.linspace(0.0, 1.0, num=500)
+
+data = []
+
+for start, end in zip(intervals[:-1], intervals[1:]):
+    found = False
+    for pos in examplePositions:
+        if start < pos and pos < end:
+            found = True
+            break
+    if found:
+        data.append(1)
+    else:
+        data.append(0)
+
+data = np.array(data)
+
+###########################
+# inference
+
+# twice as high and they should be...
+originalTheta = 0.02
+originalRho = 0.02
+originalP = 0.5
+
+pkl_mat = np.matrix([[pkl(k,l,t,originalRho) for l in range(numIntervals)] for k in range(numIntervals)])
+
+# calculate first alphas
+
+numIterations
+
+for rep in range(numIterations):
+    # calculate alphas, gives likelihood
