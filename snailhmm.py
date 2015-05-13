@@ -1,5 +1,6 @@
 import scipy
 import scipy.integrate
+import scipy.optimize
 import numpy as np
 
 numIntervals = 50
@@ -147,7 +148,7 @@ def pkl(k, l, t, rho):
 #print [sum([pkl(j,l,t, 0.25) for l in range(numIntervals)]) for j in range(numIntervals)]
 # score
 
-def ek1(k, t, theta, P):
+def ek1(k, x, t, theta, P):
     ek1 = 0
     if k >= len(t)-1:
         return None
@@ -160,7 +161,10 @@ def ek1(k, t, theta, P):
 
     ek1 += np.exp(-P*theta-tk2*(1+theta))/(1.0+theta)
 
-    return ek1
+    if x == 1:
+        return ek1
+    elif x == 0:
+        return 1-ek1
 
 examplePositions = []
 
@@ -203,11 +207,28 @@ originalTheta = 0.02
 originalRho = 0.02
 originalP = 0.5
 
-pkl_mat = np.matrix([[pkl(k,l,t,originalRho) for l in range(numIntervals)] for k in range(numIntervals)])
+#pkl_mat = np.matrix([[pkl(k,l,t,originalRho) for l in range(numIntervals)] for k in range(numIntervals)])
 
 # calculate first alphas
 
-numIterations
+def get_likelihood(args, x, t):
+    theta = args[0]
+    rho = args[1]
+    P = args[2]
 
-for rep in range(numIterations):
-    # calculate alphas, gives likelihood
+    alpha0 = np.array([sigma_k(k,t)*ek1(k, x[0], t,theta,P) for k in range(numIntervals)])
+    curAlphas = alpha0
+    for k in range(1, numIntervals):
+        alphaPrime = [sum([curAlphas[i]*pkl(i,j,t,rho) for i in range(numIntervals)])*ek1(j,x[k], t, theta, P) for j in range(numIntervals)]
+        curAlphas = alphaPrime
+    loglike = np.log(sum(curAlphas))
+    return loglike
+
+def neg_like(args, x ,t):
+    return -1.0*get_likelihood(args, x, t)
+
+max_like = scipy.optimize.fmin_powell(neg_like, (originalTheta, originalRho, originalP), args = (data, t), full_output = True, maxfun = 20)
+
+print max_like
+
+
