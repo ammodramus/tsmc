@@ -218,10 +218,6 @@ def get_likelihood(args, x, t):
 
     alpha0 = np.array([sigma_k(k,t)*ek1(k, x[0], t,theta,P) for k in range(numIntervals)])
     curAlphas = alpha0
-<<<<<<< HEAD
-    print alpha0
-=======
->>>>>>> 70055147f590ae60b18a69b6013ff0852ec2ef91
     for k in range(1, numIntervals):
         alphaPrime = [sum([curAlphas[i]*pkl(i,j,t,rho) for i in range(numIntervals)])*ek1(j,x[k], t, theta, P) for j in range(numIntervals)]
         curAlphas = alphaPrime
