@@ -2,6 +2,7 @@ import scipy
 import scipy.integrate
 import scipy.optimize
 import numpy as np
+import sys
 
 numIntervals = 50
 
@@ -178,11 +179,11 @@ examplePositions = np.array(examplePositions)
 # Li and Durbin uses rho ~ 0.01 per bin
 # (1 cM per Mb, rho = 0.01*10000 per 1000000, which is 0.01 per 100 bp)
 
-# example data has rho = 50, so 500 bins
-# has theta = 50
-# and P = 0.3
+# example data has rho = 1000, so 100000 bins
+# has theta = 1000
+# and P = 0.2
 
-intervals = np.linspace(0.0, 1.0, num=500)
+intervals = np.linspace(0.0, 1.0, num=100000)
 
 data = []
 
@@ -202,9 +203,9 @@ data = np.array(data)
 ###########################
 # inference
 
-# twice as high and they should be...
-originalTheta = 0.02
-originalRho = 0.02
+# twice as high as they should be...
+originalTheta = 0.2
+originalRho = 0.2
 originalP = 0.5
 
 #pkl_mat = np.matrix([[pkl(k,l,t,originalRho) for l in range(numIntervals)] for k in range(numIntervals)])
@@ -212,22 +213,49 @@ originalP = 0.5
 # calculate first alphas
 
 def get_likelihood(args, x, t):
+
+    x = data
+
     theta = args[0]
     rho = args[1]
     P = args[2]
 
+    numSites = len(x)
+
+    pkl_mat = [[pkl(i,j,t,rho) for j in range(numIntervals)] for i in range(numIntervals)]
+    for row in pkl_mat:
+        rowSum = 0.0
+        for entry in row:
+            rowSum += entry
+        for j in range(len(row)):
+            row[j] /= rowSum
+
+    logsums = []
+
     alpha0 = np.array([sigma_k(k,t)*ek1(k, x[0], t,theta,P) for k in range(numIntervals)])
+    alphasum = sum(alpha0)
+    logsums.append(-np.log(alphasum))
+    alpha0 /= alphasum
     curAlphas = alpha0
-    for k in range(1, numIntervals):
-        alphaPrime = [sum([curAlphas[i]*pkl(i,j,t,rho) for i in range(numIntervals)])*ek1(j,x[k], t, theta, P) for j in range(numIntervals)]
+    for k in range(1, numSites):
+        alphaPrime = np.array([sum([curAlphas[i]*pkl_mat[i][j] for i in range(numIntervals)])*ek1(j,x[k], t, theta, P) for j in range(numIntervals)])
+        alphasum = sum(alphaPrime)
+        logsums.append(-np.log(alphasum))
+        alphaPrime /= alphasum
         curAlphas = alphaPrime
-    loglike = np.log(sum(curAlphas))
+
+    loglike = -1.0*sum(logsums)
+
     return loglike
 
 def neg_like(args, x ,t):
     return -1.0*get_likelihood(args, x, t)
 
-max_like = scipy.optimize.fmin_powell(neg_like, (originalTheta, originalRho, originalP), args = (data, t), full_output = True, maxfun = 20)
+#max_like = scipy.optimize.fmin_powell(neg_like, (originalTheta, originalRho, originalP), args = (data, t), full_output = True, maxfun = 20)
+
+bounds = [(1e-12, None)] * 3
+max_like = scipy.optimize.fmin_tnc(neg_like, (originalTheta, originalRho, originalP), args = (data, t), bounds = bounds, approx_grad = True, disp=5)
+#max_like = scipy.optimize.fmin_l_bfgs_b(neg_like, (originalTheta, originalRho, originalP), args = (data, t), approx_grad = True, bounds = bounds, iprint = 0)
 
 print max_like
 
