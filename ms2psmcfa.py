@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import fileinput
 import sys
 
@@ -9,12 +10,12 @@ chromCount = 1
 for line in fileinput.input():
     if fileinput.isfirstline():
         splitcmd = line.strip().split(' ')
-        numSegSites = int(splitcmd[splitcmd.index('-r')+2])
+        numSites = int(splitcmd[splitcmd.index('-r')+2])
     line = line.strip()
     if line[:11] == 'positions: ':
         chromPositions = [float(el) for el in line.split(' ')[1:]]
-        chromPositions = [int(numSegSites*pos) for pos in chromPositions]
-        blocksAreHet = [False for i in xrange(numSegSites/BLOCK_LEN+1)]
+        chromPositions = [int(numSites*pos) for pos in chromPositions]
+        blocksAreHet = [False for i in xrange(numSites/BLOCK_LEN+1)]
         for chromPos in chromPositions:
             block = chromPos / BLOCK_LEN
             blocksAreHet[block] = True

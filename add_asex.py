@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import re
 import argparse
 import sys
@@ -47,6 +48,7 @@ for line in fin:
         newNumSegSites = positions.size
         print '//'
         print 'segsites: {}'.format(newNumSegSites)
+        print 'positions: {}'.format(' '.join([str(el) for el in positions]))
         print ''.join([str(el) for el in list(firstHap)])
         print ''.join([str(el) for el in list(secondHap)])
     else:
