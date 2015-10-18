@@ -1,53 +1,54 @@
 import re
 import argparse
 import sys
-from numpy.random import poisson, randint
+import numpy as np
+import numpy.random as npr
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument('filename', type = str, help = 'filename containing ms-format loci (- for STDIN)')
-parser.add_argument('numgens', type = int, help = 'number of generations of asex')
-parser.add_argument('mutrate', type = float, help = 'per-base per-generation mutation probability')
+parser.add_argument('divtime', type = float, help = 'number of generations since transition from sexual reproduction, in units of 4*N0')
+#parser.add_argument('theta', type = float, help = 'total rate of mutation across entire chromosome, in units of 4*N0*mu')
 
 args = parser.parse_args()
 
 fin = open(args.filename, 'r') if args.filename != '-' else sys.stdin
 
+firstline = fin.next().strip()
+spfirstline = firstline.split(' ')
+numSites = int(spfirstline[spfirstline.index('-r')+2])
+theta = float(spfirstline[spfirstline.index('-t')+1])
+if spfirstline[1] != '2':
+    raise ValueError('expected 2 haplotypes in ms output format')
+
 possibleTypes = ['01', '10']
 
+print firstline
 for line in fin:
-    if re.match('@begin', line):
-        segNumMuts = int(line.split()[1]) - 1
-
-        line = fin.next()
-        numBases = int(line.strip())
-        
-        mutPositions, mutTypes = [], []
-
-        for i in xrange(segNumMuts):
-            line = fin.next()
-            spline = line.split()
-            mutPosition, mutType = int(spline[0]), spline[1]
-
-            mutPositions.append(mutPosition)
-            mutTypes.append(mutType)
-
-        poisMutRate = numBases * args.numgens * args.mutrate
-        numAsexMuts = poisson(poisMutRate)
-
-        asexPositions = [randint(0, numBases) for i in xrange(numAsexMuts)]
-        asexTypes = [possibleTypes[randint(0,2)] for i in xrange(numAsexMuts)]
-
-        mutPositions.extend(asexPositions)
-        mutTypes.extend(asexTypes)
-
-        mutPositions, mutTypes = zip(*sorted(zip(mutPositions, mutTypes)))
-
-        newNumMuts = len(mutPositions)
-
-        print "@begin {}".format(newNumMuts)
-        print numBases
-        for pos, typ in zip(mutPositions, mutTypes):
-            print "{}\t{}".format(pos, typ)
+    line = line.strip()
+    if re.match('//', line):
+        line = fin.next().strip()
+        segNumMuts = int(line.split(' ')[1])
+        line = fin.next().strip()
+        positions = np.array([float(el) for el in line.split(' ')[1:]], dtype = np.float64)
+        line = fin.next().strip()
+        firstHap = [int(el) for el in list(line)]
+        line = fin.next().strip()
+        secondHap = line
+        numAsexMuts = npr.poisson(args.divtime * theta)
+        asexMutPositions = npr.rand(numAsexMuts)
+        asexTypes = npr.choice(np.array([0,1]), size=numAsexMuts, replace = True)
+        positions = np.concatenate((positions, asexMutPositions))
+        firstHap = np.concatenate((firstHap, asexTypes))
+        sortedIdxs = positions.argsort()
+        positions = positions[sortedIdxs]
+        firstHap = firstHap[sortedIdxs]
+        secondHap = np.bitwise_xor(firstHap, 1)
+        newNumSegSites = positions.size
+        print '//'
+        print 'segsites: {}'.format(newNumSegSites)
+        print ''.join([str(el) for el in list(firstHap)])
+        print ''.join([str(el) for el in list(secondHap)])
     else:
-        print line.strip()
+        print line
+
