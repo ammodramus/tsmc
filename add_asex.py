@@ -8,8 +8,7 @@ import numpy.random as npr
 parser = argparse.ArgumentParser()
 
 parser.add_argument('filename', type = str, help = 'filename containing ms-format loci (- for STDIN)')
-parser.add_argument('divtime', type = float, help = 'number of generations since transition from sexual reproduction, in units of 4*N0')
-#parser.add_argument('theta', type = float, help = 'total rate of mutation across entire chromosome, in units of 4*N0*mu')
+parser.add_argument('divtime', type = float, help = 'number of generations since transition from sexual reproduction, in units of 2*N0')
 
 args = parser.parse_args()
 
