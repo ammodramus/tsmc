@@ -1,0 +1,20 @@
+scrm 2 100 -t 30000 -r 18000 30000000 | ./ms2psmcfa.py > constantN_no_asex_rep1.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./ms2psmcfa.py > constantN_no_asex_rep2.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./ms2psmcfa.py > constantN_no_asex_rep3.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./ms2psmcfa.py > constantN_no_asex_rep4.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./ms2psmcfa.py > constantN_no_asex_rep5.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.1 | ./ms2psmcfa.py > constantN_asex0.1_rep1.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.1 | ./ms2psmcfa.py > constantN_asex0.1_rep2.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.1 | ./ms2psmcfa.py > constantN_asex0.1_rep3.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.1 | ./ms2psmcfa.py > constantN_asex0.1_rep4.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.1 | ./ms2psmcfa.py > constantN_asex0.1_rep5.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.25 | ./ms2psmcfa.py > constantN_asex0.25_rep1.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.25 | ./ms2psmcfa.py > constantN_asex0.25_rep2.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.25 | ./ms2psmcfa.py > constantN_asex0.25_rep3.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.25 | ./ms2psmcfa.py > constantN_asex0.25_rep4.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.25 | ./ms2psmcfa.py > constantN_asex0.25_rep5.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.5 | ./ms2psmcfa.py > constantN_asex0.5_rep1.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.5 | ./ms2psmcfa.py > constantN_asex0.5_rep2.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.5 | ./ms2psmcfa.py > constantN_asex0.5_rep3.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.5 | ./ms2psmcfa.py > constantN_asex0.5_rep4.psmc
+scrm 2 100 -t 30000 -r 18000 30000000 | ./add_asex.py - 0.5 | ./ms2psmcfa.py > constantN_asex0.5_rep5.psmc
