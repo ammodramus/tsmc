@@ -4,10 +4,6 @@ mutations at a position. this emission probability depends only on T3 and T2 in
 the three-lineage genealogy, not the (labeled) topology. transitions between
 different vectors of (T3, T2) will easy to derive. 
 
-automatic differentiation or EM? diCal uses EM. automatic differentiation may
-be swamped by the large number of calculations in calculating the forward
-probabilities.
-
 EM algorithm: expectation of the log-likelihood of the observations w.r.t. the
 latent variables is achieved by calculating the expected number of transitions
 from each state i to each state j. (also need expected probabilities of first
