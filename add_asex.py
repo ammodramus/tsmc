@@ -14,6 +14,11 @@ args = parser.parse_args()
 
 fin = open(args.filename, 'r') if args.filename != '-' else sys.stdin
 
+# theta is 4*N0*mu in ms
+# here theta is multiplied by time in units of 2*N0
+#
+
+# ms-formatted file must have original ms command line with -t and -r flags
 firstline = fin.next().strip()
 spfirstline = firstline.split(' ')
 numSites = int(spfirstline[spfirstline.index('-r')+2])
@@ -21,23 +26,25 @@ theta = float(spfirstline[spfirstline.index('-t')+1])
 if spfirstline[1] != '2':
     raise ValueError('expected 2 haplotypes in ms output format')
 
-possibleTypes = ['01', '10']
-
 print firstline
 for line in fin:
     line = line.strip()
     if re.match('//', line):
-        line = fin.next().strip()
+        line = fin.next().strip()  # segsites: 12398
         segNumMuts = int(line.split(' ')[1])
-        line = fin.next().strip()
+        line = fin.next().strip()  # positions: 0.0005 0.0011 
         positions = np.array([float(el) for el in line.split(' ')[1:]], dtype = np.float64)
-        line = fin.next().strip()
+        line = fin.next().strip() # 01011110010100010110101001000001001...
         firstHap = [int(el) for el in list(line)]
         line = fin.next().strip()
-        secondHap = line
+        # secondHap = line
+
+        # simulate asexual / Meselson-effect mutations
         numAsexMuts = npr.poisson(args.divtime * theta)
-        asexMutPositions = npr.rand(numAsexMuts)
+        asexMutPositions = npr.rand(numAsexMuts)  # npr.rand(n) simulates n Unif(0,1)'s
         asexTypes = npr.choice(np.array([0,1]), size=numAsexMuts, replace = True)
+
+        # adding the asexual mutations
         positions = np.concatenate((positions, asexMutPositions))
         firstHap = np.concatenate((firstHap, asexTypes))
         sortedIdxs = positions.argsort()
@@ -45,11 +52,14 @@ for line in fin:
         firstHap = firstHap[sortedIdxs]
         secondHap = np.bitwise_xor(firstHap, 1)
         newNumSegSites = positions.size
+
+        # print the new locus
         print '//'
         print 'segsites: {}'.format(newNumSegSites)
         print 'positions: {}'.format(' '.join([str(el) for el in positions]))
         print ''.join([str(el) for el in list(firstHap)])
         print ''.join([str(el) for el in list(secondHap)])
+
     else:
         print line
 

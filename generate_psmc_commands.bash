@@ -2,9 +2,7 @@
 
 numReps=5
 
-
 initialT="0.5"
-
 
 for rep in $(seq 1 $numReps)
 do
