@@ -1,0 +1,50 @@
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep1.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep1
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep1.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep1_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep2.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep2
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep2.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep2_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep3.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep3
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep3.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep3_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep4.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep4
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep4.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep4_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep5.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep5
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.1_rep5.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.1_rep5_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep1.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep1
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep1.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep1_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep2.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep2
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep2.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep2_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep3.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep3
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep3.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep3_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep4.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep4
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep4.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep4_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep5.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep5
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.25_rep5.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.25_rep5_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep1.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep1
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep1.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep1_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep2.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep2
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep2.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep2_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep3.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep3
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep3.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep3_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep4.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep4
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep4.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep4_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep5.psmc > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep5
+psmc simdata/sim_data_t6000.0_rho4000.0_asex0.5_rep5.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex0.5_rep5_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep1.psmc > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep1
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep1.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep1_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep2.psmc > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep2
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep2.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep2_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep3.psmc > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep3
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep3.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep3_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep4.psmc > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep4
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep4.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep4_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep5.psmc > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep5
+psmc simdata/sim_data_t6000.0_rho4000.0_asex1.0_rep5.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex1.0_rep5_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep1.psmc > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep1
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep1.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep1_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep2.psmc > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep2
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep2.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep2_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep3.psmc > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep3
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep3.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep3_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep4.psmc > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep4
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep4.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep4_T
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep5.psmc > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep5
+psmc simdata/sim_data_t6000.0_rho4000.0_asex2.0_rep5.psmc -T 0.5 > simdata/results_data_t6000.0_rho4000.0_asex2.0_rep5_T
