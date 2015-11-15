@@ -116,8 +116,8 @@ elif args.triploid:
             print ''.join([str(el) for el in list(secondHap)])
             print ''.join([str(el) for el in list(thirdHap)])
 
-            hapMat = np.vstack((firstHap,secondHap,thirdHap))
-            gencounts = np.bincount(hapMat.sum(axis=0))
+            #hapMat = np.vstack((firstHap,secondHap,thirdHap))
+            #gencounts = np.bincount(hapMat.sum(axis=0))
             #R = float(gencounts[1])/(gencounts.sum())
             #print (3.0*R-2)/(3*(1-R))
             #sys.exit(0)
