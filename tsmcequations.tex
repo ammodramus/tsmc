@@ -42,7 +42,14 @@ times $u$ and $v$:
 The state of the TSMC at each point along the genome is described by the vector
 $\boldsymbol{s} = (s_3,s_2)$, where $s_3$ is the first coalescence time and
 $s_2$ is the second coalescence time amongst the three lineages in a triploid
-genome. Let $q(\boldsymbol{t}|\boldsymbol{s})$ be the transition kernel at
+genome. The equilibrium joint distribution of $(t_3,t_2)$ is
+
+\begin{equation}
+    \pi(t_3,t_2) = \frac{1}{\lambda(t_3)\lambda(t_2)}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}.
+    \label{eq:equilibriumjointdistn}
+\end{equation}
+
+Let $q(\boldsymbol{t}|\boldsymbol{s})$ be the transition kernel at
 recombination sites along the genome. Then
 
 \begin{align}
@@ -50,7 +57,7 @@ recombination sites along the genome. Then
     q(\bs{t}|\bs{s}) &= \\ 
     \intertext{For $t_3=s_3;t_2>s_2$:}
     &\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}+
-    2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}e^{-\Omega(u,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\\
+    2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}e^{-2\Omega(u,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\\
     \intertext{For $t_3=s_3; t_2<s_2$:}
     &\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
     2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}\\
@@ -61,12 +68,18 @@ recombination sites along the genome. Then
     \intertext{For $t_3>s_3; t_2=s_2$:}
     &2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\\
     \intertext{For $t_3=s_2; t_2>s_2$:}
-    &2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}
-    \intertext{For $t_3=s_2; t_2=s_2$:}
+    &2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}
+    \intertext{For $t_3=s_3; t_2=s_2$:}
     &3\int_0^{s_3}\frac{du}{2s_2+s_3}\frac{1}{3}\left[1-e^{-3\Omega(u,s_3)}\right]+\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{2}\left[1-e^{-2\Omega(s_3,s_2)}\right]+2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}\frac{1}{2}\left[1-e^{-2\Omega(u,s_2)}\right].
 \end{split}
 \label{eq:qts}
 \end{align}
+
+Each part is implicitly multiplied by a delta function to limit the density to
+points where the parameters are assumed to be equal to each other. For example,
+the first part of $q(\bs{t}|\bs{s})$ is implicitly multiplied by
+$\delta(t_3-s_3)$, and the last part is multiplied by
+$\delta(t_3-s_3)\delta(t_2-s_2)$.
 
 \section{Piecewise constant transition probabilities}
 
@@ -88,6 +101,13 @@ Then the cumulative coalescent rate between $u$ and $v$ can be written
           & \alpha(u) < \alpha(v).
     \end{cases}
 \end{equation}
+The equilibrium joint density of $(t_3,t_2)$ is now approximately
+
+\begin{equation}
+    \pi(t_3,t_2) = \frac{1}{\lambda_{\alpha(t_3)}\lambda_{\alpha(t_2)}}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}.
+    \label{eq:marginal}
+\end{equation}
+
 
 
 There are several integrals of the form $\int_x^y e^{-k\Omega(u,y)}du$ in
@@ -95,12 +115,262 @@ Equation \eqref{eq:qts}. This integral can be written
 
 \begin{align}
     \begin{split}
-        \int_x^y e^{-k(y-u)}du &= \int_x^{T_{\alpha(x)+1}} e^{-k\Omega(u,y)}du +
+        \int_x^y e^{-k\Omega(u,y)}du &= 
+        \int_x^{T_{\alpha(x)+1}} e^{-k\Omega(u,y)}du +
         \sum_{i=\alpha(x)+1}^{\alpha(y)-1}\int_{T_i}^{T_i+1}e^{-k\Omega(u,y)}du +
     \int_{T_\alpha(y)}^y e^{-k\Omega(u,y)}du \\
-    &= \int_x^{T_{\alpha(x)+1}} e^{-k\Omega(u,y)}du
-    %TODO here
+    &= \int_x^{T_{\alpha(x)+1}} \exp\left(-k\left[\left(T_{\alpha(u)+1}-u\right)\frac{1}{\lambda_{\alpha(u)}} + 
+    \sum_{j=\alpha(u)+1}^{\alpha(y)-1}\frac{\Delta_j}{\lambda_j} + (y-T_{\alpha(y)})\frac{1}{\lambda_{\alpha(y)}}
+    \right]\right)du + \\
+    &\qquad \qquad \sum_{i=\alpha(x)+1}^{\alpha(y)-1}\int_{T_i}^{T_{i+1}}
+    \exp\left(-k\left[\left(T_{\alpha(u)+1}-u\right)\frac{1}{\lambda_{\alpha(u)}} + 
+    \sum_{j=\alpha(u)+1}^{\alpha(y)-1}\frac{\Delta_j}{\lambda_j} + (y-T_{\alpha(y)})\frac{1}{\lambda_{\alpha(y)}}
+    \right]\right)du + \\
+    &\qquad \qquad \int_{T_{\alpha(y)}}^y \exp\left(-k(y-u)\frac{1}{\lambda_{\alpha(u)}}\right)du \\
+    % subst. appropriate \alpha(x)'s etc. for \alpha(u)
+    &= \int_x^{T_{\alpha(x)+1}} \exp\left(-k\left[\left(T_{\alpha(x)+1}-u\right)\frac{1}{\lambda_{\alpha(x)}} + 
+    \sum_{j=\alpha(x)+1}^{\alpha(y)-1}\frac{\Delta_j}{\lambda_j} + (y-T_{\alpha(y)})\frac{1}{\lambda_{\alpha(y)}}
+    \right]\right)du + \\
+    &\qquad \qquad \sum_{i=\alpha(x)+1}^{\alpha(y)-1}\int_{T_i}^{T_{i+1}}
+    \exp\left(-k\left[\left(T_{i+1}-u\right)\frac{1}{\lambda_{i}} + 
+    \sum_{j=i+1}^{\alpha(y)-1}\frac{\Delta_j}{\lambda_j} + (y-T_{\alpha(y)})\frac{1}{\lambda_{\alpha(y)}}
+    \right]\right)du + \\
+    &\qquad \qquad \int_{T_{\alpha(y)}}^y \exp\left(-k(y-u)\frac{1}{\lambda_{\alpha(y)}}\right)du \\
+    % move constants out of exponent
+    &= \exp\left(-k\left[\sum_{j=\alpha(x)+1}^{\alpha(y)-1}\frac{\Delta_j}{\lambda_j} +
+        (y-T_{\alpha(y)})\frac{1}{\lambda_{\alpha(y)}}\right]\right) 
+        \int_x^{T_{\alpha(x)+1}} \exp\left(-k\left(T_{\alpha(x)+1}-u\right)\frac{1}{\lambda_{\alpha(x)}}\right)du + \\
+    &\qquad\qquad \sum_{i=\alpha(x)+1}^{\alpha(y)-1}
+        \exp\left(-k\left[\sum_{j=i+1}^{\alpha(y)-1}\frac{\Delta_j}{\lambda_j} + (y-T_{\alpha(y)})\frac{1}{\lambda_{\alpha(y)}}
+        \right]\right)
+    \int_{T_i}^{T_{i+1}}\exp\left(-k\left(T_{i+1}-u\right)\frac{1}{\lambda_{i}}\right)du + \\
+    &\qquad \qquad \int_{T_{\alpha(y)}}^y \exp\left(-k(y-u)\frac{1}{\lambda_{\alpha(y)}}\right)du \\
+    % solve integrals
+    &= \exp\left(-k\left[\sum_{j=\alpha(x)+1}^{\alpha(y)-1}\frac{\Delta_j}{\lambda_j} +
+        (y-T_{\alpha(y)})\frac{1}{\lambda_{\alpha(y)}}\right]\right) 
+        \left[1-\exp\left(-\frac{k \left(T_{\alpha(x)+1}-x\right)}{\lambda_{\alpha(x)}}\right)\right]\frac{\lambda_{\alpha(x)}}{k}+\\
+    &\qquad\qquad \sum_{i=\alpha(x)+1}^{\alpha(y)-1}
+        \exp\left(-k\left[\sum_{j=i+1}^{\alpha(y)-1}\frac{\Delta_j}{\lambda_j} + (y-T_{\alpha(y)})\frac{1}{\lambda_{\alpha(y)}}
+        \right]\right)
+    \left[1-\exp\left(-\frac{k \Delta_i}{\lambda_i}\right)\right]\frac{\lambda_i}{k}+\\
+    &\qquad \qquad 
+    \left[1-\exp\left(-\frac{k \left(y-T_{\alpha(y)}\right)}{\lambda_{\alpha(y)}}\right)\right]\frac{\lambda_{\alpha(y)}}{k}\\
+    % simplify back to \Omega function notation
+    &= \exp\left(-k\Omega(T_{\alpha(x)+1}, y)\right)\left[1-\exp\left(-\frac{k \left(T_{\alpha(x)+1}-x\right)}{\lambda_{\alpha(x)}}\right)\right]\frac{\lambda_{\alpha(x)}}{k}+\\
+    &\qquad\qquad \sum_{i=\alpha(x)+1}^{\alpha(y)-1} \exp\big(-k\Omega(T_{i+1},y)\big)
+    \left[1-\exp\left(-\frac{k \Delta_i}{\lambda_i}\right)\right]\frac{\lambda_i}{k}+\\
+    &\qquad \qquad 
+    \left[1-\exp\left(-\frac{k \left(y-T_{\alpha(y)}\right)}{\lambda_{\alpha(y)}}\right)\right]\frac{\lambda_{\alpha(y)}}{k}\\
+    % end eqn
     \end{split}
+    \label{eq:piecewisenocoalintegral}
+\end{align}
+
+With this equation, we can calculate all of the transition probabilities in the
+transition kernel \eqref{eq:qts}.
+
+For $t_3=s_3;t_2>s_2$:
+    % first summand
+\begin{align*}
+    &\frac{1}{2s_2+s_3}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_{\alpha(t_2)}}e^{-\Omega(s_2,t_2)}
+    \left\{\sum_{i=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{i+1},s_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
+        \frac{\lambda_{\alpha(s_3)}}{3}\right\}+\\
+    % second summand
+    &\qquad\frac{2}{2s_2+s_3}\frac{1}{\lambda_{\alpha(t_2)}}e^{-\Omega(s_2,t_2)}\times\\
+    &\qquad\Bigg\{e^{-2\Omega(T_{\alpha(s_3)+1},s_2)}\left[1-e^{-\frac{2\left(T_{\alpha(s_3)+1}-s_3\right)}{\lambda_{\alpha(s_3)}}}\right]\frac{\lambda_{\alpha(s_3)}}{2}+\sum_{i=\alpha(s_3)+1}^{\alpha(s_2)-1}e^{-2\Omega\left(T_{i+1},s_2\right)}\left[1-e^{-\frac{2\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{2}\\
+    &\qquad\qquad+\left[1-e^{-\frac{2\left(s_2-T_{\alpha(s_2)}\right)}{\lambda_{\alpha(s_2)}}}\right]\frac{\lambda_{\alpha(s_2)}}{2}
+    \Bigg\}
+    \\
+    % (original)
+    &\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}+
+    2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}e^{-\Omega(u,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\\
+\end{align*}
+For $t_3=s_3; t_2<s_2$:
+    % first summand
+\begin{align*}
+    &\frac{1}{2s_2+s_3}\frac{1}{\lambda_{\alpha(t_2)}}e^{-\Omega(s_3,t_2)}
+    \left\{\sum_{i=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{i+1},s_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
+        \frac{\lambda_{\alpha(s_3)}}{3}\right\}+\\
+    % second summand
+        &\qquad\frac{2}{2s_2+s_3}\frac{1}{\lambda_{\alpha(t_2)}}\\
+    &\qquad\Bigg\{e^{-2\Omega(T_{\alpha(s_3)+1},t_2)}\left[1-e^{-\frac{2\left(T_{\alpha(s_3)+1}-s_3\right)}{\lambda_{\alpha(s_3)}}}\right]\frac{\lambda_{\alpha(s_3)}}{2}+\sum_{i=\alpha(s_3)+1}^{\alpha(t_2)-1}e^{-2\Omega\left(T_{i+1},t_2\right)}\left[1-e^{-\frac{2\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{2}\\
+    &\qquad\qquad+\left[1-e^{-\frac{2\left(t_2-T_{\alpha(t_2)}\right)}{\lambda_{\alpha(t_2)}}}\right]\frac{\lambda_{\alpha(t_2)}}{2}
+    \Bigg\}\\
+    % original
+    &\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
+    2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}\\
+    % for...
+\end{align*}
+For $t_3<s_3; t_2=s_3$:
+\begin{align*}
+    &\frac{1}{2s_2+s_3}\frac{2}{\lambda_{\alpha(t_3)}}
+    \left\{\sum_{i=0}^{\alpha(t_3)-1}e^{-3\Omega(T_{i+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(t_3-T_{\alpha(t_3)}\right)}{\lambda_{\alpha(t_3)}}}\right]
+        \frac{\lambda_{\alpha(t_3)}}{3}\right\}\\
+    % original
+    &\int_0^{t_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,t_3)}\frac{2}{\lambda(t_3)}\\
+\end{align*}
+For $t_3<s_3; t_2=s_2$:
+\begin{align*}
+    &\frac{2}{2s_2+s_3}\frac{2}{\lambda_{\alpha(t_3)}}
+    \left\{\sum_{i=0}^{\alpha(t_3)-1}e^{-3\Omega(T_{i+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(t_3-T_{\alpha(t_3)}\right)}{\lambda_{\alpha(t_3)}}}\right]
+        \frac{\lambda_{\alpha(t_3)}}{3}\right\}\\
+    % original
+    &2\int_0^{t_3}\frac{du}{2s_2+s_3}\frac{2}{\lambda(t_3)}e^{-3\Omega(u,t_3)}\\
+    % for...
+\end{align*}
+For $t_3>s_3; t_2=s_2$:
+\begin{align*}
+    &\frac{2}{2s_2+s_3}\frac{2}{\lambda_{\alpha(t_3)}}e^{-2\Omega(s_3,t_3)}
+    \left\{\sum_{i=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{i+1},s_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
+        \frac{\lambda_{\alpha(s_3)}}{3}\right\}\\
+    % original
+    &2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\\
+\end{align*}
+For $t_3=s_2; t_2>s_2$:
+\begin{align*}
+    &\frac{2}{2s_2+s_3}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_{\alpha(t_2)}}e^{-\Omega(s_2,t_2)}
+    \left\{\sum_{i=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{i+1},s_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
+        \frac{\lambda_{\alpha(s_3)}}{3}\right\}\\
+    % original
+    &2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}
+\end{align*}
+For $t_3=s_3; t_2=s_2$:
+\begin{align*}
+    &\frac{1}{2s_2+s_3}
+    \left\{s_3 - \sum_{i=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{i+1},s_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}-
+    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
+        \frac{\lambda_{\alpha(s_3)}}{3}\right\}+\\
+    &\frac{1}{2s_2+s_3}\frac{1}{2}\left[1-e^{-2\Omega(s_3,s_2)}\right]
+    \left\{\sum_{i=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{i+1},s_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
+        \frac{\lambda_{\alpha(s_3)}}{3}\right\}+\\
+        &\frac{1}{2s_2+s_3}\Bigg[s_2-s_3-e^{-2\Omega(T_{\alpha(s_3)+1},t_2)}\Bigg(1-e^{-\frac{2\left(T_{\alpha(s_3)+1}-s_3\right)}{\lambda_{\alpha(s_3)}}}\Bigg)\frac{\lambda_{\alpha(s_3)}}{2}-\sum_{i=\alpha(s_3)+1}^{\alpha(t_2)-1}e^{-2\Omega\left(T_{i+1},t_2\right)}\Bigg(1-e^{-\frac{2\Delta_i}{\lambda_i}}\Bigg)\frac{\lambda_i}{2}\\
+    &\qquad\qquad-\Bigg(1-e^{-\frac{2\left(t_2-T_{\alpha(t_2)}\right)}{\lambda_{\alpha(t_2)}}}\Bigg)\frac{\lambda_{\alpha(t_2)}}{2}
+    \Bigg]\\
+    \\
+    % original
+    &3\int_0^{s_3}\frac{du}{2s_2+s_3}\frac{1}{3}\left[1-e^{-3\Omega(u,s_3)}\right]+\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{2}\left[1-e^{-2\Omega(s_3,s_2)}\right]+2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}\frac{1}{2}\left[1-e^{-2\Omega(u,s_2)}\right].
+\end{align*}
+
+\section{Discrete approximation to the triploid SMC' coalescent process}
+
+In order to construct a hidden Markov model (HMM) to infer demography, it is
+necessary to discretize the triploid coalescent process described above.
+
+Let the discrete state $(i,j)$, $i<j$, correspond to the continuous states in which ${T_i
+< t_3 < T_{i+1}}$ and ${T_j < t_2 < T_{j+1}}$. We first calculate the equilibrium
+probability that the coalescent process is in $(i,j)$:
+
+\begin{align}
+    \begin{split}
+        \pi_{i,j} &=
+        \int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}\frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &= \frac{1}{\lambda_i\lambda_j}\int_{T_i}^{T_{i+1}}e^{-3\Omega(0,t_3)}\int_{T_j}^{T_{j+1}}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3
+            \int_{T_j}^{T_{j+1}}e^{-2\Omega(T_j,t_2)}dt_2\\
+        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3
+            \int_{T_j}^{T_{j+1}}e^{-\frac{2(t_2-T_j)}{\lambda_j}}dt_2\\
+        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
+            \int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3\\
+        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
+            e^{-2\Omega(T_{i+1},T_j)}
+            \int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_{i+1})}dt_3\\
+        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
+            e^{-2\Omega(T_{i+1},T_j)}
+            \int_{T_i}^{T_{i+1}}e^{-\frac{3(t_3-T_i)}{\lambda_i}}e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}dt_3\\
+        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
+            e^{-2\Omega(T_{i+1},T_j)}
+            \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)\\
+        &= \frac{1}{2}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+            \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right].
+    \end{split}
+    \label{eq:pidiscrete}
+\end{align}
+
+Next, we calculate marginal expectations for $t_3$ and $t_2$ given that the
+continuous process is in interval represented by $(i,j)$. The marginal
+expectation of $t_3$ in the interval $(i,j)$ is 
+
+\begin{align}
+    \begin{split}
+        \E_{i,j}[t_3] = \E\big[t_3|&t_3 \in [T_i T_{i+1}),t_2 \in [T_j,T_{j+1}) \big]\\
+        &= \frac{1}{\pi_{i,j}}\int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}t_3\pi(t_3,t_2)dt_2dt_3\\
+        &= \frac{1}{\pi_{i,j}}\int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}
+            \frac{t_3}{\lambda_i \lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}\int_{T_j}^{T_{j+1}}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3\int_{T_j}^{T_{j+1}}e^{-2\Omega(T_j,t_2)}dt_2\\
+        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3\int_{T_j}^{T_{j+1}}e^{-\frac{2(t_2-T_j)}{\lambda_j}}dt_2\\
+        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3\\
+        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+            \frac{\lambda_j}{2}\left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)e^{-2\Omega(T_{i+1},T_j)}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_{i+1})}dt_3\\
+        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+            \frac{\lambda_j}{2}\left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)e^{-2\Omega(T_{i+1},T_j)}
+            \lambda_i\left[(\lambda_i+T_i)e^{\frac{-2\Delta_i}{\lambda_i}}-(\lambda_i+T_{i+1})e^{\frac{-3\Delta_i}{\lambda_i}}\right]\\
+        &=\frac{1}{2\pi_{i,j}}e^{-3\Omega(0,T_i)}
+            \left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)e^{-2\Omega(T_{i+1},T_j)}
+            \left[(\lambda_i+T_i)e^{\frac{-2\Delta_i}{\lambda_i}}-(\lambda_i+T_{i+1})e^{\frac{-3\Delta_i}{\lambda_i}}\right].\\
+    \end{split}
+    \label{eq:Et3}
+\end{align}
+The marginal expectation of $t_2$ in $(i,j)$ is 
+\begin{align}
+    \begin{split}
+        \E_{i,j}[t_2] = \E\big[t_2|&t_3 \in [T_i T_{i+1}),t_2 \in [T_j,T_{j+1}) \big]\\
+        &= \frac{1}{\pi_{i,j}}\int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}t_2\pi(t_3,t_2)dt_2dt_3\\
+        &= \frac{1}{\pi_{i,j}}\int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}
+            \frac{t_2}{\lambda_i \lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+            \int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_{i+1})}dt_3
+            \int_{T_j}^{T_{j+1}}t_2e^{-2\Omega(T_j,t_2)}dt_2\\
+        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+            \int_{T_i}^{T_{i+1}}e^{-\frac{3(t_3-T_i)}{\lambda_i}}e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}dt_3
+            \int_{T_j}^{T_{j+1}}t_2e^{-2\Omega(T_j,t_2)}dt_2\\
+        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+            \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \int_{T_j}^{T_{j+1}}t_2e^{-2\Omega(T_j,t_2)}dt_2\\
+        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+            \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \int_{T_j}^{T_{j+1}}t_2e^{-\frac{2(t_2-T_j)}{\lambda_j}}dt_2\\
+        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+            \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \frac{\lambda_j}{4}\left(\lambda_j+2T_j-(\lambda_j +2 T_{j+1}) e^{-\frac{2\Delta_j}{\lambda_j}}\right)\\
+        &= \frac{1}{4\pi_{i,j}}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+            \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \left(\lambda_j+2T_j-(\lambda_j +2 T_{j+1}) e^{-\frac{2\Delta_j}{\lambda_j}}\right).
+    \end{split}
+    \label{eq:Et2}
+\end{align}
+
+To calculate the discrete-process transition probabilities from $(i,j)$, to
+$(k,l)$, we integrate the transition kernel \eqref{eq:piecewisenocoalintegral}
+over the interval corresponding to $(k,l)$, replacing $s_3$ and $s_2$ with
+their conditional expectations $\E_{i,j}[s_3]$ and $\E_{i,j}[s_2]$
+respectively. Thus
+
+\begin{align}
+    q\Big((k,l)\,|\,(i,j)\Big) &= 
+    \int_{T_k}^{T_{k+1}}\int_{T_l}^{T_{l+1}}q\Big((t_3,t_2)|\left(\E_{i,j}[s_3],\E_{i,j}[s_2]\right)\Big)dt_2dt_3\\
+    &= 
 \end{align}
 
 \end{document}
