@@ -599,17 +599,246 @@ For $i=k\,;l<j$ ($t_3=s_3; t_2<s_2$): % (i,j) -> (k,l)   (s_3,s_2) -> (t_3, t_2)
 For $k<i\,; l=i$ ($t_3<s_3; t_2=s_3$):
 \begin{align*}
     % original
-    &=\frac{1}{2s_2+s_3}\frac{2}{\lambda_k}
+    &=\frac{1}{2s_2+s_3}\frac{2}{\lambda_{\alpha(t_3)}}
+    \left\{\sum_{i=0}^{\alpha(t_3)-1}e^{-3\Omega(T_{i+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(t_3-T_{\alpha(t_3)}\right)}{\lambda_{\alpha(t_3)}}}\right]
+        \frac{\lambda_{\alpha(t_3)}}{3}\right\}\\
+    % alphas replaced
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_k}
     \left\{\sum_{i=0}^{k-1}e^{-3\Omega(T_{i+1},t_3)}
         \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
     \left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]
         \frac{\lambda_{k}}{3}\right\}\\
-    % add integrals, replace indices, alphas (TODO continue here)
-    &=\frac{1}{2s_2+s_3}\frac{2}{\lambda_{k}}
+    % add integrals, replace indices, alphas
+    % (i,j) -> (k,l)
+    &=\int_{T_k}^{T_{k+1}}\int_{T_l}^{T_{l+1}}
+    \frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
     \left\{\sum_{a=0}^{k-1}e^{-3\Omega(T_{a+1},t_3)}
         \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
     \left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]
-        \frac{\lambda_{k}}{3}\right\}\\
+    \frac{\lambda_{k}}{3}\right\}\delta(t_2-\E_{i,j}[s_3])dt_2dt_3\\
+    % just one integral
+    &=\int_{T_k}^{T_{k+1}}
+    \frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\sum_{a=0}^{k-1}e^{-3\Omega(T_{a+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]
+    \frac{\lambda_{k}}{3}\right\}dt_3\\
+    % break up integral
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\sum_{a=0}^{k-1}\int_{T_k}^{T_{k+1}}
+        e^{-3\Omega(T_{a+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}dt_3+
+    \int_{T_k}^{T_{k+1}}\left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]
+    \frac{\lambda_{k}}{3}dt_3\right\}\\
+    % move things outside of integrals again
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\sum_{a=0}^{k-1}\left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+        \int_{T_k}^{T_{k+1}}e^{-3\Omega(T_{a+1},t_3)}dt_3+
+    \frac{\lambda_{k}}{3}\int_{T_k}^{T_{k+1}}\left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\right\}\\
+    % moving simplified integral out of sum
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\int_{T_k}^{T_{k+1}}e^{-3\Omega(T_k,t_3)}dt_3
+        \sum_{a=0}^{k-1}\left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+        e^{-3\Omega(T_{a+1},T_k)}+
+    \frac{\lambda_{k}}{3}\int_{T_k}^{T_{k+1}}\left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\right\}\\
+    % simplifying Omega in integral
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{
+        \int_{T_k}^{T_{k+1}}e^{-\frac{3(t_3-T_k)}{\lambda_k}}dt_3
+        \sum_{a=0}^{k-1}\left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+        e^{-3\Omega(T_{a+1},T_k)}+
+    \frac{\lambda_{k}}{3}\int_{T_k}^{T_{k+1}}\left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\right\}\\
+    % solving the integrals
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{
+        %\int_{T_k}^{T_{k+1}}e^{-\frac{3(t_3-T_k)}{\lambda_k}}dt_3
+        \frac{\lambda_k}{3}\left[1-e^{-\frac{3\Delta_k}{\lambda_k}}\right]
+        \sum_{a=0}^{k-1}\left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+        e^{-3\Omega(T_{a+1},T_k)}+
+    \frac{\lambda_{k}}{3}
+    \left[\Delta_k-\frac{\lambda_k}{3}\left(1-e^{-\frac{3\Delta_k}{\lambda_k}}\right)\right]\right\}
+    \\[1em]
 \end{align*}
+
+For $k<i\,;l=j$ ($t_3<s_3; t_2=s_2$):
+% reusing work from above, but with 1 replaced with 2 in numerator
+% in software, just multiply previous by 2
+\begin{align*}
+    % original
+    &=\frac{2}{2s_2+s_3}\frac{2}{\lambda_{\alpha(t_3)}}
+    \left\{\sum_{i=0}^{\alpha(t_3)-1}e^{-3\Omega(T_{i+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(t_3-T_{\alpha(t_3)}\right)}{\lambda_{\alpha(t_3)}}}\right]
+        \frac{\lambda_{\alpha(t_3)}}{3}\right\}\\
+    % add integrals, replace indices, alphas
+    % (i,j) -> (k,l)
+    &=\int_{T_k}^{T_{k+1}}\int_{T_l}^{T_{l+1}}
+    \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\sum_{a=0}^{k-1}e^{-3\Omega(T_{a+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]
+    \frac{\lambda_{k}}{3}\right\}\delta(t_2-\E_{i,j}[s_3])dt_2dt_3\\
+    % just one integral
+    &=\int_{T_k}^{T_{k+1}}
+    \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\sum_{a=0}^{k-1}e^{-3\Omega(T_{a+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]
+    \frac{\lambda_{k}}{3}\right\}dt_3\\
+    % break up integral
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\sum_{a=0}^{k-1}\int_{T_k}^{T_{k+1}}
+        e^{-3\Omega(T_{a+1},t_3)}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}dt_3+
+    \int_{T_k}^{T_{k+1}}\left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]
+    \frac{\lambda_{k}}{3}dt_3\right\}\\
+    % move things outside of integrals again
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\sum_{a=0}^{k-1}\left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+        \int_{T_k}^{T_{k+1}}e^{-3\Omega(T_{a+1},t_3)}dt_3+
+    \frac{\lambda_{k}}{3}\int_{T_k}^{T_{k+1}}\left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\right\}\\
+    % moving simplified integral out of sum
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{\int_{T_k}^{T_{k+1}}e^{-3\Omega(T_k,t_3)}dt_3
+        \sum_{a=0}^{k-1}\left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+        e^{-3\Omega(T_{a+1},T_k)}+
+    \frac{\lambda_{k}}{3}\int_{T_k}^{T_{k+1}}\left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\right\}\\
+    % simplifying Omega in integral
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{
+        \int_{T_k}^{T_{k+1}}e^{-\frac{3(t_3-T_k)}{\lambda_k}}dt_3
+        \sum_{a=0}^{k-1}\left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+        e^{-3\Omega(T_{a+1},T_k)}+
+    \frac{\lambda_{k}}{3}\int_{T_k}^{T_{k+1}}\left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\right\}\\
+    % solving the integrals
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
+    \left\{
+        %\int_{T_k}^{T_{k+1}}e^{-\frac{3(t_3-T_k)}{\lambda_k}}dt_3
+        \frac{\lambda_k}{3}\left[1-e^{-\frac{3\Delta_k}{\lambda_k}}\right]
+        \sum_{a=0}^{k-1}\left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+        e^{-3\Omega(T_{a+1},T_k)}+
+    \frac{\lambda_{k}}{3}
+    \left[\Delta_k-\frac{\lambda_k}{3}\left(1-e^{-\frac{3\Delta_k}{\lambda_k}}\right)\right]\right\}
+    \\[1em]
+\end{align*}
+
+For $k>i\,;l=j$ ($t_3>s_3; t_2=s_2$):
+\begin{align*}
+    % original
+    &=\frac{2}{2s_2+s_3}\frac{2}{\lambda_{\alpha(t_3)}}e^{-2\Omega(s_3,t_3)}
+    \left\{\sum_{i=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{i+1},s_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
+        \frac{\lambda_{\alpha(s_3)}}{3}\right\}\\
+    % add integrals, change indices, change alphas, change s_3 -> E[s_3]
+    &=\int_{T_k}^{T_{k+1}}\int_{T_l}^{T_{l+1}}
+    \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}e^{-2\Omega(\E_{i,j}[s_3],t_3)}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+    \frac{\lambda_{i}}{3}\right\}
+    \delta(t_2-\E_{i,j}[s_2])dt_2dt_3\\
+    % make single integral
+    &=\int_{T_k}^{T_{k+1}}
+    \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}e^{-2\Omega(\E_{i,j}[s_3],t_3)}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+    \frac{\lambda_{i}}{3}\right\}
+    dt_3\\
+    % move integral
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+    \frac{\lambda_{i}}{3}\right\}
+    \int_{T_k}^{T_{k+1}}e^{-2\Omega(\E_{i,j}[s_3],t_3)}dt_3\\
+    % simplify omega in exponent
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+    \frac{\lambda_{i}}{3}\right\}
+    e^{-2\Omega(\E_{i,j}[s_3],T_k)}
+    \int_{T_k}^{T_{k+1}}e^{-2\Omega(T_k,t_3)}dt_3\\
+    % same...
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+    \frac{\lambda_{i}}{3}\right\}
+    e^{-2\Omega(\E_{i,j}[s_3],T_k)}
+    \int_{T_k}^{T_{k+1}}e^{-\frac{2(t_3-T_k)}{\lambda_k}}dt_3\\
+    % solving integral
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+    \frac{\lambda_{i}}{3}\right\}
+    e^{-2\Omega(\E_{i,j}[s_3],T_k)}
+    \frac{\lambda_k}{2}\left[1-e^{-\frac{2\Delta_k}{\lambda_k}}\right]
+\end{align*}
+
+For $k = j\,;l>j$ ($t_3=s_2; t_2>s_2$):
+\begin{align*}
+    % original
+    &=\frac{2}{2s_2+s_3}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_{\alpha(t_2)}}e^{-\Omega(s_2,t_2)}
+    \left\{\sum_{i=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{i+1},s_3)}
+        \left[1-e^{-\frac{3\Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{3}+
+    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
+        \frac{\lambda_{\alpha(s_3)}}{3}\right\}\\
+    % replacing alphas, s_3's etc., adding integrals, changing indices
+    &=\int_{T_k}^{T_{k+1}}\int_{T_l}^{T_{l+1}}
+    \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-2\Omega(\E_{i,j}[s_3],\E_{i,j}[s_2])}\frac{1}{\lambda_{l}}e^{-\Omega(\E_{i,j}[s_2],t_2)}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+        \frac{\lambda_{i}}{3}\right\}\delta(t_3-s_2)dt_2dt_3\\
+    % single integral
+    &=\int_{T_l}^{T_{l+1}}
+    \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-2\Omega(\E_{i,j}[s_3],\E_{i,j}[s_2])}\frac{1}{\lambda_{l}}e^{-\Omega(\E_{i,j}[s_2],t_2)}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+        \frac{\lambda_{i}}{3}\right\}dt_2\\
+    % moving integral
+    &=
+    \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-2\Omega(\E_{i,j}[s_3],\E_{i,j}[s_2])}\frac{1}{\lambda_{l}}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+        \frac{\lambda_{i}}{3}\right\}
+        \int_{T_l}^{T_{l+1}}e^{-\Omega(\E_{i,j}[s_2],t_2)}dt_2\\
+    % simplifying integral
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-2\Omega(\E_{i,j}[s_3],\E_{i,j}[s_2])}\frac{1}{\lambda_{l}}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+        \frac{\lambda_{i}}{3}\right\}
+        e^{-\Omega(\E_{i,j}[s_2],T_l)}
+        \int_{T_l}^{T_{l+1}}e^{-\Omega(T_l,t_2)}dt_2\\
+    % simplifying omega in exponent
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-2\Omega(\E_{i,j}[s_3],\E_{i,j}[s_2])}\frac{1}{\lambda_{l}}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+        \frac{\lambda_{i}}{3}\right\}
+        e^{-\Omega(\E_{i,j}[s_2],T_l)}
+        \int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2\\
+    % solving integral
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-2\Omega(\E_{i,j}[s_3],\E_{i,j}[s_2])}\frac{1}{\lambda_{l}}\times\\
+    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
+        \frac{\lambda_{i}}{3}\right\}
+        e^{-\Omega(\E_{i,j}[s_2],T_l)}
+        %\int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2\\
+        \lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]
+\end{align*}
+
+The (diagonal) case of $k=i\,;l=j$ is calculated by subtracting the sum of the
+off-diagonal entries from unity.
 
 \end{document}
