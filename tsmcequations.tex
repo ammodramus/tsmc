@@ -841,4 +841,57 @@ For $k = j\,;l>j$ ($t_3=s_2; t_2>s_2$):
 The (diagonal) case of $k=i\,;l=j$ is calculated by subtracting the sum of the
 off-diagonal entries from unity.
 
+\subsection{Discrete emission probabilities}
+
+The genotype at a particular position in a triploid genome can take one of
+three different values: $0$, $1$, and $2$. The state $0$ represents a
+homozygous site, and $1$ ($2$) represent sites where one (two) of the three
+chromosomes have a derived (\emph{i.e.}, non-ancestral) copy at that position.
+
+To form our observed chain, we consider all the genotypes in a stretch of $b$
+bp and categorize that stretch of the sequence with a state $0$, $1$, $2$, or
+$3$. The state $0$ means that the stretch of $b$ bp is completely homozygous.
+The state $1$ means that there was at least one site that had a $1$ genotype
+and none that had a $2$ genotype. Likewise, the state $2$ means that at least
+one site had a $2$ genotype, and none had a $1$ genotype. The state $3$ means
+that at least one site had a $1$ genotype and at least one site had a $2$
+genotype.
+
+With observed states coded this way, the emission probabilities given local
+coalescence times $t_3$ and $t_2$ are
+
+\begin{equation}
+    e_k(t_3,t_2, T_d) =
+    \begin{cases}
+        e^{-\frac{\theta\left(2t_2+t_3+3T_d\right)}{2}}&k=0\\
+        e^{-\frac{\theta\left(t_2-t_3\right)}{2}}\left(1-e^{-\frac{\theta\left(2t_3+t_2+3T_d\right)}{2}}\right)&k=1\\
+        \left(1-e^{-\frac{\theta\left(t_2-t_3\right)}{2}}\right)e^{-\frac{\theta\left(2t_3+t_2+3T_d\right)}{2}}&k=2\\
+        \left(1-e^{-\frac{\theta\left(t_2-t_3\right)}{2}}\right)\left(1-e^{-\frac{\theta\left(2t_3+t_2+3T_d\right)}{2}}\right)&k=3.
+    \end{cases}
+    \label{eq:emissionprobs}
+\end{equation}
+Here $T_d$ is the divergence time, the time in the past [again measured in
+units of $2N(0)$ generations] when the asexual lineage was derived from a
+sexual ancestor. The above probabilities assume that $t_3$ and $t_2$ are
+measured continuously. In practice, we discretize time, so for a particular
+hidden state $(i,j)$, we replace $t_3$ and $t_2$ with $\E_{i,j}[t_3]$ and
+$\E_{i,j}[t_2]$, respectively.
+
+Classifying states and genotypes this way requires that each polymorphism be
+polarized against an outgroup. If this is not possible, then the states can be
+recoded as $0$ and $1$, where $0$ is a stretch of $b$ completely homozygous
+base pairs, and $1$ is a stretch of $b$ base pairs with at least one
+polymorphic position. If no polarization is possible, the emission
+probabilities become
+\begin{equation}
+    e_k(t_3,t_2, T_d) =
+    \begin{cases}
+        e^{-\frac{\theta\left(2t_2+t_3+3T_d\right)}{2}}&k=0\\
+        1-e^{-\frac{\theta\left(2t_2+t_3+3T_d\right)}{2}}&k=1.
+    \end{cases}
+    \label{eq:emissionprobsnopolar}
+\end{equation}
+
+The parameter $b$ can be tuned to match the observed polymorphism.
+
 \end{document}
