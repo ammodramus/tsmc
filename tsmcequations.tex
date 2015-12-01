@@ -953,6 +953,40 @@ probabilities become
     \label{eq:emissionprobsnopolar}
 \end{equation}
 
+Or alternatively: (For $i=k=l<j$ and $t_3=s_3; t_2<s_2$)
+
+\begin{align*}
+    &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\Bigg(
+    \int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
+    2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}\delta(t_3-s_3)
+    \Bigg)dt_2dt_3\\
+    &=\int_{s_3}^{T_{k+1}}\Bigg(
+    \int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
+    2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}
+    \Bigg)dt_2\\
+    &=\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
+    \int_0^{\E_{i,j}[s_3]}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}\frac{1}{\lambda_k}e^{-2\Omega(\E_{i,j}[s_3],t_2)}+\\
+    &\qquad
+    2\int_{\E_{i,j}[s_3]}^{t_2}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_k}e^{-2\Omega(u,t_2)}
+    \Bigg)dt_2\\
+    &=\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
+    \int_0^{\E_{i,j}[s_3]}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}\frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}+\\
+    &\qquad
+    2\int_{\E_{i,j}[s_3]}^{t_2}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_k}e^{-\frac{2(t_2-u)}{\lambda_k}}
+    \Bigg)dt_2\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
+    \frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du+\\
+    &\qquad
+    \frac{2}{\lambda_k}\int_{\E_{i,j}[s_3]}^{t_2}e^{-\frac{2(t_2-u)}{\lambda_k}}
+    \Bigg)dt_2\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
+    \frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du+\\
+    &\qquad
+    \frac{2}{\lambda_k}\frac{\lambda_k}{2}\left[1-e^{-\frac{2\left(t_2-\E_{i,j}[s_3]\right)}{\lambda_k}}\right]
+    %\int_{\E_{i,j}[s_3]}^{t_2}e^{-\frac{2(t_2-u)}{\lambda_k}}
+    \Bigg)dt_2\\
+\end{align*}
+
 A few things to note: The parameter $b$ can be tuned to match the observed
 polymorphism. If the change in ploidy $T_d$ generations ago also involved a
 change in mutation rate, this new mutation rate will be unidentifiable,
