@@ -112,7 +112,7 @@ Equation \eqref{eq:qts}. This integral can be written
 
 \begin{align}
     \begin{split}
-        \int_x^y e^{-k\Omega(u,y)}du &= 
+        \int_x^y& e^{-k\Omega(u,y)}du = 
         \int_x^{T_{\alpha(x)+1}} e^{-k\Omega(u,y)}du +
         \sum_{i=\alpha(x)+1}^{\alpha(y)-1}\int_{T_i}^{T_i+1}e^{-k\Omega(u,y)}du +
     \int_{T_\alpha(y)}^y e^{-k\Omega(u,y)}du \\
@@ -158,6 +158,11 @@ Equation \eqref{eq:qts}. This integral can be written
     \left[1-\exp\left(-\frac{k \Delta_i}{\lambda_i}\right)\right]\frac{\lambda_i}{k}+\\
     &\qquad \qquad 
     \left[1-\exp\left(-\frac{k \left(y-T_{\alpha(y)}\right)}{\lambda_{\alpha(y)}}\right)\right]\frac{\lambda_{\alpha(y)}}{k}\\
+    % replace exp with e^{}
+    &= e^{-k\Omega(T_{\alpha(x)+1}, y)}\left[1-e^{-\frac{k \left(T_{\alpha(x)+1}-x\right)}{\lambda_{\alpha(x)}}}\right]\frac{\lambda_{\alpha(x)}}{k}+
+    \sum_{i=\alpha(x)+1}^{\alpha(y)-1} e^{-k\Omega(T_{i+1},y)}
+    \left[1-e^{-\frac{k \Delta_i}{\lambda_i}}\right]\frac{\lambda_i}{k}+
+    \left[1-e^{-\frac{k \left(y-T_{\alpha(y)}\right)}{\lambda_{\alpha(y)}}}\right]\frac{\lambda_{\alpha(y)}}{k}\\
     % end eqn
     \end{split}
     \label{eq:piecewisenocoalintegral}
@@ -844,60 +849,158 @@ The following cases require special consideration:
 
 For $i=k=l<j$ and $t_3=s_3; t_2<s_2$ (also need to consider $t_3<s_3;t_2=s_3$)
 \begin{align*}
-    % original, with sum indices replaced by a
-    &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}
-    \frac{1}{2s_2+s_3}\frac{1}{\lambda_{\alpha(t_2)}}e^{-2\Omega(s_3,t_2)}\\
-    &\qquad\left\{\sum_{a=0}^{\alpha(s_3)-1}e^{-3\Omega(T_{a+1},s_3)}
-        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
-    \left[1-e^{-\frac{3\left(s_3-T_{\alpha(s_3)}\right)}{\lambda_{\alpha(s_3)}}}\right]
-        \frac{\lambda_{\alpha(s_3)}}{3}\right\}\delta(t_3-s_3)dt_2dt_3+\\
-        &\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}
-        \frac{2}{2s_2+s_3}\frac{1}{\lambda_{\alpha(t_2)}}\\
-    &\qquad\Bigg\{e^{-2\Omega(T_{\alpha(s_3)+1},t_2)}\left[1-e^{-\frac{2\left(T_{\alpha(s_3)+1}-s_3\right)}{\lambda_{\alpha(s_3)}}}\right]\frac{\lambda_{\alpha(s_3)}}{2}+\sum_{a=\alpha(s_3)+1}^{\alpha(t_2)-1}e^{-2\Omega\left(T_{a+1},t_2\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}\\
-    &\qquad\qquad+\left[1-e^{-\frac{2\left(t_2-T_{\alpha(t_2)}\right)}{\lambda_{\alpha(t_2)}}}\right]\frac{\lambda_{\alpha(t_2)}}{2}
-    \Bigg\}\delta(t_3-s_3)dt_2dt_3\\
-    % replacing s_3 and s_2 and alphas
-    &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}
-    \frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_{j}}e^{-2\Omega(\E_{i,j}[s_3],t_2)}\\
-    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
-        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
-    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
-        \frac{\lambda_{i}}{3}\right\}\delta(t_3-\E_{i,j}[s_3])dt_2dt_3+\\
-        &\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}
-        \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_{j}}\\
-    &\qquad\Bigg\{e^{-2\Omega(T_{i+1},t_2)}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{2}+\sum_{a=i+1}^{l-1}e^{-2\Omega\left(T_{a+1},t_2\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}\\
-    &\qquad\qquad+\left[1-e^{-\frac{2\left(t_2-T_{l}\right)}{\lambda_{l}}}\right]\frac{\lambda_{l}}{2}
-    \Bigg\}\delta(t_3-\E_{i,j}[s_3])dt_2dt_3\\
-    % single integral
-    &=\int_{\E_{i,j}[s_3]}^{T_{k+1}}
-    \frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_{j}}e^{-2\Omega(\E_{i,j}[s_3],t_2)}\times\\
-    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
-        \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
-    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
-        \frac{\lambda_{i}}{3}\right\}dt_2+\\
-    &\qquad\int_{\E_{i,j}[s_3]}^{T_{k+1}}
-        \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_{j}}\times\\
-    &\qquad\Bigg\{e^{-2\Omega(T_{i+1},t_2)}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{2}+\sum_{a=i+1}^{l-1}e^{-2\Omega\left(T_{a+1},t_2\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}\\
-    &\qquad\qquad+\left[1-e^{-\frac{2\left(t_2-T_{l}\right)}{\lambda_{l}}}\right]\frac{\lambda_{l}}{2}
-    \Bigg\}
-    dt_2\\
-    % move integrals
-    \displaybreak
-    &=
-    \frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_{j}}\times\\
-    &\qquad\left\{\sum_{a=0}^{i-1}e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
-    \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
-    \left[1-e^{-\frac{3\left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]
-    \frac{\lambda_{i}}{3}\right\}
-    \int_{\E_{i,j}[s_3]}^{T_{k+1}}e^{-2\Omega(\E_{i,j}[s_3],t_2)}dt_2+\\
-    &\qquad % second integral
-        \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_{j}}\times\\
-    &\qquad\Bigg\{
-        \left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{2}\int_{\E_{i,j}[s_3]}^{T_{k+1}}e^{-2\Omega(T_{i+1},t_2)}dt_2+
-        \sum_{a=i+1}^{l-1}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}\int_{\E_{i,j}[s_3]}^{T_{k+1}}e^{-2\Omega\left(T_{a+1},t_2\right)}dt_2\\
-    &\qquad\qquad+\frac{\lambda_{l}}{2}\int_{\E_{i,j}[s_3]}^{T_{k+1}}\left[1-e^{-\frac{2\left(t_2-T_{l}\right)}{\lambda_{l}}}\right]dt_2
+    &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\Bigg(
+    \int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
+    2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}\delta(t_3-s_3)
+    \Bigg)dt_2dt_3\\
+    &=\int_{s_3}^{T_{k+1}}\Bigg(
+    \int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
+    2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}
+    \Bigg)dt_2\\
+    &=\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
+    \int_0^{\E_{i,j}[s_3]}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}\frac{1}{\lambda_k}e^{-2\Omega(\E_{i,j}[s_3],t_2)}+\\
+    &\qquad
+    2\int_{\E_{i,j}[s_3]}^{t_2}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_k}e^{-2\Omega(u,t_2)}
+    \Bigg)dt_2\\
+    &=\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
+    \int_0^{\E_{i,j}[s_3]}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}\frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}+\\
+    &\qquad
+    2\int_{\E_{i,j}[s_3]}^{t_2}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_k}e^{-\frac{2(t_2-u)}{\lambda_k}}
+    \Bigg)dt_2\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
+    \frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du+\\
+    &\qquad
+    \frac{2}{\lambda_k}\int_{\E_{i,j}[s_3]}^{t_2}e^{-\frac{2(t_2-u)}{\lambda_k}}
+    \Bigg)dt_2\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
+    \frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du+\\
+    &\qquad
+    \frac{2}{\lambda_k}\frac{\lambda_k}{2}\left[1-e^{-\frac{2\left(t_2-\E_{i,j}[s_3]\right)}{\lambda_k}}\right]
+    \Bigg)dt_2\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\Bigg(\frac{1}{\lambda_k}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du
+    \int_{\E_{i,j}[s_3]}^{T_{k+1}}
+    e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}dt_2+\\
+    &\qquad
+    \int_{\E_{i,j}[s_3]}^{T_{k+1}}\left[1-e^{-\frac{2\left(t_2-\E_{i,j}[s_3]\right)}{\lambda_k}}\right]dt_2
+    \Bigg)\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\Bigg(\frac{1}{\lambda_k}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du
+    %\int_{\E_{i,j}[s_3]}^{T_{k+1}}
+    %e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}dt_2+\\
+    \frac{\lambda_k}{2}\left[1-e^{-\frac{2(T_{k+1}-\E_{i,j}[s_3])}{\lambda_k}}\right]+\\
+    &\qquad
+    %\int_{\E_{i,j}[s_3]}^{T_{k+1}}\left[1-e^{-\frac{2\left(t_2-\E_{i,j}[s_3]\right)}{\lambda_k}}\right]dt_2
+    T_{k+1}-\E_{i,j}[s_3]-\frac{\lambda_k}{2}\left[1-e^{-\frac{2(T_{k+1}-\E_{i,j}[s_3])}{\lambda_k}}\right]
+    \Bigg)\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\Bigg\{\frac{1}{\lambda_k}\times\\
+    &\qquad\Bigg[
+    \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left(1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right)\frac{\lambda_a}{3}+
+    \left(1-e^{-\frac{3 \left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right)\frac{\lambda_{i}}{3}\Bigg]
+    \frac{\lambda_k}{2}\left[1-e^{-\frac{2(T_{k+1}-\E_{i,j}[s_3])}{\lambda_k}}\right]+\\
+   &\qquad
+    T_{k+1}-\E_{i,j}[s_3]-\frac{\lambda_k}{2}\left[1-e^{-\frac{2(T_{k+1}-\E_{i,j}[s_3])}{\lambda_k}}\right]
     \Bigg\}\\
 \end{align*}
+
+For $i=k=l<j$ and $t_3<s_3;t_2=s_3$:
+\begin{align*}
+    &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\Bigg(
+    \int_0^{t_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,t_3)}\frac{2}{\lambda(t_3)}\delta(t_2-s_3)\Bigg)dt_2\,dt_3\\
+    &=\int_{T_k}^{s_3}\Bigg(
+    \int_0^{t_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,t_3)}\frac{2}{\lambda(t_3)}\Bigg)dt_3\\
+    &=\frac{1}{2s_2+s_3}\int_{T_k}^{s_3}
+    \frac{2}{\lambda(t_3)}\int_0^{t_3}e^{-3\Omega(u,t_3)}du\,dt_3\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\int_{T_k}^{\E_{i,j}[s_3]}
+    \frac{2}{\lambda(t_3)}\int_0^{t_3}e^{-3\Omega(u,t_3)}du\,dt_3\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\int_{T_k}^{\E_{i,j}[s_3]}
+    \frac{2}{\lambda(t_3)}
+    \Bigg(
+    \sum_{a=0}^{k-1} e^{-3\Omega(T_{a+1},t_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(t_3-T_{k}\right)}{\lambda_{k}}}\right]\frac{\lambda_{k}}{3}\Bigg)dt_3\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}
+    \frac{2}{\lambda(t_3)}
+    \Bigg(
+    \sum_{a=0}^{k-1} \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+    \int_{T_k}^{\E_{i,j}[s_3]}e^{-3\Omega(T_{a+1},t_3)}dt_3+
+    \frac{\lambda_{k}}{3}
+    \int_{T_k}^{\E_{i,j}[s_3]}\left[1-e^{-\frac{3 \left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\Bigg)\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}
+    \frac{2}{\lambda(t_3)}
+    \Bigg(
+    \sum_{a=0}^{k-1} \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+    e^{-3\Omega(T_{a+1},T_k)}\int_{T_k}^{\E_{i,j}[s_3]}e^{-3\Omega(T_k,t_3)}dt_3+
+    \frac{\lambda_{k}}{3}
+    \int_{T_k}^{\E_{i,j}[s_3]}\left[1-e^{-\frac{3 \left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\Bigg)\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}
+    \frac{2}{\lambda(t_3)}
+    \Bigg(
+    \sum_{a=0}^{k-1} \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+    e^{-3\Omega(T_{a+1},T_k)}\int_{T_k}^{\E_{i,j}[s_3]}e^{-\frac{3(t_3-T_k)}{\lambda_k}}dt_3+
+    \frac{\lambda_{k}}{3}
+    \int_{T_k}^{\E_{i,j}[s_3]}\left[1-e^{-\frac{3 \left(t_3-T_{k}\right)}{\lambda_{k}}}\right]dt_3\Bigg)\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}
+    \frac{2}{\lambda(t_3)}
+    \Bigg(
+    \sum_{a=0}^{k-1} \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+    e^{-3\Omega(T_{a+1},T_k)}
+    %\int_{T_k}^{\E_{i,j}[s_3]}e^{-\frac{3(t_3-T_k)}{\lambda_k}}dt_3+
+    \frac{\lambda_k}{3}\left[1-e^{-\frac{3(\E_{i,j}[s_3]-T_k)}{\lambda_k}}\right]+\\
+    &\qquad\qquad\qquad\frac{\lambda_{k}}{3}\left(
+    \E_{i,j}[s_3]-T_k-\frac{\lambda_k}{3}\left[1-e^{-\frac{3(\E_{i,j}[s_3]-T_k)}{\lambda_k}}\right]\right)\Bigg)\\
+\end{align*}
+
+The other case that requires special consideration is $i<k=l=j$.
+
+For $i<k=l=j$ and $t_3>s_3\,;t_2=s_2$:
+\begin{align*}
+    &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\left(2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\delta(t_2-s_2)\right)dt_2\,dt_3\\
+    &=\int_{T_k}^{s_2}\left(2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\right)dt_3\\
+    &=\frac{1}{2s_2+s_3}\int_{T_k}^{s_2}\left(2\int_0^{s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}du\right)dt_3\\
+    &=\frac{1}{2s_2+s_3}\int_{T_k}^{s_2}\left(\frac{4}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)dt_3\\
+    &=\frac{1}{2s_2+s_3}\int_0^{s_3}e^{-3\Omega(u,s_3)}du\int_{T_k}^{s_2}\frac{4}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}dt_3\\
+    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}\int_0^{s_3}e^{-3\Omega(u,s_3)}du\int_{T_k}^{s_2}e^{-\frac{2(t_3-s_3)}{\lambda_k}}dt_3\\
+    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}\left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)
+    \frac{\lambda_k}{2}\left[1-e^{-\frac{2(s_2-T_k)}{\lambda_k}}\right]\\
+    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}\left(
+    \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
+    \right)
+    \frac{\lambda_k}{2}\left[1-e^{-\frac{2(s_2-T_k)}{\lambda_k}}\right]\\
+\end{align*}
+
+For $i<k=l=j$ and $t_3=s_2\,;t_2>s_2$:
+\begin{align*}
+    &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\left(2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\delta(t_3-s_2)\right)dt_2\,dt_3\\
+    &=\frac{2}{2s_2+s_3}\frac{1}{\lambda_k}e^{-2\Omega(s_3,s_2)}\int_{s_2}^{T_{k+1}}\left(e^{-\Omega(s_2,t_2)}\int_0^{s_3}e^{-3\Omega(u,s_3)}du\,\right)dt_2\\
+    &=\frac{2}{2s_2+s_3}\frac{1}{\lambda_k}e^{-2\Omega(s_3,s_2)}\left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)\left(\int_{s_2}^{T_{k+1}}e^{-\Omega(s_2,t_2)}dt_2\right)\\
+    &=\frac{2}{2s_2+s_3}\frac{1}{\lambda_k}e^{-2\Omega(s_3,s_2)}\left(
+    \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
+    \right)\times\\
+    &\qquad\left(\int_{s_2}^{T_{k+1}}e^{-\Omega(s_2,t_2)}dt_2\right)\\
+    &=\frac{2}{2s_2+s_3}\frac{1}{\lambda_k}e^{-2\Omega(s_3,s_2)}\left(
+    \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
+    \right)\times\\
+    &\qquad\left(
+    \int_{s_2}^{T_{k+1}}e^{-\frac{t_2-s_2}{\lambda_k}}dt_2
+    \right)\\
+    &=\frac{2}{2s_2+s_3}\frac{1}{\lambda_k}e^{-2\Omega(s_3,s_2)}\left(
+    \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
+    \right)\times\\
+    &\qquad\left(
+    \lambda_k\left[1-e^{-\frac{T_{k+1}-s_2}{\lambda_k}}\right]
+    \right)\\
+\end{align*}
+
+This finishes the $q\big((k,l)|(i,j)\big)$ transitions. Need to give special
+attention to the boundary cases, or the cases where $i=j$.
 
 The (diagonal) case of $k=i\,;l=j$ is calculated by subtracting the sum of the
 off-diagonal entries from unity.
@@ -953,61 +1056,6 @@ probabilities become
     \label{eq:emissionprobsnopolar}
 \end{equation}
 
-Or alternatively: (For $i=k=l<j$ and $t_3=s_3; t_2<s_2$)
-
-\begin{align*}
-    &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\Bigg(
-    \int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
-    2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}\delta(t_3-s_3)
-    \Bigg)dt_2dt_3\\
-    &=\int_{s_3}^{T_{k+1}}\Bigg(
-    \int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
-    2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}
-    \Bigg)dt_2\\
-    &=\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
-    \int_0^{\E_{i,j}[s_3]}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}\frac{1}{\lambda_k}e^{-2\Omega(\E_{i,j}[s_3],t_2)}+\\
-    &\qquad
-    2\int_{\E_{i,j}[s_3]}^{t_2}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_k}e^{-2\Omega(u,t_2)}
-    \Bigg)dt_2\\
-    &=\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
-    \int_0^{\E_{i,j}[s_3]}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}\frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}+\\
-    &\qquad
-    2\int_{\E_{i,j}[s_3]}^{t_2}\frac{du}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_k}e^{-\frac{2(t_2-u)}{\lambda_k}}
-    \Bigg)dt_2\\
-    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
-    \frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du+\\
-    &\qquad
-    \frac{2}{\lambda_k}\int_{\E_{i,j}[s_3]}^{t_2}e^{-\frac{2(t_2-u)}{\lambda_k}}
-    \Bigg)dt_2\\
-    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\int_{\E_{i,j}[s_3]}^{T_{k+1}}\Bigg(
-    \frac{1}{\lambda_k}e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du+\\
-    &\qquad
-    \frac{2}{\lambda_k}\frac{\lambda_k}{2}\left[1-e^{-\frac{2\left(t_2-\E_{i,j}[s_3]\right)}{\lambda_k}}\right]
-    \Bigg)dt_2\\
-    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\Bigg(\frac{1}{\lambda_k}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du
-    \int_{\E_{i,j}[s_3]}^{T_{k+1}}
-    e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}dt_2+\\
-    &\qquad
-    \int_{\E_{i,j}[s_3]}^{T_{k+1}}\left[1-e^{-\frac{2\left(t_2-\E_{i,j}[s_3]\right)}{\lambda_k}}\right]dt_2
-    \Bigg)\\
-    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\Bigg(\frac{1}{\lambda_k}\int_0^{\E_{i,j}[s_3]}e^{-3\Omega(u,\E_{i,j}[s_3])}du
-    %\int_{\E_{i,j}[s_3]}^{T_{k+1}}
-    %e^{-\frac{2(t_2-\E_{i,j}[s_3])}{\lambda_k}}dt_2+\\
-    \frac{\lambda_k}{2}\left[1-e^{-\frac{2(T_{k+1}-\E_{i,j}[s_3])}{\lambda_k}}\right]+\\
-    &\qquad
-    %\int_{\E_{i,j}[s_3]}^{T_{k+1}}\left[1-e^{-\frac{2\left(t_2-\E_{i,j}[s_3]\right)}{\lambda_k}}\right]dt_2
-    T_{k+1}-\E_{i,j}[s_3]-\frac{\lambda_k}{2}\left[1-e^{-\frac{2(T_{k+1}-\E_{i,j}[s_3])}{\lambda_k}}\right]
-    \Bigg)\\
-    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\Bigg\{\frac{1}{\lambda_k}\times\\
-    &\qquad\Bigg[
-    \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
-    \left(1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right)\frac{\lambda_a}{3}+
-    \left(1-e^{-\frac{3 \left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right)\frac{\lambda_{i}}{3}\Bigg]
-    \frac{\lambda_k}{2}\left[1-e^{-\frac{2(T_{k+1}-\E_{i,j}[s_3])}{\lambda_k}}\right]+\\
-   &\qquad
-    T_{k+1}-\E_{i,j}[s_3]-\frac{\lambda_k}{2}\left[1-e^{-\frac{2(T_{k+1}-\E_{i,j}[s_3])}{\lambda_k}}\right]
-    \Bigg\}\\
-\end{align*}
 
 A few things to note: The parameter $b$ can be tuned to match the observed
 polymorphism. If the change in ploidy $T_d$ generations ago also involved a
