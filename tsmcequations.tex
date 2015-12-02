@@ -31,18 +31,19 @@
 \section{General equations}
 
 Define $N(t)$ as the population size at time $t$, with $t$ in units of $2N(0)$.
-Let $\lambda(t)$ be the relative population size such that $N(t) =
-N(0)\lambda(t)$. Define $\Omega(u,v)$ as the cumulative coalescent rate between
-times $u$ and $v$:
+Let $\lambda(t)$ be the relative population size, scaled by $N(0)$, such that
+$N(t) = N(0)\lambda(t)$. Define $\Omega(u,v)$ as the cumulative coalescent rate
+between times $u$ and $v$:
 
 \begin{equation}
     \Omega(u,v) = \int_u^v \frac{dt}{\lambda(t)}.
 \end{equation}
 
 The state of the TSMC at each point along the genome is described by the vector
-$\boldsymbol{s} = (s_3,s_2)$, where $s_3$ is the first coalescence time and
-$s_2$ is the second coalescence time amongst the three lineages in a triploid
-genome. The equilibrium joint distribution of $(t_3,t_2)$ is
+$\boldsymbol{s} = (s_3,s_2)$, where $s_3$ is the time of the first coalescence
+event and $s_2$ is the time of the second coalescence event amongst the three
+lineages in a triploid genome. The equilibrium joint distribution of
+$(t_3,t_2)$ is
 
 \begin{equation}
     \pi(t_3,t_2) = \frac{1}{\lambda(t_3)\lambda(t_2)}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}.
@@ -82,9 +83,9 @@ $\delta(t_3-s_3)\delta(t_2-s_2)$.
 
 \section{Piecewise constant transition probabilities}
 
-Suppose that the population changes size at times $(T_0, T_1, \dots, T_n)$ and
+Suppose that the population changes size at times $(T_1, \dots, T_n)$ and
 that the size between $T_i$ and $T_{i+1}$ is a constant $2N\lambda_i$. Define
-$T_{n+1} = \infty$ and $\Delta_i = T_{i+1}-T_i$. Let $\alpha(t)$ be the index
+$T_0 = 0$, $T_{n+1} = \infty$ and $\Delta_i = T_{i+1}-T_i$. Let $\alpha(t)$ be the index
 of the time interval to which $t$ belongs, \emph{i.e.}, $\alpha(t) = \max_i
 \{i:T_i \le t\}$.
 
@@ -187,7 +188,7 @@ For $t_3=s_3;t_2>s_2$:
     \\
     % (original)
     &\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}+
-    2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}e^{-\Omega(u,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\\
+    2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}e^{-2\Omega(u,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\\
 \end{align*}
 For $t_3=s_3; t_2<s_2$:
     % first summand
@@ -403,8 +404,8 @@ For $i=k<j<l$, ($t_3=s_3\,;t_2>s_2$):
     \frac{\lambda_i}{3}\right\}\delta(t_3-s_3)dt_2dt_3+\\
     &\qquad\int_{T_k}^{T_{k+1}}\int_{T_l}^{T_{l+1}}
         \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_l}e^{-\Omega(\E_{i,j}[s_2],t_2)}\times\\
-    &\qquad\Bigg\{e^{-2\Omega(T_{i+1},\E_{i,j}[s_2])}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_i}}\right]\frac{\lambda_i}{2}+\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}\\
-    &\qquad\qquad+\left[1-e^{-\frac{2\left(\E_{i,j}[s_2]-T_j\right)}{\lambda_j}}\right]\frac{\lambda_j}{2}
+    &\qquad\Bigg\{e^{-2\Omega(T_{i+1},\E_{i,j}[s_2])}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_i}}\right]\frac{\lambda_i}{2}+\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}+\\
+    &\qquad\qquad\left[1-e^{-\frac{2\left(\E_{i,j}[s_2]-T_j\right)}{\lambda_j}}\right]\frac{\lambda_j}{2}
     \Bigg\}\delta(t_3-s_3)dt_2dt_3\\
     \\
     % discrete simplified
@@ -415,8 +416,8 @@ For $i=k<j<l$, ($t_3=s_3\,;t_2>s_2$):
     \frac{\lambda_i}{3}\right\}dt_2+\\
     &\qquad\int_{T_l}^{T_{l+1}}
         \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_l}e^{-\Omega(\E_{i,j}[s_2],t_2)}\times\\
-    &\qquad\Bigg\{e^{-2\Omega(T_{i+1},\E_{i,j}[s_2])}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_i}}\right]\frac{\lambda_i}{2}+\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}\\
-    &\qquad\qquad+\left[1-e^{-\frac{2\left(\E_{i,j}[s_2]-T_j\right)}{\lambda_j}}\right]\frac{\lambda_j}{2}
+    &\qquad\Bigg\{e^{-2\Omega(T_{i+1},\E_{i,j}[s_2])}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_i}}\right]\frac{\lambda_i}{2}+\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}+\\
+    &\qquad\qquad\left[1-e^{-\frac{2\left(\E_{i,j}[s_2]-T_j\right)}{\lambda_j}}\right]\frac{\lambda_j}{2}
     \Bigg\}dt_2\\
     \\
     % moving integral
@@ -428,7 +429,7 @@ For $i=k<j<l$, ($t_3=s_3\,;t_2>s_2$):
     % second integral / summand
     &\qquad
         \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_l}\Bigg\{e^{-2\Omega(T_{i+1},\E_{i,j}[s_2])}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_i}}\right]\frac{\lambda_i}{2}+\\
-    &\qquad\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}
+    &\qquad\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}+
             \left[1-e^{-\frac{2\left(\E_{i,j}[s_2]-T_j\right)}{\lambda_j}}\right]\frac{\lambda_j}{2}
     \Bigg\}\int_{T_l}^{T_{l+1}}e^{-\Omega(\E_{i,j}[s_2],t_2)}dt_2\\
     \displaybreak
@@ -442,7 +443,7 @@ For $i=k<j<l$, ($t_3=s_3\,;t_2>s_2$):
     % (second integral / summand)
     &\qquad
         \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_l}\Bigg\{e^{-2\Omega(T_{i+1},\E_{i,j}[s_2])}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_i}}\right]\frac{\lambda_i}{2}+\\
-    &\qquad\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}
+    &\qquad\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}+
             \left[1-e^{-\frac{2\left(\E_{i,j}[s_2]-T_j\right)}{\lambda_j}}\right]\frac{\lambda_j}{2}
     \Bigg\}
     e^{-\Omega(\E_{i,j}[s_2], T_l)}\int_{T_l}^{T_{l+1}}e^{-\Omega(T_l,t_2)}dt_2+\\
@@ -456,7 +457,7 @@ For $i=k<j<l$, ($t_3=s_3\,;t_2>s_2$):
     % (second integral / summand)
     &\qquad
         \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_l}\Bigg\{e^{-2\Omega(T_{i+1},\E_{i,j}[s_2])}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_i}}\right]\frac{\lambda_i}{2}+\\
-    &\qquad\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}
+    &\qquad\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}+
             \left[1-e^{-\frac{2\left(\E_{i,j}[s_2]-T_j\right)}{\lambda_j}}\right]\frac{\lambda_j}{2}
     \Bigg\}
     e^{-\Omega(\E_{i,j}[s_2], T_l)}\int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2\\
@@ -470,7 +471,7 @@ For $i=k<j<l$, ($t_3=s_3\,;t_2>s_2$):
     % (second integral / summand)
     &\qquad
         \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_l}\Bigg\{e^{-2\Omega(T_{i+1},\E_{i,j}[s_2])}\left[1-e^{-\frac{2\left(T_{i+1}-\E_{i,j}[s_3]\right)}{\lambda_i}}\right]\frac{\lambda_i}{2}+\\
-    &\qquad\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}
+    &\qquad\sum_{a=i+1}^{j-1}e^{-2\Omega\left(T_{a+1},\E_{i,j}[s_2]\right)}\left[1-e^{-\frac{2\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{2}+
             \left[1-e^{-\frac{2\left(\E_{i,j}[s_2]-T_j\right)}{\lambda_j}}\right]\frac{\lambda_j}{2}
     \Bigg\}
     e^{-\Omega(\E_{i,j}[s_2], T_l)}\lambda_l\left(1-e^{-\frac{\Delta_l}{\lambda_l}}\right)\\
@@ -686,7 +687,7 @@ For $k<i<j=l$ ($t_3<s_3; t_2=s_2$):
     \left\{\sum_{a=0}^{k-1}e^{-3\Omega(T_{a+1},t_3)}
         \left[1-e^{-\frac{3\Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
     \left[1-e^{-\frac{3\left(t_3-T_{k}\right)}{\lambda_{k}}}\right]
-    \frac{\lambda_{k}}{3}\right\}\delta(t_2-\E_{i,j}[s_3])dt_2dt_3\\
+    \frac{\lambda_{k}}{3}\right\}\delta(t_2-\E_{i,j}[s_2])dt_2dt_3\\
     % just one integral
     &=\int_{T_k}^{T_{k+1}}
     \frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{2}{\lambda_{k}}
@@ -1000,7 +1001,9 @@ For $i<k=l=j$ and $t_3=s_2\,;t_2>s_2$:
 \end{align*}
 
 This finishes the $q\big((k,l)|(i,j)\big)$ transitions. Need to give special
-attention to the boundary cases, or the cases where $i=j$.
+attention to the boundary cases, or the cases where $i=j$. (Update: for the
+cases where $i=j$, $s_3$ and $s_2$ are $\E_{i,j}[s_3]$ and $\E_{i,j}[s_2]$
+respectively --- shouldn't be a problem)
 
 The (diagonal) case of $k=i\,;l=j$ is calculated by subtracting the sum of the
 off-diagonal entries from unity.
@@ -1055,7 +1058,6 @@ probabilities become
     \end{cases}
     \label{eq:emissionprobsnopolar}
 \end{equation}
-
 
 A few things to note: The parameter $b$ can be tuned to match the observed
 polymorphism. If the change in ploidy $T_d$ generations ago also involved a
