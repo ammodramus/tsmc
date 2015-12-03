@@ -59,10 +59,10 @@ recombination sites along the genome. Then
     \intertext{For $t_3=s_3;t_2>s_2$:}
     &\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}+
     2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}e^{-2\Omega(u,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\\
-    \intertext{For $t_3=s_3; t_2<s_2$:}
+    \intertext{For $t_3=s_3;t_2<s_2$:}
     &\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{1}{\lambda(t_2)}e^{-2\Omega(s_3,t_2)}+
     2\int_{s_3}^{t_2}\frac{du}{2s_2+s_3}\frac{1}{\lambda(t_2)}e^{-2\Omega(u,t_2)}\\
-    \intertext{For $t_3<s_3; t_2=s_3$:}
+    \intertext{For $t_3<s_3;t_2=s_3$:}
     &\int_0^{t_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,t_3)}\frac{2}{\lambda(t_3)}\\
     \intertext{For $t_3<s_3; t_2=s_2$:}
     &2\int_0^{t_3}\frac{du}{2s_2+s_3}\frac{2}{\lambda(t_3)}e^{-3\Omega(u,t_3)}\\
@@ -951,7 +951,7 @@ For $i=k=l<j$ and $t_3<s_3;t_2=s_3$:
     \E_{i,j}[s_3]-T_k-\frac{\lambda_k}{3}\left[1-e^{-\frac{3(\E_{i,j}[s_3]-T_k)}{\lambda_k}}\right]\right)\Bigg)\\
 \end{align*}
 
-The other case that requires special consideration is $i<k=l=j$.
+Another case that requires special consideration is $i<k=l=j$.
 
 For $i<k=l=j$ and $t_3>s_3\,;t_2=s_2$:
 \begin{align*}
@@ -1000,10 +1000,94 @@ For $i<k=l=j$ and $t_3=s_2\,;t_2>s_2$:
     \right)\\
 \end{align*}
 
+Another special case that requires attention is $i=j=k<l$.
+
+For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
+
+\begin{align*}
+    &=\int_{T_k}^{T_{k+1}}\int_{T_l}^{T_{l+1}}\Bigg(
+    \int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\delta(t_3-s_3)+\\
+    &\qquad\qquad\qquad\qquad
+    2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}e^{-2\Omega(u,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\delta(t_3-s_3)
+    \Bigg)dt_2\,dt_3\\
+    &=\int_{T_l}^{T_{l+1}}\Bigg(
+    \int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}+\\
+    &\qquad\qquad\qquad\qquad
+    2\int_{s_3}^{s_2}\frac{du}{2s_2+s_3}e^{-2\Omega(u,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}
+    \Bigg)dt_2\\
+    &=\frac{1}{2s_2+s_3}\int_{T_l}^{T_{l+1}}\Bigg(
+    \int_0^{s_3}e^{-3\Omega(u,s_3)}du\,e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}+\\
+    &\qquad\qquad\qquad\qquad
+    2\int_{s_3}^{s_2}e^{-2\Omega(u,s_2)}du\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}
+    \Bigg)dt_2\\
+    &=\frac{1}{2s_2+s_3}\int_{T_l}^{T_{l+1}}\Bigg(
+    e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\int_0^{s_3}e^{-3\Omega(u,s_3)}du+\\
+    &\qquad\qquad\qquad\qquad
+    \frac{2}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\int_{s_3}^{s_2}e^{-2\Omega(u,s_2)}du
+    \Bigg)dt_2\\
+    &=\frac{1}{2s_2+s_3}\int_{T_l}^{T_{l+1}}\Bigg(
+    e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}e^{-\Omega(s_2,t_2)}\left[\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]+\\
+    &\qquad\qquad\qquad\qquad
+    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\int_{s_3}^{s_2}e^{-2\Omega(u,s_2)}du
+    \Bigg)dt_2\\
+    &=\frac{1}{2s_2+s_3}\int_{T_l}^{T_{l+1}}\Bigg(
+    e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}e^{-\Omega(s_2,t_2)}\left[\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]+\\
+    &\qquad\qquad\qquad\qquad
+    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\int_{s_3}^{s_2}e^{-\frac{2(s_2-u)}{\lambda_i}}du
+    \Bigg)dt_2\\
+    &=\frac{1}{2s_2+s_3}\int_{T_l}^{T_{l+1}}\Bigg(
+    e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}e^{-\Omega(s_2,t_2)}\left[\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]+\\
+    &\qquad\qquad\qquad\qquad
+    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    \Bigg)dt_2\\
+    \displaybreak
+    &=\frac{1}{2s_2+s_3}\Bigg(
+    e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}\left[\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]
+    \int_{T_l}^{T_{l+1}}e^{-\Omega(s_2,t_2)}dt_2+\\
+    &\qquad\qquad\qquad\qquad
+    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    \int_{T_l}^{T_{l+1}}e^{-\Omega(s_2,t_2)}dt_2
+    \Bigg)\\
+    &=\frac{1}{2s_2+s_3}\Bigg(
+    e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}\left[\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]
+    e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\Omega(T_l,t_2)}dt_2+\\
+    &\qquad\qquad\qquad\qquad
+    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\Omega(T_l,t_2)}dt_2
+    \Bigg)\\
+    &=\frac{1}{2s_2+s_3}\Bigg(
+    e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}\left[\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]
+    e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2+\\
+    &\qquad\qquad\qquad\qquad
+    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2
+    \Bigg)\\
+    &=\frac{1}{2s_2+s_3}\Bigg(
+    e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}\left[\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]
+    e^{-\Omega(s_2,T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]+\\
+    &\qquad\qquad\qquad\qquad
+    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    e^{-\Omega(s_2,T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]
+    \Bigg)\\
+\end{align*}
+
 This finishes the $q\big((k,l)|(i,j)\big)$ transitions. Need to give special
-attention to the boundary cases, or the cases where $i=j$. (Update: for the
-cases where $i=j$, $s_3$ and $s_2$ are $\E_{i,j}[s_3]$ and $\E_{i,j}[s_2]$
-respectively --- shouldn't be a problem)
+attention to the boundary cases, or the cases where $i=j$. Also need to
+consider what happens when $k$ or $l$ is $n$, since $T_{n+1} = \infty$.
 
 The (diagonal) case of $k=i\,;l=j$ is calculated by subtracting the sum of the
 off-diagonal entries from unity.
