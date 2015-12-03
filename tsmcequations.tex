@@ -46,7 +46,7 @@ lineages in a triploid genome. The equilibrium joint distribution of
 $(t_3,t_2)$ is
 
 \begin{equation}
-    \pi(t_3,t_2) = \frac{1}{\lambda(t_3)\lambda(t_2)}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}.
+    \pi(t_3,t_2) = \frac{6}{\lambda(t_3)\lambda(t_2)}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}.
     \label{eq:equilibriumjointdistn}
 \end{equation}
 
@@ -104,7 +104,7 @@ Then the cumulative coalescent rate between $u$ and $v$ can be written
 The equilibrium joint density of $(t_3,t_2)$ is now approximately
 
 \begin{equation}
-    \pi(t_3,t_2) = \frac{1}{\lambda_{\alpha(t_3)}\lambda_{\alpha(t_2)}}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}.
+    \pi(t_3,t_2) = \frac{6}{\lambda_{\alpha(t_3)}\lambda_{\alpha(t_2)}}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}.
     \label{eq:marginal}
 \end{equation}
 
@@ -276,80 +276,111 @@ necessary to discretize the triploid coalescent process described above.
 
 Let the discrete state $(i,j)$, $i<j$, correspond to the continuous states in which ${T_i
 < t_3 < T_{i+1}}$ and ${T_j < t_2 < T_{j+1}}$. We first calculate the equilibrium
-probability that the coalescent process is in $(i,j)$:
+probability that the coalescent process is in $(i,j)$, assuming $i<j$:
 
 \begin{align}
     \begin{split}
         \pi_{i,j} &=
-        \int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}\frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
-        &= \frac{1}{\lambda_i\lambda_j}\int_{T_i}^{T_{i+1}}e^{-3\Omega(0,t_3)}\int_{T_j}^{T_{j+1}}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
-        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3
+        \int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}\frac{6}{\lambda_i\lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &= \frac{6}{\lambda_i\lambda_j}\int_{T_i}^{T_{i+1}}e^{-3\Omega(0,t_3)}\int_{T_j}^{T_{j+1}}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &= \frac{6}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3
             \int_{T_j}^{T_{j+1}}e^{-2\Omega(T_j,t_2)}dt_2\\
-        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3
+        &= \frac{6}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3
             \int_{T_j}^{T_{j+1}}e^{-\frac{2(t_2-T_j)}{\lambda_j}}dt_2\\
-        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
+        &= \frac{6}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
             \int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3\\
-        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
+        &= \frac{6}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
             e^{-2\Omega(T_{i+1},T_j)}
             \int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_{i+1})}dt_3\\
-        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
+        &= \frac{6}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
             e^{-2\Omega(T_{i+1},T_j)}
             \int_{T_i}^{T_{i+1}}e^{-\frac{3(t_3-T_i)}{\lambda_i}}e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}dt_3\\
-        &= \frac{1}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
+        &= \frac{6}{\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right]
             e^{-2\Omega(T_{i+1},T_j)}
             \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)\\
-        &= \frac{1}{2}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+        &= 3e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
             \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
             \left[1-e^{-\frac{2\Delta_j}{\lambda_j}}\right].
     \end{split}
     \label{eq:pidiscrete}
 \end{align}
+If $j=n$, we let $\Delta_j = \infty$ and $1-\exp(-2\Delta_j/\lambda_j) = 1$.
 
 It is also necessary to calculate $\pi_{i,i}$:
 
 \begin{align}
     \begin{split}
     \pi_{i,i} &= \int_{T_i}^{T_{i+1}}\int_{t_3}^{T_{i+1}}
-    \frac{1}{\lambda_i^2}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+    \frac{6}{\lambda_i^2}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
     &= \frac{1}{\lambda_i^2}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}
     e^{-3\Omega(T_i,t_3)}\int_{t_3}^{T_{i+1}}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
-    &= \frac{1}{\lambda_i^2}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}
-    e^{-3\Omega(T_i,t_3)}\int_{t_3}^{T_{i+1}}e^{-\frac{2(t_3-t_2)}{\lambda_i}}dt_2dt_3\\
-    &= \frac{1}{\lambda_i^2}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}
-    e^{-3\Omega(T_i,t_3)}\left(\frac{\lambda_i}{2}\left[e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}-1\right]\right)dt_3\\
-    &= \frac{1}{2\lambda_i}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}
-    e^{-\frac{3(t_3-T_i)}{\lambda_i}}\left(e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}-1\right)dt_3\\
-    &= \frac{1}{2\lambda_i}e^{-3\Omega(0,T_i)}
-    \frac{\lambda_i}{3}\left(3e^{-\frac{2\Delta_i}{\lambda_i}}-2e^{-\frac{3\Delta_i}{\lambda_i}}-1\right)
+    &= \frac{6}{\lambda_i^2}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}
+    e^{-3\Omega(T_i,t_3)}\int_{t_3}^{T_{i+1}}e^{-\frac{2(t_2-t_3)}{\lambda_i}}dt_2dt_3\\
+    &= \frac{6}{\lambda_i^2}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}
+    e^{-3\Omega(T_i,t_3)}\left(\frac{\lambda_i}{2}\left[1-e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}\right]\right)dt_3\\
+    &= \frac{3}{\lambda_i}e^{-3\Omega(0,T_i)}\int_{T_i}^{T_{i+1}}
+    e^{-\frac{3(t_3-T_i)}{\lambda_i}}\left(1-e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}\right)dt_3\\
+    &= \frac{3}{\lambda_i}e^{-3\Omega(0,T_i)}
+    \frac{\lambda_i}{3}\left(1-3e^{-\frac{2\Delta_i}{\lambda_i}}+2e^{-\frac{3\Delta_i}{\lambda_i}}\right)\\
+    &= e^{-3\Omega(0,T_i)}
+    \left(1-3e^{-\frac{2\Delta_i}{\lambda_i}}+2e^{-\frac{3\Delta_i}{\lambda_i}}\right)\\
     \end{split}
 \end{align}
+For $i = n$, again we let $\Delta_i = \infty$ and thus $\pi_{i,i} = \exp(-3\Omega(0,T_i))$.
 
 Next, we calculate marginal expectations for $t_3$ and $t_2$ given that the
-continuous process is in interval represented by $(i,j)$. The marginal
-expectation of $t_3$ in the interval $(i,j)$ is 
+continuous process is in interval represented by $(i,j)$, assuming $i<j$. The
+marginal expectation of $t_3$ in the interval $(i,j)$ is 
 
 \begin{align}
     \begin{split}
         \E_{i,j}[t_3] = \E\big[t_3|&t_3 \in [T_i T_{i+1}),t_2 \in [T_j,T_{j+1}) \big]\\
         &= \frac{1}{\pi_{i,j}}\int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}t_3\pi(t_3,t_2)dt_2dt_3\\
         &= \frac{1}{\pi_{i,j}}\int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}
-            \frac{t_3}{\lambda_i \lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
-        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+            \frac{6t_3}{\lambda_i \lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &=\frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
             \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}\int_{T_j}^{T_{j+1}}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
-        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+        &=\frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
             \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3\int_{T_j}^{T_{j+1}}e^{-2\Omega(T_j,t_2)}dt_2\\
-        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+        &=\frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
             \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3\int_{T_j}^{T_{j+1}}e^{-\frac{2(t_2-T_j)}{\lambda_j}}dt_2\\
-        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)
+        &=\frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}\frac{\lambda_j}{2}\left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)
             \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_j)}dt_3\\
-        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+        &=\frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
             \frac{\lambda_j}{2}\left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)e^{-2\Omega(T_{i+1},T_j)}
             \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_{i+1})}dt_3\\
-        &=\frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
+        &=\frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}
             \frac{\lambda_j}{2}\left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)e^{-2\Omega(T_{i+1},T_j)}
             \lambda_i\left[(\lambda_i+T_i)e^{\frac{-2\Delta_i}{\lambda_i}}-(\lambda_i+T_{i+1})e^{\frac{-3\Delta_i}{\lambda_i}}\right]\\
-        &=\frac{1}{2\pi_{i,j}}e^{-3\Omega(0,T_i)}
+        &=\frac{3}{\pi_{i,j}}e^{-3\Omega(0,T_i)}
             \left(1-e^{-\frac{2\Delta_j}{\lambda_j}}\right)e^{-2\Omega(T_{i+1},T_j)}
+            \left[(\lambda_i+T_i)e^{\frac{-2\Delta_i}{\lambda_i}}-(\lambda_i+T_{i+1})e^{\frac{-3\Delta_i}{\lambda_i}}\right].\\
+    \end{split}
+    \label{eq:Et3}
+\end{align}
+With $j = n$, this is
+\begin{align}
+    \begin{split}
+        \E_{i,j}[t_3] = \E\big[t_3|&t_3 \in [T_i T_{i+1}),t_2 \in [T_n,\infty) \big]\\
+        &= \frac{1}{\pi_{i,n}}\int_{T_i}^{T_{i+1}}\int_{T_n}^{\infty}t_3\pi(t_3,t_2)dt_2dt_3\\
+        &= \frac{1}{\pi_{i,n}}\int_{T_i}^{T_{i+1}}\int_{T_n}^{\infty}
+            \frac{6t_3}{\lambda_i \lambda_n}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &=\frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}\int_{T_n}^{\infty}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &=\frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_n)}dt_3\int_{T_n}^{\infty}e^{-2\Omega(T_n,t_2)}dt_2\\
+        &=\frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_n)}dt_3\int_{T_n}^{\infty}e^{-\frac{2(t_2-T_n)}{\lambda_n}}dt_2\\
+        &=\frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}\frac{\lambda_n}{2}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_n)}dt_3\\
+        &=\frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}
+            \frac{\lambda_n}{2}e^{-2\Omega(T_{i+1},T_n)}
+            \int_{T_i}^{T_{i+1}}t_3e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_{i+1})}dt_3\\
+        &=\frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}
+            \frac{\lambda_n}{2}e^{-2\Omega(T_{i+1},T_n)}
+            \lambda_i\left[(\lambda_i+T_i)e^{\frac{-2\Delta_i}{\lambda_i}}-(\lambda_i+T_{i+1})e^{\frac{-3\Delta_i}{\lambda_i}}\right]\\
+        &=\frac{3}{\pi_{i,n}}e^{-3\Omega(0,T_i)}
+            e^{-2\Omega(T_{i+1},T_n)}
             \left[(\lambda_i+T_i)e^{\frac{-2\Delta_i}{\lambda_i}}-(\lambda_i+T_{i+1})e^{\frac{-3\Delta_i}{\lambda_i}}\right].\\
     \end{split}
     \label{eq:Et3}
@@ -360,25 +391,53 @@ The marginal expectation of $t_2$ in $(i,j)$ is
         \E_{i,j}[t_2] = \E\big[t_2|&t_3 \in [T_i T_{i+1}),t_2 \in [T_j,T_{j+1}) \big]\\
         &= \frac{1}{\pi_{i,j}}\int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}t_2\pi(t_3,t_2)dt_2dt_3\\
         &= \frac{1}{\pi_{i,j}}\int_{T_i}^{T_{i+1}}\int_{T_j}^{T_{j+1}}
-            \frac{t_2}{\lambda_i \lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
-        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+            \frac{6t_2}{\lambda_i \lambda_j}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &= \frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
             \int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_{i+1})}dt_3
             \int_{T_j}^{T_{j+1}}t_2e^{-2\Omega(T_j,t_2)}dt_2\\
-        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+        &= \frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
             \int_{T_i}^{T_{i+1}}e^{-\frac{3(t_3-T_i)}{\lambda_i}}e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}dt_3
             \int_{T_j}^{T_{j+1}}t_2e^{-2\Omega(T_j,t_2)}dt_2\\
-        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+        &= \frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
             \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
             \int_{T_j}^{T_{j+1}}t_2e^{-2\Omega(T_j,t_2)}dt_2\\
-        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+        &= \frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
             \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
             \int_{T_j}^{T_{j+1}}t_2e^{-\frac{2(t_2-T_j)}{\lambda_j}}dt_2\\
-        &= \frac{1}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+        &= \frac{6}{\pi_{i,j}\lambda_i\lambda_j}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
             \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
             \frac{\lambda_j}{4}\left(\lambda_j+2T_j-(\lambda_j +2 T_{j+1}) e^{-\frac{2\Delta_j}{\lambda_j}}\right)\\
-        &= \frac{1}{4\pi_{i,j}}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
+        &= \frac{3}{2\pi_{i,j}}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_j)}
             \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
             \left(\lambda_j+2T_j-(\lambda_j +2 T_{j+1}) e^{-\frac{2\Delta_j}{\lambda_j}}\right).
+    \end{split}
+    \label{eq:Et2}
+\end{align}
+With $j=n$, this is 
+\begin{align}
+    \begin{split}
+        \E_{i,n}[t_2] = \E\big[t_2|&t_3 \in [T_i T_{i+1}),t_2 \in [T_n,\infty) \big]\\
+        &= \frac{1}{\pi_{i,n}}\int_{T_i}^{T_{i+1}}\int_{T_n}^{\infty}t_2\pi(t_3,t_2)dt_2dt_3\\
+        &= \frac{1}{\pi_{i,n}}\int_{T_i}^{T_{i+1}}\int_{T_n}^{\infty}
+            \frac{6t_2}{\lambda_i \lambda_n}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2dt_3\\
+        &= \frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_n)}
+            \int_{T_i}^{T_{i+1}}e^{-3\Omega(T_i,t_3)}e^{-2\Omega(t_3,T_{i+1})}dt_3
+            \int_{T_n}^{\infty}t_2e^{-2\Omega(T_n,t_2)}dt_2\\
+        &= \frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_n)}
+            \int_{T_i}^{T_{i+1}}e^{-\frac{3(t_3-T_i)}{\lambda_i}}e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}dt_3
+            \int_{T_n}^{\infty}t_2e^{-2\Omega(T_n,t_2)}dt_2\\
+        &= \frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_n)}
+            \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \int_{T_n}^{\infty}t_2e^{-2\Omega(T_n,t_2)}dt_2\\
+        &= \frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_n)}
+            \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \int_{T_n}^{\infty}t_2e^{-\frac{2(t_2-T_n)}{\lambda_n}}dt_2\\
+        &= \frac{6}{\pi_{i,n}\lambda_i\lambda_n}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_n)}
+            \lambda_i \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \frac{\lambda_n}{4}\left(\lambda_n+2T_n\right)\\
+        &= \frac{3}{2\pi_{i,n}}e^{-3\Omega(0,T_i)}e^{-2\Omega(T_{i+1},T_n)}
+            \left(e^{\frac{-2\Delta_i}{\lambda_i}}-e^{\frac{-3\Delta_i}{\lambda_i}}\right)
+            \left(\lambda_n+2T_n\right).
     \end{split}
     \label{eq:Et2}
 \end{align}
@@ -414,6 +473,10 @@ the interval $(i,i)$:
                     \right]\\
     \end{split}
 \end{align}
+For $i = n$, the expectation is 
+\begin{equation}
+    \E_{n,n}[s_3] = T_n+\frac{\lambda_n}{3}
+\end{equation}
 
 \begin{align}
     \begin{split}
@@ -442,6 +505,10 @@ the interval $(i,i)$:
                         \frac{\lambda_i}{2}\left(1-e^{-\frac{2\Delta_i}{\lambda_i}}\right)\left(2T_{i+1}\right)\right)\\
     \end{split}
 \end{align}
+For $i=n$, this expectation is 
+\begin{equation}
+    \E_{n,n}[s_2] = T_n+\frac{\lambda_n}{3}+\frac{\lambda_n}{2}
+\end{equation}
 
 To calculate the discrete-process transition probabilities from $(i,j)$, to
 $(k,l)$, we integrate the transition kernel \eqref{eq:piecewisenocoalintegral}
