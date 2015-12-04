@@ -563,6 +563,8 @@ Double-checking:
 \end{align}
 Checks out.
 
+\subsection{Discrete $q\big((k,l)|(i,j)\big)$ transition function}
+
 To calculate the discrete-process transition probabilities from $(i,j)$, to
 $(k,l)$, we integrate the transition kernel \eqref{eq:piecewisenocoalintegral}
 over the interval corresponding to $(k,l)$, replacing $s_3$ and $s_2$ with
@@ -675,6 +677,7 @@ For $i=k< j<l$, ($t_3=s_3\,;t_2>s_2$):
     \Bigg\}
     e^{-\Omega(\E_{i,j}[s_2], T_l)}\lambda_l\left(1-e^{-\frac{\Delta_l}{\lambda_l}}\right)\\
 \end{align*}
+Here we assume that $\Delta_n = \infty$ and thus $e^{-\Delta_n/\lambda_n} = 0$.
 
 For $i=k<l<j$ ($t_3=s_3; t_2<s_2$): % (i,j) -> (k,l)   (s_3,s_2) -> (t_3, t_2)
 \begin{align*}
@@ -1044,6 +1047,7 @@ For $i<j=k<l$ ($t_3=s_2; t_2>s_2$):
         %\int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2\\
         \lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]
 \end{align*}
+Here again we assume $\Delta_n = \infty$ and thus $e^{-\Delta_n/\lambda_n} = 0$.
 
 The following cases require special consideration:
 
@@ -1195,9 +1199,10 @@ For $i<k=l=j$ and $t_3=s_2\,;t_2>s_2$:
     \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
     \right)\times\\
     &\qquad\left(
-    \lambda_k\left[1-e^{-\frac{T_{k+1}-s_2}{\lambda_k}}\right]
+    \lambda_k\left[1-\delta(k-n)e^{-\frac{T_{k+1}-s_2}{\lambda_k}}\right]
     \right)\\
 \end{align*}
+The delta function is a way to ensure correctedness when $k=l=j=n$.
 
 Another special case that requires attention is $i=j=k<l$.
 
@@ -1287,12 +1292,13 @@ For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
     \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
     \left[1-e^{-\frac{3 \left(\E_{i,i}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]\times\\
     &\qquad\qquad\qquad\qquad\qquad\qquad
-    e^{-\Omega(\E_{i,i}[s_2],T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]+\\
+    e^{-\Omega(\E_{i,i}[s_2],T_l)}\lambda_l\left[1-\delta(l-n)e^{-\frac{\Delta_l}{\lambda_l}}\right]+\\
     &\qquad\qquad\qquad\qquad
     \frac{2}{\lambda_l}e^{-\Omega(\E_{i,i}[s_2],t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(\E_{i,i}[s_2]-\E_{i,i}[s_3])}{\lambda_i}}\right]
-    e^{-\Omega(\E_{i,i}[s_2],T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]
+    e^{-\Omega(\E_{i,i}[s_2],T_l)}\lambda_l\left[1-\delta(l-n)e^{-\frac{\Delta_l}{\lambda_l}}\right]
     \Bigg)\\
 \end{align*}
+Again, notice the delta function.
 
 For $i=j=k<l$ and $t_3=s_2;t_2>s_2$:
 \begin{align*}
@@ -1316,15 +1322,15 @@ For $i=j=k<l$ and $t_3=s_2;t_2>s_2$:
     \left(e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2\right)
     \left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)\\
     &=\frac{2}{2s_2+s_3}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}
-    \left(e^{-\Omega(s_2,T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]\right)
+    \left(e^{-\Omega(s_2,T_l)}\lambda_l\left[1-\delta(l-n)e^{-\frac{\Delta_l}{\lambda_l}}\right]\right)
     \left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)\\
     &=\frac{2}{2s_2+s_3}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda_l}
-    \left(e^{-\Omega(s_2,T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]\right)
+    \left(e^{-\Omega(s_2,T_l)}\lambda_l\left[1-e^{-\delta(l-n)\frac{\Delta_l}{\lambda_l}}\right]\right)
     \left(\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
     \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
     \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right)\\
     &=\frac{2}{2\E_{i,i}[s_2]+\E_{i,i}[s_3]}e^{-2\Omega(\E_{i,i}[s_3],\E_{i,i}[s_2])}\frac{1}{\lambda_l}
-    \left(e^{-\Omega(\E_{i,i}[s_2],T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]\right)\times\\
+    \left(e^{-\Omega(\E_{i,i}[s_2],T_l)}\lambda_l\left[1-e^{-\delta(l-n)\frac{\Delta_l}{\lambda_l}}\right]\right)\times\\
     &\qquad\qquad\left(\sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},\E_{i,i}[s_3])}
     \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
     \left[1-e^{-\frac{3 \left(\E_{i,i}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right)\\
