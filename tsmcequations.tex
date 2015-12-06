@@ -509,26 +509,31 @@ Checks out since $\pi_{n,n} = \exp(-3\Omega(0,T_n))$.
         \E_{i,i}[t_2] &= \E\big[t_2|t_3 \in [T_i T_{i+1}),t_2 \in [T_i,T_{i+1}) \big]\\
                       &= \frac{1}{\pi_{i,i}}\int_{T_i}^{T_{i+1}}\int_{t_3}^{T_{i+1}}t_2\pi(t_3,t_2)dt_2\,dt_3\\
                       &= \frac{1}{\pi_{i,i}}\int_{T_i}^{T_{i+1}}\int_{t_3}^{T_{i+1}}
-                        \frac{t_2}{\lambda_i^2}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2\,dt_3\\
-                      &= \frac{1}{\pi_{i,i}\lambda_i^2}\int_{T_i}^{T_{i+1}}
+                        \frac{6t_2}{\lambda_i^2}e^{-3\Omega(0,t_3)}e^{-2\Omega(t_3,t_2)}dt_2\,dt_3\\
+                      &= \frac{6}{\pi_{i,i}\lambda_i^2}\int_{T_i}^{T_{i+1}}
                         e^{-3\Omega(0,t_3)}\int_{t_3}^{T_{i+1}}t_2\,e^{-2\Omega(t_3,t_2)}dt_2\,dt_3\\
-                      &= \frac{1}{\pi_{i,i}\lambda_i^2}e^{-3\Omega(0,T_i)}
+                      &= \frac{6}{\pi_{i,i}\lambda_i^2}e^{-3\Omega(0,T_i)}
                         \int_{T_i}^{T_{i+1}}
                         e^{-3\Omega(T_i,t_3)}\int_{t_3}^{T_{i+1}}t_2\,e^{-2\Omega(t_3,t_2)}dt_2\,dt_3\\
-                      &= \frac{1}{\pi_{i,i}\lambda_i^2}e^{-3\Omega(0,T_i)}
+                      &= \frac{6}{\pi_{i,i}\lambda_i^2}e^{-3\Omega(0,T_i)}
                         \int_{T_i}^{T_{i+1}}
                         e^{-\frac{3(t_3-T_i)}{\lambda_i}}\int_{t_3}^{T_{i+1}}t_2\,e^{-\frac{2(t_2-t_3)}{\lambda_i}}dt_2\,dt_3\\
-                      &= \frac{1}{\pi_{i,i}\lambda_i^2}e^{-3\Omega(0,T_i)}
+                      &= \frac{6}{\pi_{i,i}\lambda_i^2}e^{-3\Omega(0,T_i)}
                         \int_{T_i}^{T_{i+1}}
                         e^{-\frac{3(t_3-T_i)}{\lambda_i}}
                         \frac{\lambda_i}{4}\left(2t_3+\lambda_i-e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}\left(2T_{i+1}+\lambda_i\right)\right)
                         dt_3\\
-                      &= \frac{1}{\pi_{i,i}\lambda_i^2}e^{-3\Omega(0,T_i)}
-                        \frac{\lambda_i}{4}e^{-\frac{3(t_2-T_i)}{\lambda_i}}\left(-T_i^2+T_{i+1}^2-\lambda_iT_i+T_{i+1}\lambda_i-
-                        \frac{\lambda_i}{2}\left(1-e^{-\frac{2\Delta_i}{\lambda_i}}\right)\left(2T_{i+1}+\lambda_i\right)\right)\\
-                      &= \frac{1}{\pi_{i,i}\lambda_i^2}e^{-3\Omega(0,T_i)}
-                        \frac{\lambda_i}{4}e^{-\frac{3(t_2-T_i)}{\lambda_i}}\left(T_{i+1}^2-T_i^2+\lambda_i\left(\Delta_i-\frac{\lambda_i}{2}\left[1-e^{-\frac{2\Delta_i}{\lambda_i}}\right]\right)-
-                        \frac{\lambda_i}{2}\left(1-e^{-\frac{2\Delta_i}{\lambda_i}}\right)\left(2T_{i+1}\right)\right)\\
+                      &= \frac{3}{2\pi_{i,i}\lambda_i}e^{-3\Omega(0,T_i)}
+                        \int_{T_i}^{T_{i+1}}
+                        e^{-\frac{3(t_3-T_i)}{\lambda_i}}
+                        \left(2t_3+\lambda_i-e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}\left(2T_{i+1}+\lambda_i\right)\right)
+                        dt_3\\
+                      &= \frac{3}{2\pi_{i,i}\lambda_i}e^{-3\Omega(0,T_i)}
+                        \frac{\lambda_i}{9}\left(6T_i+5\lambda_i-9e^{-\frac{2\Delta_i}{\lambda_i}}(2T_{i+1}+\lambda_i)+
+                        4e^{-\frac{3\Delta_i}{\lambda_i}}\left(3T_{i+1}+\lambda_i\right)\right)\\
+                      &= \frac{1}{6\pi_{i,i}}e^{-3\Omega(0,T_i)}
+                        \left(6T_i+5\lambda_i-9e^{-\frac{2\Delta_i}{\lambda_i}}(2T_{i+1}+\lambda_i)+
+                        4e^{-\frac{3\Delta_i}{\lambda_i}}\left(3T_{i+1}+\lambda_i\right)\right)
     \end{split}
 \end{align}
 For $i=n$, this expectation is 
