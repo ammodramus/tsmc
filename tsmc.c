@@ -399,6 +399,7 @@ void Hmm_print_pis(Hmm * hmm)
             idx = get_index(i, j, n);
             printf("%i\t%i\t%f\t%f\t%f\t%f\t%f\n", i, j, hmm->ts[i],
                 (i < n) ? hmm->ts[i+1] : INFINITY, hmm->ts[j], (j < n) ? hmm->ts[j+1] : INFINITY, hmm->pis[idx]);
+            // TODO: check these probabilities (and then also expectations)
         }
     }
     return;
