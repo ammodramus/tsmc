@@ -463,14 +463,11 @@ the interval $(i,i)$:
                         \int_{T_i}^{T_{i+1}}
                         t_3\,e^{-\frac{3(t_3-T_i)}{\lambda_i}}
                         \left(1-e^{-\frac{2(T_{i+1}-t_3)}{\lambda_i}}\right)dt_3\\
-                    &= \frac{6}{2\pi_{i,i}\lambda_i}e^{-3\Omega(0,T_i)}
-                        \left[\frac{\lambda_i}{9}e^{-\frac{3T_{i+1}}{\lambda_i}}
-                        \left(e^{\frac{3T_{i+1}}{\lambda_i}}+e^{\frac{3T_i}{\lambda_i}}(6T_{i+1}+8\lambda_i)-9(\lambda_i+T_i)e^{-\frac{2\Delta_i}{\lambda_i}}\right)
-                    \right]\\
-                    &= \frac{1}{3\pi_{i,i}}e^{-3\Omega(0,T_i)}
-                        \left[e^{-\frac{3T_{i+1}}{\lambda_i}}
-                        \left(e^{\frac{3T_{i+1}}{\lambda_i}}+e^{\frac{3T_i}{\lambda_i}}(6T_{i+1}+8\lambda_i)-9(\lambda_i+T_i)e^{-\frac{2\Delta_i}{\lambda_i}}\right)
-                    \right]\\
+                        &= \frac{1}{3\pi_{i,i}}e^{-3\Omega(0,T_i)}
+                        \left(
+                            3T_i+\lambda_i+e^{-\frac{3\Delta_i}{\lambda_i}}(6T_{i+1}+8\lambda_i)-
+                            9e^{-\frac{2\Delta_i}{\lambda_i}}(T_i+\lambda_i)
+                    \right)
     \end{split}
 \end{align}
 For $i = n$, the expectation is 
