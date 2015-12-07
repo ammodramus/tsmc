@@ -3,6 +3,9 @@
 #include <math.h>
 #include <assert.h>
 
+#define DEBUGREPORTI(x) fprintf(stderr, #x " = %i\n", x)
+#define DEBUGREPORTF(x) fprintf(stderr, #x " = %f\n", x)
+
 typedef struct 
 {
     int n; // number of changepoints
@@ -23,6 +26,7 @@ void * chmalloc(size_t size)
     if(!ptr)
     {
         fprintf(stderr, "Out of memory.\n");
+        exit(1);
     }
     return ptr;
 }
@@ -30,7 +34,10 @@ void * chmalloc(size_t size)
 inline int get_index(int i, int j, int n)
 {
     assert(i>=0 && j>=0 && n>=0 && i <= n && j <= n && i <= j);
-    return i*n-i*(i-1)/2+j+1;
+    //int idx = i*n-i*(i-1)/2+j+1;
+    const int idx = i*n-i*(i-1)/2+j;
+    assert(idx < (n+1)*(n+2)/2);
+    return idx;
 }
 
 void Hmm_init(Hmm * hmm, int n, double * ts)
@@ -49,9 +56,13 @@ void Hmm_init(Hmm * hmm, int n, double * ts)
     hmm->Eijs3s = (double *)chmalloc(sizeof(double)*numStates);
     hmm->pis = (double *)chmalloc(sizeof(double)*numStates);
     hmm->qts = (double **)chmalloc(sizeof(double *)*numStates);
+    hmm->numStates = numStates;
     for(i = 0; i < numStates; i++)
     {
         hmm->qts[i] = (double *)chmalloc(sizeof(double)*numStates);
+        hmm->Eijs3s[i] = -1.0;
+        hmm->Eijs2s[i] = -1.0;
+        hmm->pis[i] = -1.0;
     }
     
     for(i = 0; i < n+1; i++)
@@ -154,10 +165,10 @@ void Hmm_get_pis(Hmm * hmm)
                 }
                 else
                 {
-                    hmm->pis[idx] = exp(-3.0*get_omega_interval_interval(
+                    hmm->pis[idx] = 1.0/2.0*exp(-3.0*get_omega_interval_interval(
                             hmm, 0, i))*
-                            (1.0 - 3.0*exp(-2.0*hmm->intervalOmegas[i]) 
-                             + 2.0*exp(-3.0*hmm->intervalOmegas[i]));
+                            (2.0 - 3.0*exp(-hmm->intervalOmegas[i]) 
+                             + exp(-3.0*hmm->intervalOmegas[i]));
                 }
             }
             // i < j
@@ -166,19 +177,21 @@ void Hmm_get_pis(Hmm * hmm)
                 assert(i<j);
                 if(j < n)
                 {
-                    hmm->pis[idx] = 3.0*exp(-3.0*get_omega_interval_interval(hmm,0,i))
-                        * exp(-2.0*get_omega_interval_interval(hmm,i+1,j))
-                        * (exp(-2.0*hmm->intervalOmegas[i])
+                    hmm->pis[idx] = 3.0/2.0*
+                        exp(-3.0*get_omega_interval_interval(hmm,0,i))
+                        * exp(-get_omega_interval_interval(hmm,i+1,j))
+                        * (exp(-hmm->intervalOmegas[i])
                                 - exp(-3.0*hmm->intervalOmegas[i]))
-                        * (1.0 - exp(-2.0*hmm->intervalOmegas[j]));
+                        * (1.0 - exp(-hmm->intervalOmegas[j]));
                 }
                 else
                 {
                     assert(j == n);
-                    hmm->pis[idx] = 3.0*exp(-3.0*get_omega_interval_interval(hmm,0,i))
-                        * exp(-2.0*get_omega_interval_interval(hmm,i+1,j))
-                        * (exp(-2.0*hmm->intervalOmegas[i])
-                                - exp(-3.0*hmm->intervalOmegas[i]));
+                    hmm->pis[idx] = 3.0/2.0*
+                        exp(-3.0*get_omega_interval_interval(hmm,0,i)) *
+                        exp(-get_omega_interval_interval(hmm,i+1,j)) *
+                        (exp(-hmm->intervalOmegas[i]) - 
+                                exp(-3.0*hmm->intervalOmegas[i]));
                 }
             }
         }
@@ -190,9 +203,9 @@ void Hmm_get_expectations(Hmm * hmm)
 {
     const int n = hmm->n;
     int i, j, idx;
-    for(i = 0; i < n; i++)
+    for(i = 0; i < n+1; i++)
     {
-        for(j = i; j < n; j++)
+        for(j = i; j < n+1; j++)
         {
             idx = get_index(i, j, n);
             if(i == j)
@@ -200,25 +213,26 @@ void Hmm_get_expectations(Hmm * hmm)
                 if(i == n)
                 {
                     hmm->Eijs3s[idx] = hmm->ts[n] + hmm->lambdas[n]/3.0;
-                    hmm->Eijs2s[idx] = hmm->Eijs3s[idx] + hmm->lambdas[n]/2.0;
+                    hmm->Eijs2s[idx] = hmm->Eijs3s[idx] + hmm->lambdas[n];
                 }
                 else
                 {
                     assert(i < n && i == j);
-                    hmm->Eijs3s[idx] = 1/(3*hmm->pis[idx])
+                    hmm->Eijs3s[idx] = 1.0/(12.0*hmm->pis[idx])
                         * exp(-3*get_omega_interval_interval(hmm,0,i))
-                        * (1 + exp(-3*hmm->ts[i])
-                            * (exp(3*hmm->ts[i]/hmm->lambdas[i])
-                                * (6*hmm->ts[i+1]+8*hmm->lambdas[i])
-                                - 9*exp(-2*hmm->intervalOmegas[i])
-                                * (hmm->lambdas[i] + hmm->ts[i])));
+                        * (4*(3*hmm->ts[i] + hmm->lambdas[i]) +
+                        exp(-3*hmm->intervalOmegas[i]) *
+                         (6*hmm->ts[i+1]+5*hmm->lambdas[i]) -
+                        9*exp(-hmm->intervalOmegas[i]) *
+                        (2*hmm->ts[i] + hmm->lambdas[i]));
+                        
                     hmm->Eijs2s[idx] = 1.0/(6.0*hmm->pis[idx])
                         * exp(-3*get_omega_interval_interval(hmm, 0, i))
-                        * (6*hmm->ts[i]+5*hmm->lambdas[i]-
-                            9*exp(-2*hmm->intervalOmegas[i])
-                            * (2*hmm->ts[i+1]+hmm->lambdas[i]) 
-                            + 4.0*exp(-3*hmm->intervalOmegas[i])
-                            * (3*hmm->ts[i+1] + hmm->lambdas[i]));
+                        * (exp(-3*hmm->intervalOmegas[i])
+                                * (3*hmm->ts[i+1]+hmm->lambdas[i])
+                           + 6*hmm->ts[i] + 8*hmm->lambdas[i]
+                           - 9*exp(-hmm->intervalOmegas[i]) *
+                           (hmm->ts[i+1]+hmm->lambdas[i]));
                 }
             }
             else
@@ -226,39 +240,40 @@ void Hmm_get_expectations(Hmm * hmm)
                 assert(i < j);
                 if(j == n)
                 {
-                    hmm->Eijs3s[idx] = 3.0/hmm->pis[idx] *
+                    hmm->Eijs3s[idx] = 3.0/(4.0*hmm->pis[idx]) *
                       exp(-3*get_omega_interval_interval(hmm,0,i))*
-                      exp(-2*get_omega_interval_interval(hmm,i+1,n))*
-                      ((hmm->lambdas[i]+hmm->ts[i])*
-                       exp(-2*hmm->intervalOmegas[i]) -
-                       (hmm->lambdas[i]+hmm->ts[i+1])*
+                      exp(-get_omega_interval_interval(hmm,i+1,n))*
+                      ((hmm->lambdas[i]+2*hmm->ts[i])*
+                       exp(-hmm->intervalOmegas[i]) -
+                       (hmm->lambdas[i]+2*hmm->ts[i+1])*
                        exp(-3*hmm->intervalOmegas[i]));
+                    
                     hmm->Eijs2s[idx] = 3.0/(2.0*hmm->pis[idx]) *
                         exp(-3*get_omega_interval_interval(hmm,0,i))*
-                        exp(-2*get_omega_interval_interval(hmm,i+1,n))*
-                        (exp(-2*hmm->intervalOmegas[i]) -
+                        exp(-get_omega_interval_interval(hmm,i+1,n))*
+                        (exp(-hmm->intervalOmegas[i]) -
                          exp(-3*hmm->intervalOmegas[i]))*
-                        (hmm->lambdas[n] + 2*hmm->ts[n]);
+                        (hmm->lambdas[n] + hmm->ts[n]);
                 }
                 else
                 {
-                    assert(j < n);
-                    hmm->Eijs3s[idx] = 3.0/hmm->pis[idx]*
+                    assert(j < n && i < j);
+                    hmm->Eijs3s[idx] = 3.0/(4.0*hmm->pis[idx])*
                         exp(-3*get_omega_interval_interval(hmm,0,i))*
-                        (1.0-exp(-2*hmm->intervalOmegas[j]))*
-                        exp(-2*get_omega_interval_interval(hmm,i+1,j))*
-                        ((hmm->lambdas[i]+hmm->ts[i])*
-                         exp(-2*hmm->intervalOmegas[i]) -
-                         (hmm->lambdas[i]+hmm->ts[i+1])*
+                        (1.0-exp(-hmm->intervalOmegas[j]))*
+                        exp(-get_omega_interval_interval(hmm,i+1,j))*
+                        ((hmm->lambdas[i]+2*hmm->ts[i])*
+                         exp(-hmm->intervalOmegas[i]) -
+                         (hmm->lambdas[i]+2*hmm->ts[i+1])*
                          exp(-3*hmm->intervalOmegas[i]));
                     hmm->Eijs2s[idx] = 3.0/(2.0*hmm->pis[idx])*
                         exp(-3*get_omega_interval_interval(hmm,0,i))*
-                        exp(-2*get_omega_interval_interval(hmm,i+1,j))*
-                        (exp(-2*hmm->intervalOmegas[i])-
+                        exp(-get_omega_interval_interval(hmm,i+1,j))*
+                        (exp(-hmm->intervalOmegas[i])-
                          exp(-3*hmm->intervalOmegas[i]))*
-                        (hmm->lambdas[j]+2*hmm->ts[j]-
-                         (hmm->lambdas[j]+2*hmm->ts[j+1])*
-                         exp(-2*hmm->intervalOmegas[j]));
+                        (hmm->lambdas[j]+hmm->ts[j]-
+                         (hmm->lambdas[j]+hmm->ts[j+1])*
+                         exp(-hmm->intervalOmegas[j]));
                 }
             }
         }
@@ -397,9 +412,29 @@ void Hmm_print_pis(Hmm * hmm)
         for(j = i; j < n+1; j++)
         {
             idx = get_index(i, j, n);
-            printf("%i\t%i\t%f\t%f\t%f\t%f\t%f\n", i, j, hmm->ts[i],
-                (i < n) ? hmm->ts[i+1] : INFINITY, hmm->ts[j], (j < n) ? hmm->ts[j+1] : INFINITY, hmm->pis[idx]);
-            // TODO: check these probabilities (and then also expectations)
+            printf("%i\t%i\t%f\t%f\t%f\t%f\t%f\n",
+                i, j, hmm->ts[i],
+                (i < n) ? hmm->ts[i+1] : INFINITY, hmm->ts[j], 
+                (j < n) ? hmm->ts[j+1] : INFINITY, hmm->pis[idx]);
+        }
+    }
+    return;
+}
+
+void Hmm_print_expectations(Hmm * hmm)
+{
+    int i, j, idx;
+    const int n = hmm->n;
+    for(i = 0; i < n+1; i++)
+    {
+        for(j = i; j < n+1; j++)
+        {
+            idx = get_index(i, j, n);
+            printf("%i\t%i\t%f\t%f\t%f\t%f\t%f\t%f\n",
+                i, j, hmm->ts[i],
+                (i < n) ? hmm->ts[i+1] : INFINITY, hmm->ts[j], 
+                (j < n) ? hmm->ts[j+1] : INFINITY,
+                hmm->Eijs3s[idx], hmm->Eijs2s[idx]);
         }
     }
     return;
@@ -410,20 +445,32 @@ int main(int argc, char ** argv)
     int i, n = 10;
     double F;
     double * ts = (double *)chmalloc(sizeof(double) * (n+1));
+    double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
     
     ts[0] = 0.0;
+    lambdas[0] = 1.0;
     for(i = 1; i < n+1; i++)
     {
         F = (double)(i) * 1.0/((double)n+1.0);
         ts[i] = -log(1-F);
+        if(i < 4)
+        {
+            lambdas[i] = 1.0;
+        }
+        else
+        {
+            lambdas[i] = 2.0;
+        }
     }
     Hmm hmm;
     Hmm_init(&hmm, n, ts);
+    Hmm_set_lambdas(&hmm, n, lambdas);
     Hmm_make_omega_intervals(&hmm);
     Hmm_get_pis(&hmm);
     Hmm_get_expectations(&hmm);
-    //Hmm_print_demography(&hmm);
-    Hmm_print_pis(&hmm);
+    Hmm_print_demography(&hmm);
+    //Hmm_print_pis(&hmm);
+    //Hmm_print_expectations(&hmm);
     //Hmm_free(&hmm);
     return 0;
 }
