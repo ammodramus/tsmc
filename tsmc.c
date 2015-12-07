@@ -395,6 +395,33 @@ double get_omega_Es3_Es2(Hmm * hmm, const int Es3_i, const int Es3_j)
     return omega;
 }
 
+void Hmm_get_qts(Hmm * hmm)
+{
+    int i, j, rowIdx, colIdx;
+    
+
+    //int n; // number of changepoints
+    //int numStates;
+    //double * ts; // 
+    //double * lambdas;
+    //double * deltas;
+    //double * intervalOmegas;
+    //double * pis;
+    //double * Eijs3s;
+    //double * Eijs2s;
+    //double ** qts;
+
+    double ** qts = hmm->qts;
+    double * io = hmm->intervalOmegas;
+    double * del = hmm->deltas;
+    double * t = hmm->ts;
+    double * lam = hmm->lambdas;
+    double * es3 = hmm->Eijs3s;
+    double * es2 = hmm->Eijs2s;
+    return;
+}
+
+
 void Hmm_print_demography(Hmm * hmm)
 {
     int i;
