@@ -554,6 +554,7 @@ Note that in any single transition, either the first or second coalescence time
 changes, but not both. This simplifies the calculation of these integrals.
 
 % discrete transitions
+\subsubsection{Case A}
 For $i=k< j<l$, ($t_3=s_3\,;t_2>s_2$):
     % first summand
 \begin{align*}
@@ -650,6 +651,7 @@ For $i=k< j<l$, ($t_3=s_3\,;t_2>s_2$):
 \end{align*}
 Here we assume that $\Delta_n = \infty$ and thus $e^{-\Delta_n/\lambda_n} = 0$.
 
+\subsubsection{Case B}
 For $i=k<l<j$ ($t_3=s_3; t_2<s_2$): % (i,j) -> (k,l)   (s_3,s_2) -> (t_3, t_2)
 \begin{align*}
     % original, with sum indices replaced by a
@@ -777,6 +779,7 @@ For $i=k<l<j$ ($t_3=s_3; t_2<s_2$): % (i,j) -> (k,l)   (s_3,s_2) -> (t_3, t_2)
     \\
 \end{align*}
 
+\subsubsection{Case C}
 For $k<i=l<j$ ($t_3<s_3; t_2=s_3$):
 \begin{align*}
     % original
@@ -843,6 +846,7 @@ For $k<i=l<j$ ($t_3<s_3; t_2=s_3$):
     \\[1em]
 \end{align*}
 
+\subsubsection{Case D}
 For $k<i< j=l$ ($t_3<s_3; t_2=s_2$):
 % reusing work from above, but with 1 replaced with 2 in numerator
 % in software, just multiply previous by 2
@@ -905,6 +909,7 @@ For $k<i< j=l$ ($t_3<s_3; t_2=s_2$):
     \\[1em]
 \end{align*}
 
+\subsubsection{Case E}
 For $i<k<j=l$ ($t_3>s_3; t_2=s_2$):
 \begin{align*}
     % original
@@ -962,6 +967,7 @@ For $i<k<j=l$ ($t_3>s_3; t_2=s_2$):
     \frac{\lambda_k}{2}\left[1-e^{-\frac{2\Delta_k}{\lambda_k}}\right]
 \end{align*}
 
+\subsubsection{Case F}
 For $i<j=k<l$ ($t_3=s_2; t_2>s_2$):
 \begin{align*}
     % original
@@ -1022,6 +1028,7 @@ Here again we assume $\Delta_n = \infty$ and thus $e^{-\Delta_n/\lambda_n} = 0$.
 
 The following cases require special consideration:
 
+\subsubsection{Case G}
 For $i=k=l<j$ and $t_3=s_3; t_2<s_2$ (also need to consider $t_3<s_3;t_2=s_3$)
 \begin{align*}
     &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\Bigg(
@@ -1077,6 +1084,7 @@ For $i=k=l<j$ and $t_3=s_3; t_2<s_2$ (also need to consider $t_3<s_3;t_2=s_3$)
     \Bigg\}\\
 \end{align*}
 
+\subsubsection{Case G2}
 For $i=k=l<j$ and $t_3<s_3;t_2=s_3$:
 \begin{align*}
     &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\Bigg(
@@ -1127,6 +1135,7 @@ For $i=k=l<j$ and $t_3<s_3;t_2=s_3$:
 
 Another case that requires special consideration is $i<k=l=j$.
 
+\subsubsection{Case H}
 For $i<k=l=j$ and $t_3>s_3\,;t_2=s_2$:
 \begin{align*}
     &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\left(2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\delta(t_2-s_2)\right)dt_2\,dt_3\\
@@ -1145,6 +1154,7 @@ For $i<k=l=j$ and $t_3>s_3\,;t_2=s_2$:
     \frac{\lambda_k}{2}\left[1-e^{-\frac{2(s_2-T_k)}{\lambda_k}}\right]\\
 \end{align*}
 
+\subsubsection{Case H2}
 For $i<k=l=j$ and $t_3=s_2\,;t_2>s_2$:
 \begin{align*}
     &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\left(2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}e^{-2\Omega(s_3,s_2)}\frac{1}{\lambda(t_2)}e^{-\Omega(s_2,t_2)}\delta(t_3-s_2)\right)dt_2\,dt_3\\
@@ -1177,6 +1187,7 @@ The delta function is a way to ensure correctedness when $k=l=j=n$.
 
 Another special case that requires attention is $i=j=k<l$.
 
+\subsubsection{Case I}
 For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
 
 \begin{align*}
@@ -1271,6 +1282,7 @@ For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
 \end{align*}
 Again, notice the delta function.
 
+\subsubsection{Case I2}
 For $i=j=k<l$ and $t_3=s_2;t_2>s_2$:
 \begin{align*}
     &=\int_{T_k}^{T_{k+1}}\int_{T_l}^{T_{l+1}}\left(
@@ -1309,9 +1321,10 @@ For $i=j=k<l$ and $t_3=s_2;t_2>s_2$:
     % the above is exactly equivalent to the case where i<j.
 \end{align*}
 
-Another case that requires special consideration: $k<i=j=l$. This include
+Another case that requires special consideration: $k<i=j=l$. This includes
 either $t_3<s_3;t_2=s_2$ or $t_3<s_3;t_2=s_3$.
 
+\subsubsection{Case J}
 For $k<i=j=l$ and $t_3<s_3;t_2=s_2$:
 
 \begin{align*}
@@ -1359,6 +1372,7 @@ For $k<i=j=l$ and $t_3<s_3;t_2=s_2$:
     \right\}\\
 \end{align*}
 
+\subsubsection{Case J2}
 For $k<i=j=l$ and $t_3<s_3;t_2=s_3$:
 
 \begin{align*}
