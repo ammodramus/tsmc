@@ -1131,11 +1131,21 @@ For $i=k=l<j$ and $t_3<s_3;t_2=s_3$:
     \frac{\lambda_k}{3}\left[1-e^{-\frac{3(\E_{i,j}[s_3]-T_k)}{\lambda_k}}\right]+\\
     &\qquad\qquad\qquad\frac{\lambda_{k}}{3}\left(
     \E_{i,j}[s_3]-T_k-\frac{\lambda_k}{3}\left[1-e^{-\frac{3(\E_{i,j}[s_3]-T_k)}{\lambda_k}}\right]\right)\Bigg)\\
+    \displaybreak
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}
+    \frac{2}{\lambda_k}
+    \Bigg(
+    \sum_{a=0}^{k-1} \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}
+    e^{-3\Omega(T_{a+1},T_k)}
+    %\int_{T_k}^{\E_{i,j}[s_3]}e^{-\frac{3(t_3-T_k)}{\lambda_k}}dt_3+
+    \frac{\lambda_k}{3}\left[1-e^{-\frac{3(\E_{i,j}[s_3]-T_k)}{\lambda_k}}\right]+\\
+    &\qquad\qquad\qquad\frac{\lambda_{k}}{3}\left(
+    \E_{i,j}[s_3]-T_k-\frac{\lambda_k}{3}\left[1-e^{-\frac{3(\E_{i,j}[s_3]-T_k)}{\lambda_k}}\right]\right)\Bigg)\\
 \end{align*}
 
-Another case that requires special consideration is $i<k=l=j$.
 
 \subsubsection{Case H}
+Another case that requires special consideration is $i<k=l=j$.
 For $i<k=l=j$ and $t_3>s_3\,;t_2=s_2$:
 \begin{align*}
     &=\int_{T_k}^{T_{k+1}}\int_{t_3}^{T_{k+1}}\left(2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\delta(t_2-s_2)\right)dt_2\,dt_3\\
@@ -1152,6 +1162,12 @@ For $i<k=l=j$ and $t_3>s_3\,;t_2=s_2$:
     \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
     \right)
     \frac{\lambda_k}{2}\left[1-e^{-\frac{2(s_2-T_k)}{\lambda_k}}\right]\\
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{4}{\lambda_k}\left(
+    \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
+    \right) \times \\
+    &\qquad\qquad\frac{\lambda_k}{2}\left[1-e^{-\frac{2(\E_{i,j}[s_2]-T_k)}{\lambda_k}}\right]\\
 \end{align*}
 
 \subsubsection{Case H2}
@@ -1182,8 +1198,16 @@ For $i<k=l=j$ and $t_3=s_2\,;t_2>s_2$:
     &\qquad\left(
     \lambda_k\left[1-\delta(k-n)e^{-\frac{T_{k+1}-s_2}{\lambda_k}}\right]
     \right)\\
+    &=\frac{2}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{1}{\lambda_k}e^{-2\Omega(\E_{i,j}[s_3],\E_{i,j}[s_2])}\left(
+    \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
+    \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
+    \left[1-e^{-\frac{3 \left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
+    \right)\times\\
+    &\qquad
+    \lambda_k\left[1-\delta(k-n)e^{-\frac{T_{k+1}-\E_{i,j}[s_2]}{\lambda_k}}\right]
+    \\
 \end{align*}
-The delta function is a way to ensure correctedness when $k=l=j=n$.
+The delta function is a way to ensure correctness when $k=l=j=n$.
 
 Another special case that requires attention is $i=j=k<l$.
 
@@ -1239,7 +1263,7 @@ For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
     \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]
     \int_{T_l}^{T_{l+1}}e^{-\Omega(s_2,t_2)}dt_2+\\
     &\qquad\qquad\qquad\qquad
-    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    \frac{2}{\lambda_l}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
     \int_{T_l}^{T_{l+1}}e^{-\Omega(s_2,t_2)}dt_2
     \Bigg)\\
     &=\frac{1}{2s_2+s_3}\Bigg(
@@ -1248,7 +1272,7 @@ For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
     \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]
     e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\Omega(T_l,t_2)}dt_2+\\
     &\qquad\qquad\qquad\qquad
-    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    \frac{2}{\lambda_l}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
     e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\Omega(T_l,t_2)}dt_2
     \Bigg)\\
     &=\frac{1}{2s_2+s_3}\Bigg(
@@ -1257,7 +1281,7 @@ For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
     \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]
     e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2+\\
     &\qquad\qquad\qquad\qquad
-    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    \frac{2}{\lambda_l}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
     e^{-\Omega(s_2,T_l)}\int_{T_l}^{T_{l+1}}e^{-\frac{t_2-T_l}{\lambda_l}}dt_2
     \Bigg)\\
     &=\frac{1}{2s_2+s_3}\Bigg(
@@ -1266,7 +1290,7 @@ For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
     \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}\right]
     e^{-\Omega(s_2,T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]+\\
     &\qquad\qquad\qquad\qquad
-    \frac{2}{\lambda_l}e^{-\Omega(s_2,t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
+    \frac{2}{\lambda_l}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(s_2-s_3)}{\lambda_i}}\right]
     e^{-\Omega(s_2,T_l)}\lambda_l\left[1-e^{-\frac{\Delta_l}{\lambda_l}}\right]
     \Bigg)\\
     &=\frac{1}{2\E_{i,i}[s_2]+\E_{i,i}[s_3]}\Bigg(
@@ -1276,7 +1300,7 @@ For $i=j=k<l$ and $t_3=s_3;t_2>s_2$:
     &\qquad\qquad\qquad\qquad\qquad\qquad
     e^{-\Omega(\E_{i,i}[s_2],T_l)}\lambda_l\left[1-\delta(l-n)e^{-\frac{\Delta_l}{\lambda_l}}\right]+\\
     &\qquad\qquad\qquad\qquad
-    \frac{2}{\lambda_l}e^{-\Omega(\E_{i,i}[s_2],t_2)}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(\E_{i,i}[s_2]-\E_{i,i}[s_3])}{\lambda_i}}\right]
+    \frac{2}{\lambda_l}\frac{\lambda_i}{2}\left[1-e^{-\frac{2(\E_{i,i}[s_2]-\E_{i,i}[s_3])}{\lambda_i}}\right]
     e^{-\Omega(\E_{i,i}[s_2],T_l)}\lambda_l\left[1-\delta(l-n)e^{-\frac{\Delta_l}{\lambda_l}}\right]
     \Bigg)\\
 \end{align*}
