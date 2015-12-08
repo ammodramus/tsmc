@@ -13,7 +13,6 @@ double qts_case_A(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -62,7 +61,6 @@ double qts_case_B(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -113,7 +111,6 @@ double qts_case_C(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -160,7 +157,6 @@ double qts_case_E(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -196,7 +192,6 @@ double qts_case_F(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -233,7 +228,6 @@ double qts_case_G(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -270,7 +264,6 @@ double qts_case_G2(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -307,7 +300,6 @@ double qts_case_H(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -342,7 +334,6 @@ double qts_case_H2(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -378,7 +369,6 @@ double qts_case_I(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -420,7 +410,6 @@ double qts_case_I2(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -458,7 +447,6 @@ double qts_case_J(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;
@@ -494,7 +482,6 @@ double qts_case_J2(Hmm * hmm, int i, int j, int k, int l)
     int a;
     const int n = hmm->n;
     const int rowIdx = get_index(i,j,n);
-    const int colIdx = get_index(k,l,n);
     double * const t = hmm->ts;
     double * const lam = hmm->lambdas;
     double * const del = hmm->deltas;

@@ -260,7 +260,6 @@ double get_omega_Es3_interval(Hmm * hmm, const int b, const int Es3_i,
     const Es3idx = get_index(Es3_i, Es3_j, hmm->n);
     const double Es3 = hmm->Eijs3s[Es3idx];
 
-    //omega += (hmm->ts[Es3_i+1] - Es3) * hmm->intervalOmegas[Es3_i]; // bug
     omega += (hmm->ts[Es3_i+1] - Es3) / hmm->lambdas[Es3_i];
     omega += get_omega_interval_interval(hmm, Es3_i+1, b);
 
@@ -279,7 +278,6 @@ double get_omega_Es2_interval(Hmm * hmm, const int b, const int Es2_i,
     const double Es2 = hmm->Eijs2s[Es2idx];
 
     double omega = 0.0;
-    //omega += (hmm->ts[Es2_j+1] - Es2) * hmm->intervalOmegas[Es2_j]; // bug
     omega += (hmm->ts[Es2_j+1] - Es2) / hmm->lambdas[Es2_j];
     omega += get_omega_interval_interval(hmm, Es2_j+1, b);
 
@@ -299,7 +297,7 @@ double get_omega_interval_Es3(Hmm * hmm, const int a, const int Es3_i,
     const double Es3 = hmm->Eijs3s[Es3idx];
 
     omega += get_omega_interval_interval(hmm, a, Es3_i);
-    omega += (Es3 - hmm->ts[Es3_i])/hmm->lambdas[Es3_i]; // not a bug!
+    omega += (Es3 - hmm->ts[Es3_i])/hmm->lambdas[Es3_i];
 
     assert(omega >= 0);
 
@@ -312,7 +310,7 @@ double get_omega_interval_Es2(Hmm * hmm, const int a, const int Es2_i,
     int i;
     double omega = 0.0;
 
-    assert(0 <= a && a < Es2_j && Es2_i <= Es2_j && Es2_j <= hmm->n);
+    assert(0 <= a && a <= Es2_j && Es2_i <= Es2_j && Es2_j <= hmm->n);
 
     const Es2idx = get_index(Es2_i, Es2_j, hmm->n);
     const double Es2 = hmm->Eijs2s[Es2idx];
