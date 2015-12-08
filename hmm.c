@@ -256,7 +256,7 @@ double get_omega_Es3_interval(Hmm * hmm, const int b, const int Es3_i,
     assert(Es3_i < b);
     assert(b >= 0 && Es3_i >= 0 && Es3_j >= 0);
     // all less than n because we are taking interval above
-    assert(b < hmm->n && Es3_i < hmm->n && Es3_j < hmm->n);
+    assert(b <= hmm->n && Es3_i <= hmm->n && Es3_j <= hmm->n);
 
     const Es3idx = get_index(Es3_i, Es3_j, hmm->n);
     const double Es3 = hmm->Eijs3s[Es3idx];
@@ -298,7 +298,7 @@ double get_omega_interval_Es3(Hmm * hmm, const int a, const int Es3_i,
 {
     int i;
     double omega = 0.0;
-    assert(a < Es3_i); // maybe we want <=
+    assert(a <= Es3_i); // used to be <
     assert(Es3_i <= Es3_j);
     assert(Es3_i >= 0 && a >= 0 && Es3_i >= 0 && Es3_j >= 0);
     assert(Es3_i <= hmm->n && a < hmm->n && Es3_j <= hmm->n);
