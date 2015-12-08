@@ -14,4 +14,6 @@ for line in fileinput.input():
             t3 = num
             break
         count[num] += 1
+    t3 *= 2  # ms scaled by 4N
+    t2 *= 2
     print "{},{}".format(t3,t2)
