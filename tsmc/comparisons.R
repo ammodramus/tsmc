@@ -109,4 +109,41 @@ text(dat4$et2, meanst2, labels = sapply(1:nrow(dat), function(x) sprintf("(%i,%i
 abline(0,1)
 # spot-on again
 
+######################################################
+# Now extracting qts transitions from ms simulations #
+######################################################
+
+sims = as.matrix(read.csv("qtssims.txt",header=F))
+probs = as.matrix(read.csv("qtsprobs.txt",header=F))
+
+get_rowcol_index = function(i, j, n){
+    idx = i*n-i*(i-1)/2+j+1  # + 1 for 1-based indexing in R
+    return(idx)
+}
+
+n = 10
+numStates = (n+1)*(n+2)/2
+s3idx = numeric(numStates)
+s2idx = numeric(numStates)
+for(i in 0:n){
+    for(j in i:n){
+        idx = get_rowcol_index(i, j, n)
+        s3idx[idx] = i
+        s2idx[idx] = j
+    }
+}
+
+states = data.frame(i = s3idx, j = s2idx, ijidx = 1:66)
+
+rowSums(probs)
+which(rowSums(probs) >= 1)
+states[which(rowSums(probs)>=1),c(1,2)]
+
+plot(c(sims), c(probs), asp = 1)
+abline(0,1)
+
+par(mfrow=c(1,2))
+hist(rowSums(probs))
+hist(rowSums(sims))
+
 

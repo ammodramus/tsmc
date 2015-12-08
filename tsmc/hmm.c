@@ -6,7 +6,7 @@
 #include "hmm.h"
 #include "qtscases.h"
 
-inline int get_index(int i, int j, int n)
+inline int get_index(const int i, const int j, const int n)
 {
     assert(i>=0 && j>=0 && n>=0 && i<=n && j<=n && i<=j);
     const int idx = i*n-i*(i-1)/2+j;
@@ -14,7 +14,7 @@ inline int get_index(int i, int j, int n)
     return idx;
 }
 
-void Hmm_init(Hmm * hmm, int n, double * ts)
+void Hmm_init(Hmm * hmm, const int n, const double * ts)
 {
     int i;
     const int numStates = (n+1)*(n+2)/2;
@@ -91,7 +91,7 @@ void Hmm_make_omega_intervals(Hmm * hmm)
     return;
 }
 
-double get_omega_interval_interval(Hmm * hmm, int a, int b)
+double get_omega_interval_interval(Hmm * hmm, const int a, const int b)
 {
     int i;
     double omega = 0.0;
@@ -254,14 +254,14 @@ double get_omega_Es3_interval(Hmm * hmm, const int b, const int Es3_i,
     double omega = 0.0;
 
     assert(Es3_i < b);
-    assert(b >= 0 && Es3_i >= 0 && Es3_j >= 0);
-    // all less than n because we are taking interval above
-    assert(b <= hmm->n && Es3_i <= hmm->n && Es3_j <= hmm->n);
+    assert(b >= 0 && Es3_i >= 0 && Es3_j >= Es3_i);
+    assert(b <= hmm->n && Es3_i < hmm->n && Es3_j <= hmm->n);
 
     const Es3idx = get_index(Es3_i, Es3_j, hmm->n);
     const double Es3 = hmm->Eijs3s[Es3idx];
 
-    omega += (hmm->ts[Es3_i+1] - Es3) * hmm->intervalOmegas[Es3_i];
+    //omega += (hmm->ts[Es3_i+1] - Es3) * hmm->intervalOmegas[Es3_i]; // bug
+    omega += (hmm->ts[Es3_i+1] - Es3) / hmm->lambdas[Es3_i];
     omega += get_omega_interval_interval(hmm, Es3_i+1, b);
 
     assert(omega >= 0);
@@ -273,19 +273,14 @@ double get_omega_Es3_interval(Hmm * hmm, const int b, const int Es3_i,
 double get_omega_Es2_interval(Hmm * hmm, const int b, const int Es2_i, 
         const int Es2_j)
 {
-    int i;
-    double omega = 0.0;
-
-    assert(Es2_j < b);
-    assert(Es2_i <= Es2_j);
-    assert(Es2_i >= 0 && b >= 0 && Es2_i >= 0 && Es2_j >= 0);
-    // all less than n because we are taking interval above
-    assert(Es2_i <= hmm->n && b <= hmm->n && Es2_j <= hmm->n);
+    assert(0 <= Es2_i && Es2_i <= Es2_j && Es2_j < b && b <= hmm->n);
 
     const Es2idx = get_index(Es2_i, Es2_j, hmm->n);
     const double Es2 = hmm->Eijs2s[Es2idx];
 
-    omega += (hmm->ts[Es2_j+1] - Es2) * hmm->intervalOmegas[Es2_j];
+    double omega = 0.0;
+    //omega += (hmm->ts[Es2_j+1] - Es2) * hmm->intervalOmegas[Es2_j]; // bug
+    omega += (hmm->ts[Es2_j+1] - Es2) / hmm->lambdas[Es2_j];
     omega += get_omega_interval_interval(hmm, Es2_j+1, b);
 
     assert(omega >= 0);
@@ -298,16 +293,13 @@ double get_omega_interval_Es3(Hmm * hmm, const int a, const int Es3_i,
 {
     int i;
     double omega = 0.0;
-    assert(a <= Es3_i); // used to be <
-    assert(Es3_i <= Es3_j);
-    assert(Es3_i >= 0 && a >= 0 && Es3_i >= 0 && Es3_j >= 0);
-    assert(Es3_i <= hmm->n && a < hmm->n && Es3_j <= hmm->n);
+    assert(0 <= a && a <= Es3_i && Es3_i <= Es3_j && Es3_j <= hmm->n);
 
     const Es3idx = get_index(Es3_i, Es3_j, hmm->n);
     const double Es3 = hmm->Eijs3s[Es3idx];
 
     omega += get_omega_interval_interval(hmm, a, Es3_i);
-    omega += (Es3 - hmm->ts[Es3_i])/hmm->lambdas[Es3_i];
+    omega += (Es3 - hmm->ts[Es3_i])/hmm->lambdas[Es3_i]; // not a bug!
 
     assert(omega >= 0);
 
@@ -320,10 +312,7 @@ double get_omega_interval_Es2(Hmm * hmm, const int a, const int Es2_i,
     int i;
     double omega = 0.0;
 
-    assert(a <= Es2_j); // used to be <
-    assert(Es2_i <= Es2_j);
-    assert(a >= 0 && Es2_i >= 0 && Es2_j >= 0);
-    assert(Es2_i <= hmm->n && a < hmm->n && Es2_j <= hmm->n);
+    assert(0 <= a && a < Es2_j && Es2_i <= Es2_j && Es2_j <= hmm->n);
 
     const Es2idx = get_index(Es2_i, Es2_j, hmm->n);
     const double Es2 = hmm->Eijs2s[Es2idx];
@@ -338,12 +327,9 @@ double get_omega_interval_Es2(Hmm * hmm, const int a, const int Es2_i,
 
 double get_omega_Es3_Es2(Hmm * hmm, const int Es3_i, const int Es3_j)
 {
-    int i;
     double omega = 0.0;
 
-    assert(Es3_i <= Es3_j);
-    assert(Es3_i >= 0 && Es3_j >= 0);
-    assert(Es3_i <= hmm->n && Es3_j <= hmm->n);
+    assert(0 <= Es3_i && Es3_i <= Es3_j && Es3_j <= hmm->n);
 
     const Es3idx = get_index(Es3_i, Es3_j, hmm->n);
     const double Es3 = hmm->Eijs3s[Es3idx];
@@ -351,7 +337,9 @@ double get_omega_Es3_Es2(Hmm * hmm, const int Es3_i, const int Es3_j)
 
     if(Es3_i == Es3_j)
     {
-        return (hmm->Eijs2s[Es3idx] - hmm->Eijs3s[Es3idx])/hmm->lambdas[Es3_i];
+        omega = (hmm->Eijs2s[Es3idx] - hmm->Eijs3s[Es3idx]) / hmm->lambdas[Es3_i];
+        assert(omega >= 0);
+        return omega;
     }
 
     omega += get_omega_Es3_interval(hmm, Es3_j, Es3_i, Es3_j);
@@ -476,3 +464,19 @@ void Hmm_print_expectations(Hmm * hmm)
     return;
 }
 
+void Hmm_print_qts(Hmm * hmm)
+{
+    assert(hmm);
+    int row, col;
+    const int n = hmm->n;
+    const int numStates = hmm->numStates;
+    for(row = 0; row < numStates; row++)
+    {
+        for(col = 0; col < numStates-1; col++)
+        {
+            printf("%f,", hmm->qts[row][col]);
+        }
+        printf("%f\n", hmm->qts[row][numStates-1]);
+    }
+    return;
+}

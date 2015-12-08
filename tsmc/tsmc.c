@@ -29,12 +29,14 @@ int main(int argc, char ** argv)
     }
     Hmm hmm;
     Hmm_init(&hmm, n, ts);
-    Hmm_set_lambdas(&hmm, n, lambdas);
+    // constant for now
+    //Hmm_set_lambdas(&hmm, n, lambdas);
     Hmm_make_omega_intervals(&hmm);
     Hmm_get_pis(&hmm);
     Hmm_get_expectations(&hmm);
     Hmm_get_qts(&hmm);
-    Hmm_print_demography(&hmm);
+    //Hmm_print_demography(&hmm);
+    Hmm_print_qts(&hmm);
     //Hmm_print_pis(&hmm);
     //Hmm_print_expectations(&hmm);
     //Hmm_free(&hmm);

@@ -1,6 +1,6 @@
 all: tsmc
 
-tsmc: tsmc.c
+tsmc:
 	gcc tsmc.c hmm.c definitions.c qtscases.c -lm -o tsmc
 
 debug:
