@@ -2,8 +2,11 @@ import fileinput
 from collections import Counter
 
 for line in fileinput.input():
-    count = Counter()
     line = line.strip()
+    if line == '//':
+        print line
+        continue
+    count = Counter()
     spline = [float(num) for num in line.split(',')]
     t2 = max(spline)
     for num in spline:
