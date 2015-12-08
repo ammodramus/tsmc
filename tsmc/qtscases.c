@@ -46,7 +46,7 @@ double qts_case_A(Hmm * hmm, int i, int j, int k, int l)
         2.0/(2.0*es2[rowIdx]+es3[rowIdx]) / lam[l] *
         ( exp(-2*get_omega_interval_Es2(hmm, i+1, i, j)) *
            (1.0-exp(-2*(t[i+1]-es3[rowIdx])/lam[i])) * lam[i]/2.0 + sum2 +
-           (1.0-exp(-2*(es3[rowIdx]-t[j])/lam[j])) * lam[j]/2.0 ) *
+           (1.0-exp(-2*(es2[rowIdx]-t[j])/lam[j])) * lam[j]/2.0 ) *
         exp(-get_omega_Es2_interval(hmm, l, i, j)) * lam[l] *
         ((l == n) ? 1.0 : (1.0 - exp(-io[l]))); // note the 'delta' function here
 
@@ -106,7 +106,9 @@ double qts_case_B(Hmm * hmm, int i, int j, int k, int l)
 double qts_case_C(Hmm * hmm, int i, int j, int k, int l)
 {
     assert(hmm);
-    assert(0 <= k && k < i && i == l && l < j && j <= hmm->n);
+    // two cases for cases C and D
+    assert( (0 <= k && k < i && i == l && l < j && j <= hmm->n) ||
+            (0 <= k && k < i && i < j && j == l) );
 
     int a;
     const int n = hmm->n;
@@ -189,7 +191,7 @@ double qts_case_E(Hmm * hmm, int i, int j, int k, int l)
 double qts_case_F(Hmm * hmm, int i, int j, int k, int l)
 {
     assert(hmm);
-    assert(0 <= i && i < k && k < j && j == l && l <= hmm->n);
+    assert(0 <= i && i < k && j == k && k < l && l <= hmm->n);
 
     int a;
     const int n = hmm->n;
