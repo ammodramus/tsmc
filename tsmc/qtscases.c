@@ -90,10 +90,16 @@ double qts_case_B(Hmm * hmm, int i, int j, int k, int l)
 
     prob = 1.0/(2.0*es2[rowIdx]+es3[rowIdx])*1.0/lam[l] * 
         (sum1 + (1.0 - exp(-3*(es3[rowIdx]-t[i])/lam[i])) * lam[i]/3.0) *
-        exp(-get_omega_Es3_interval(hmm, l, i, j)) * lam[l]/2.0 *
+        exp(-2*get_omega_Es3_interval(hmm, l, i, j)) * lam[l]/2.0 *
         (1.0-exp(-2*io[l])) +
+
+        2.0/(2*es2[rowIdx]+es3[rowIdx])*1.0/lam[l] *
+        (1.0-exp(-2*(t[i+1]-es3[rowIdx])/lam[i]))* lam[i]/2.0 *
+        exp(-2*get_omega_interval_interval(hmm, i+1, l))*lam[l]/2.0*(1-exp(-2*io[l]))+
+
         2.0/(2*es2[rowIdx]+es3[rowIdx])*1.0/lam[l] *
         (sum2 * lam[l]/2.0 * (1-exp(-2*io[l]))) +
+
         2.0/(2*es2[rowIdx]+es3[rowIdx])*1.0/lam[l] * lam[l]/2.0 *
         (del[l] - lam[l]/2.0 * (1-exp(-2*io[l])));
 
