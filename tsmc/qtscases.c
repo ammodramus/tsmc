@@ -253,8 +253,8 @@ double qts_case_G(Hmm * hmm, int i, int j, int k, int l)
     }
 
     prob = 1.0/(2.0*es3[rowIdx]+es3[rowIdx]) * ( 1.0/lam[k] *
-            (sum1 + (1-exp(-3*(es3[rowIdx]-t[i])/lam[i])) * lam[i]/3.0) *
-            (1-exp(-2*(t[k+1]-es3[rowIdx])/lam[k])) +
+            (sum1 + (1-exp(-3*(es3[rowIdx]-t[i])/lam[i])) * lam[i]/3.0) * 
+            lam[k]/2.0 * (1-exp(-2*(t[k+1]-es3[rowIdx])/lam[k])) +
             t[k+1] - es3[rowIdx] - 
             lam[k]/2.0 *(1-exp(-2*(t[k+1]-es3[rowIdx])/lam[k])));
 
