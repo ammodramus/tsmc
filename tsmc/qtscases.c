@@ -213,7 +213,7 @@ double qts_case_F(Hmm * hmm, int i, int j, int k, int l)
     for(a = 0; a <= i-1; a++)
     {
         sum1 += exp(-3*get_omega_interval_Es3(hmm, a+1, i, j)) * 
-            (1.0 - exp(-3*io[a]));
+            (1.0 - exp(-3*io[a])) * lam[a]/3.0;
     }
 
     prob = 2.0/(2.0*es2[rowIdx]+es3[rowIdx]) *
