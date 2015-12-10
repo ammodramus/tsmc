@@ -325,8 +325,9 @@ double qts_case_H(Hmm * hmm, int i, int j, int k, int l)
     }
 
     prob = 1.0/(2.0*es2[rowIdx]+es3[rowIdx])*4.0/lam[k] *
+        exp(-2.0*get_omega_Es3_interval((hmm, k, i, j)) * 
         (sum1 + (1-exp(-3*(es3[rowIdx]-t[i])/lam[i]))*lam[i]/3) *
-        lam[k]/2.0*(1-exp(-2*(es2[rowIdx]-t[k])/lam[k]));
+        lam[k]/2.0*(1-exp(-2.0*(es2[rowIdx]-t[k])/lam[k]));
 
     assert(0 <= prob && prob <= 1);
     return prob;
@@ -354,8 +355,8 @@ double qts_case_H2(Hmm * hmm, int i, int j, int k, int l)
     double sum1 = 0.0;
     for(a = 0; a <= i-1; a++)
     {
-        sum1 += exp(-3*get_omega_interval_Es3(hmm, a+1, i, j))
-            * (1.0 - exp(-3*io[a])) * lam[a]/3.0;
+        sum1 += exp(-3*get_omega_interval_Es3(hmm, a+1, i, j)) *
+            (1.0 - exp(-3*io[a])) * lam[a]/3.0;
     }
 
     prob = 2.0/(2.0*es2[rowIdx]+es3[rowIdx]) / lam[k] * 

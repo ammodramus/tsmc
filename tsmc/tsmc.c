@@ -33,11 +33,11 @@ int main(int argc, char ** argv)
     Hmm_make_omega_intervals(&hmm);
     Hmm_get_pis(&hmm);
     Hmm_get_expectations(&hmm);
-    //Hmm_get_qts(&hmm);
+    Hmm_get_qts(&hmm);
     //Hmm_print_demography(&hmm);
     //Hmm_print_pis(&hmm);
-    Hmm_print_expectations(&hmm);
-    //Hmm_print_qts(&hmm);
+    //Hmm_print_expectations(&hmm);
+    Hmm_print_qts(&hmm);
     //Hmm_free(&hmm);
     return 0;
 }
