@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+#include "definitions.h"
 #include "hmm.h"
 #include "qtscases.h"
 
@@ -325,7 +326,7 @@ double qts_case_H(Hmm * hmm, int i, int j, int k, int l)
     }
 
     prob = 1.0/(2.0*es2[rowIdx]+es3[rowIdx])*4.0/lam[k] *
-        exp(-2.0*get_omega_Es3_interval((hmm, k, i, j)) * 
+        exp(-2.0*get_omega_Es3_interval(hmm, k, i, j)) * 
         (sum1 + (1-exp(-3*(es3[rowIdx]-t[i])/lam[i]))*lam[i]/3) *
         lam[k]/2.0*(1-exp(-2.0*(es2[rowIdx]-t[k])/lam[k]));
 
@@ -390,20 +391,31 @@ double qts_case_I(Hmm * hmm, int i, int j, int k, int l)
     double sum1 = 0.0;
     for(a = 0; a <= i-1; a++)
     {
-        sum1 += exp(-3*get_omega_interval_Es3(hmm, a+1, i, j))
-            * (1.0 - exp(-3*io[a])) * lam[a]/3.0;
+        sum1 += exp(-3*get_omega_interval_Es3(hmm, a+1, i, j)) *
+            (1.0 - exp(-3*io[a])) * lam[a]/3.0;
     }
+    double part1, part2;
 
-    // TODO: double check conditional expressions
-    prob = 1.0/(2.0*es2[rowIdx]+es3[rowIdx]) * 
-        (exp(-2*get_omega_Es3_Es2(hmm, i, j)) / lam[l] *
+    part1 = 1.0/(2.0*es2[rowIdx]+es3[rowIdx]) * 
+        (exp(-2*get_omega_Es3_Es2(hmm, i, j)) *
          ( sum1 + (1-exp(-3*(es3[rowIdx]-t[i])/lam[i]))*lam[i]/3.0) * 
-         exp(-get_omega_Es2_interval(hmm, l, i, j)) * lam[l] *
-         ((l == n) ? 1 : 1-exp(-io[l])) +
-        2.0/lam[l] * lam[i]/2.0 *
-        (1-exp(-2*(es2[rowIdx]-es3[rowIdx])/lam[i])) * 
-        exp(-get_omega_Es2_interval(hmm, l, i, j)) * lam[l] * 
+         exp(-get_omega_Es2_interval(hmm, l, i, j)) * 
+         ((l == n) ? 1 : 1-exp(-io[l])));
+    part2 = 1.0/(2.0*es2[rowIdx]+es3[rowIdx]) * (lam[i] * (1-exp(-2*(es2[rowIdx]-es3[rowIdx])/lam[i])) * 
+        exp(-get_omega_Es2_interval(hmm, l, i, j)) * 
         ((l == n) ? 1 : 1-exp(-io[l])));
+
+    prob = part1 + part2;
+
+    if(i == 4 && j == 4 && k == 4 && l == 7)
+    {
+        fprintf(stderr, "I = %f\n", prob);
+        fprintf(stderr, "part1 = %f\n", part1);
+        fprintf(stderr, "part2 = %f\n", part2);
+        fprintf(stderr, "lam[4] = %f\n", lam[4]);
+        DEBUGREPORTF(1.0/(2.0*es2[rowIdx]+es3[rowIdx]));
+        DEBUGREPORTF(es2[rowIdx]);
+    }
 
     assert(0 <= prob && prob <= 1);
     return prob;
@@ -443,6 +455,10 @@ double qts_case_I2(Hmm * hmm, int i, int j, int k, int l)
          ( sum1 + (1-exp(-3*(es3[rowIdx]-t[i])/lam[i]))*lam[i]/3.0);
 
     assert(0 <= prob && prob <= 1);
+    if(i == 4 && j == 4 && k == 4 && l == 7)
+    {
+        fprintf(stderr, "I2 = %f\n", prob);
+    }
     return prob;
 }
 
