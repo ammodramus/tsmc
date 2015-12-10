@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    143857,       3842]
-NotebookOptionsPosition[    140187,       3723]
-NotebookOutlinePosition[    141369,       3761]
-CellTagsIndexPosition[    141196,       3754]
+NotebookDataLength[    125514,       3325]
+NotebookOptionsPosition[    124009,       3277]
+NotebookOutlinePosition[    124466,       3295]
+CellTagsIndexPosition[    124423,       3292]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -3181,548 +3181,102 @@ Cell[BoxData[
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"?", "intcaseI"}]], "Input",
- CellChangeTimes->{{3.6587641172290297`*^9, 3.658764120495492*^9}}],
-
-Cell[CellGroupData[{
-
-Cell["Global`intcaseI", "Print", "PrintUsage",
- CellChangeTimes->{3.658764121858281*^9},
- CellTags->"Info3658746121-8552269"],
-
-Cell[BoxData[
- InterpretationBox[GridBox[{
-    {GridBox[{
-       {
-        RowBox[{
-         RowBox[{"intcaseI", "[", 
-          RowBox[{"i_", ",", "j_", ",", "k_", ",", "l_"}], "]"}], ":=", 
-         RowBox[{
-          RowBox[{"Assuming", "[", 
-           RowBox[{
-            RowBox[{
-             RowBox[{"{", 
-              RowBox[{"s3", ",", "s2", ",", "t2", ",", "t3", ",", "u"}], 
-              "}"}], "\[Element]", "Reals"}], ",", 
-            RowBox[{"NIntegrate", "[", 
-             RowBox[{
-              FractionBox[
-               RowBox[{
-                RowBox[{"Exp", "[", 
-                 RowBox[{
-                  RowBox[{"-", "3"}], " ", 
-                  RowBox[{"Omega", "[", 
-                   RowBox[{"u", ",", 
-                    RowBox[{"Et3", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], "]"}]}], "]"}], " ", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{
-                  RowBox[{"-", "2"}], " ", 
-                  RowBox[{"Omega", "[", 
-                   RowBox[{
-                    RowBox[{"Et3", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}], ",", 
-                    RowBox[{"Et2", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], "]"}]}], "]"}], " ", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{"-", 
-                  RowBox[{"Omega", "[", 
-                   RowBox[{
-                    RowBox[{"Et2", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}], ",", "t2"}], "]"}]}], 
-                 "]"}]}], 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"2", " ", 
-                   RowBox[{"Et2", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], "+", 
-                  RowBox[{"Et3", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}]}], ")"}], " ", 
-                RowBox[{"\[Lambda]", "[", "t2", "]"}]}]], ",", 
-              RowBox[{"{", 
-               RowBox[{"t2", ",", 
-                RowBox[{"t", "[", "l", "]"}], ",", 
-                RowBox[{"t", "[", 
-                 RowBox[{"l", "+", "1"}], "]"}]}], "}"}], ",", 
-              RowBox[{"{", 
-               RowBox[{"u", ",", "0", ",", 
-                RowBox[{"Et3", "[", 
-                 RowBox[{"i", ",", "j"}], "]"}]}], "}"}]}], "]"}]}], "]"}], 
-          "+", 
-          RowBox[{"Assuming", "[", 
-           RowBox[{
-            RowBox[{
-             RowBox[{"{", 
-              RowBox[{"s3", ",", "s2", ",", "t2", ",", "t3", ",", "u"}], 
-              "}"}], "\[Element]", "Reals"}], ",", 
-            RowBox[{"NIntegrate", "[", 
-             RowBox[{
-              FractionBox[
-               RowBox[{"2", " ", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{
-                  RowBox[{"-", "2"}], " ", 
-                  RowBox[{"Omega", "[", 
-                   RowBox[{"u", ",", 
-                    RowBox[{"Et2", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], "]"}]}], "]"}], " ", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{"-", 
-                  RowBox[{"Omega", "[", 
-                   RowBox[{
-                    RowBox[{"Et2", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}], ",", "t2"}], "]"}]}], 
-                 "]"}]}], 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"2", " ", 
-                   RowBox[{"Et2", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], "+", 
-                  RowBox[{"Et3", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}]}], ")"}], " ", 
-                RowBox[{"\[Lambda]", "[", "t2", "]"}]}]], ",", 
-              RowBox[{"{", 
-               RowBox[{"t2", ",", 
-                RowBox[{"t", "[", "l", "]"}], ",", 
-                RowBox[{"t", "[", 
-                 RowBox[{"l", "+", "1"}], "]"}]}], "}"}], ",", 
-              RowBox[{"{", 
-               RowBox[{"u", ",", 
-                RowBox[{"Et3", "[", 
-                 RowBox[{"i", ",", "j"}], "]"}], ",", 
-                RowBox[{"Et2", "[", 
-                 RowBox[{"i", ",", "j"}], "]"}]}], "}"}]}], "]"}]}], "]"}]}]}]}
-      },
-      BaselinePosition->{Baseline, {1, 1}},
-      GridBoxAlignment->{
-       "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
-        "RowsIndexed" -> {}},
-      GridBoxItemSize->{"Columns" -> {{
-           Scaled[0.999]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
-        "RowsIndexed" -> {}}]}
-   },
-   BaselinePosition->{Baseline, {1, 1}},
-   GridBoxAlignment->{
-    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
-     "RowsIndexed" -> {}}],
-  Definition[$CellContext`intcaseI],
-  Editable->False]], "Print",
- CellChangeTimes->{3.658764121872857*^9},
- CellTags->"Info3658746121-8552269"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"?", "caseI"}]], "Input",
- CellChangeTimes->{{3.658764302588048*^9, 3.658764303253587*^9}}],
-
-Cell[CellGroupData[{
-
-Cell["Global`caseI", "Print", "PrintUsage",
- CellChangeTimes->{3.658764303568328*^9},
- CellTags->"Info3658746303-8552269"],
-
-Cell[BoxData[
- InterpretationBox[GridBox[{
-    {GridBox[{
-       {
-        RowBox[{
-         RowBox[{"caseI", "[", 
-          RowBox[{"i_", ",", "j_", ",", "k_", ",", "l_"}], "]"}], ":=", 
-         RowBox[{
-          FractionBox["1", 
-           RowBox[{
-            RowBox[{"2", " ", 
-             RowBox[{"Et2", "[", 
-              RowBox[{"i", ",", "j"}], "]"}]}], "+", 
-            RowBox[{"Et3", "[", 
-             RowBox[{"i", ",", "j"}], "]"}]}]], 
-          RowBox[{"(", 
-           RowBox[{
-            FractionBox[
-             RowBox[{
-              RowBox[{"Exp", "[", 
-               RowBox[{
-                RowBox[{"-", "2"}], " ", 
-                RowBox[{"Omega", "[", 
-                 RowBox[{
-                  RowBox[{"Et3", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}], ",", 
-                  RowBox[{"Et2", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}]}], "]"}]}], "]"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 UnderoverscriptBox["\[Sum]", 
-                  RowBox[{"a", "=", "0"}], 
-                  RowBox[{"i", "-", "1"}]], 
-                 RowBox[{
-                  FractionBox["1", "3"], " ", 
-                  RowBox[{"Exp", "[", 
-                   RowBox[{
-                    RowBox[{"-", "3"}], " ", 
-                    RowBox[{"Omega", "[", 
-                    RowBox[{
-                    RowBox[{"t", "[", 
-                    RowBox[{"a", "+", "1"}], "]"}], ",", 
-                    RowBox[{"Et3", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], "]"}]}], "]"}], " ", 
-                  RowBox[{"(", 
-                   RowBox[{"1", "-", 
-                    RowBox[{"Exp", "[", 
-                    RowBox[{
-                    RowBox[{"-", "3"}], " ", 
-                    RowBox[{"io", "[", "a", "]"}]}], "]"}]}], ")"}], " ", 
-                  RowBox[{"\[Lambda]", "[", 
-                   RowBox[{"t", "[", "a", "]"}], "]"}]}]}], "+", 
-                RowBox[{
-                 FractionBox["1", "3"], " ", 
-                 RowBox[{"(", 
-                  RowBox[{"1", "-", 
-                   RowBox[{"Exp", "[", 
-                    RowBox[{"-", 
-                    FractionBox[
-                    RowBox[{"3", " ", 
-                    RowBox[{"(", 
-                    RowBox[{
-                    RowBox[{"Et3", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}], "-", 
-                    RowBox[{"t", "[", "i", "]"}]}], ")"}]}], 
-                    RowBox[{"\[Lambda]", "[", 
-                    RowBox[{"t", "[", "i", "]"}], "]"}]]}], "]"}]}], ")"}], 
-                 " ", 
-                 RowBox[{"\[Lambda]", "[", 
-                  RowBox[{"t", "[", "i", "]"}], "]"}]}]}], ")"}], " ", 
-              RowBox[{"Exp", "[", 
-               RowBox[{"-", 
-                RowBox[{"Omega", "[", 
-                 RowBox[{
-                  RowBox[{"Et2", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}], ",", 
-                  RowBox[{"t", "[", "l", "]"}]}], "]"}]}], "]"}], " ", 
-              RowBox[{"\[Lambda]", "[", 
-               RowBox[{"t", "[", "l", "]"}], "]"}], " ", 
-              RowBox[{"(", 
-               RowBox[{"1", "-", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{"-", 
-                  RowBox[{"io", "[", "l", "]"}]}], "]"}]}], ")"}]}], 
-             RowBox[{"\[Lambda]", "[", 
-              RowBox[{"t", "[", "l", "]"}], "]"}]], "+", 
-            FractionBox[
-             RowBox[{"2", " ", 
-              RowBox[{"\[Lambda]", "[", 
-               RowBox[{"t", "[", "i", "]"}], "]"}], " ", 
-              RowBox[{"(", 
-               RowBox[{"1", "-", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{"-", 
-                  FractionBox[
-                   RowBox[{"2", " ", 
-                    RowBox[{"(", 
-                    RowBox[{
-                    RowBox[{"Et2", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}], "-", 
-                    RowBox[{"Et3", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], ")"}]}], 
-                   RowBox[{"\[Lambda]", "[", 
-                    RowBox[{"t", "[", "i", "]"}], "]"}]]}], "]"}]}], ")"}], 
-              " ", 
-              RowBox[{"Exp", "[", 
-               RowBox[{"-", 
-                RowBox[{"Omega", "[", 
-                 RowBox[{
-                  RowBox[{"Et2", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}], ",", 
-                  RowBox[{"t", "[", "l", "]"}]}], "]"}]}], "]"}], " ", 
-              RowBox[{"\[Lambda]", "[", 
-               RowBox[{"t", "[", "l", "]"}], "]"}], " ", 
-              RowBox[{"(", 
-               RowBox[{"1", "-", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{"-", 
-                  RowBox[{"io", "[", "l", "]"}]}], "]"}]}], ")"}]}], 
-             RowBox[{
-              RowBox[{"\[Lambda]", "[", 
-               RowBox[{"t", "[", "l", "]"}], "]"}], " ", "2"}]]}], ")"}]}]}]}
-      },
-      BaselinePosition->{Baseline, {1, 1}},
-      GridBoxAlignment->{
-       "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
-        "RowsIndexed" -> {}},
-      GridBoxItemSize->{"Columns" -> {{
-           Scaled[0.999]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
-        "RowsIndexed" -> {}}]}
-   },
-   BaselinePosition->{Baseline, {1, 1}},
-   GridBoxAlignment->{
-    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
-     "RowsIndexed" -> {}}],
-  Definition[$CellContext`caseI],
-  Editable->False]], "Print",
- CellChangeTimes->{3.6587643035836163`*^9},
- CellTags->"Info3658746303-8552269"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- FractionBox["1", 
+ RowBox[{"numStates", " ", "=", " ", 
   RowBox[{
-   RowBox[{"2", " ", 
-    RowBox[{"Et2", "[", 
-     RowBox[{"4", ",", "4"}], "]"}]}], "+", 
-   RowBox[{"Et3", "[", 
-    RowBox[{"4", ",", "4"}], "]"}]}]]], "Input",
- CellChangeTimes->{{3.658765328272171*^9, 3.6587653670288467`*^9}}],
+   RowBox[{"(", 
+    RowBox[{"n", "+", "1"}], ")"}], 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"n", "+", "2"}], ")"}], "/", "2"}]}]}]], "Input",
+ CellChangeTimes->{{3.658766450171528*^9, 3.658766478726645*^9}}],
 
-Cell[BoxData["0.3091191117106797`"], "Output",
- CellChangeTimes->{3.658765336244748*^9, 3.65876536735032*^9}]
+Cell[BoxData["66"], "Output",
+ CellChangeTimes->{3.6587664790478687`*^9}]
 }, Open  ]],
 
-Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"getIndex", "[", 
+    RowBox[{"i_", ",", "j_", ",", "n_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"i", "*", "n"}], "-", 
+    RowBox[{"i", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"i", "-", "1"}], ")"}], "/", "2"}]}], "+", "j", "+", "1"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.658767008604363*^9, 3.65876704384787*^9}}],
 
 Cell[BoxData[
- RowBox[{"Et2", "[", 
-  RowBox[{"4", ",", "4"}], "]"}]], "Input",
- CellChangeTimes->{{3.6587653930478067`*^9, 3.6587653957524557`*^9}}],
-
-Cell[BoxData["1.366630715512585`"], "Output",
- CellChangeTimes->{3.6587653961211843`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"caseIpt1", "[", 
-  RowBox[{"4", ",", "4", ",", "4", ",", "7"}], "]"}]], "Input",
- CellChangeTimes->{
-  3.658764870316523*^9, {3.65876498917072*^9, 3.658765013999056*^9}}],
-
-Cell[BoxData["0.005781136341622493`"], "Output",
- CellChangeTimes->{{3.658764995035119*^9, 3.658765015021772*^9}}]
-}, Open  ]],
-
-Cell[CellGroupData[{
+ RowBox[{
+  RowBox[{"allqts", " ", "=", " ", 
+   RowBox[{"Table", "[", 
+    RowBox[{"0", ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", "numStates"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"j", ",", "1", ",", "numStates"}], "}"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.6587664871077127`*^9, 3.65876650692877*^9}}],
 
 Cell[BoxData[
- RowBox[{"caseIpt2", "[", 
-  RowBox[{"4", ",", "4", ",", "4", ",", "7"}], "]"}]], "Input",
- CellChangeTimes->{{3.658765000040148*^9, 3.65876500772066*^9}}],
-
-Cell[BoxData["0.05726352640102907`"], "Output",
- CellChangeTimes->{3.658765008210161*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"qts", "[", 
-  RowBox[{"4", ",", "4", ",", "4", ",", "7"}], "]"}]], "Input",
- CellChangeTimes->{{3.658761186857873*^9, 3.6587611954427443`*^9}}],
-
-Cell[BoxData["0.07460693542589655`"], "Output",
- CellChangeTimes->{{3.658761190962351*^9, 3.658761196233841*^9}}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"?", "caseI"}]], "Input",
- CellChangeTimes->{{3.6587620776089582`*^9, 3.6587620826238203`*^9}}],
-
-Cell[CellGroupData[{
-
-Cell["Global`caseI", "Print", "PrintUsage",
- CellChangeTimes->{3.658762083310259*^9},
- CellTags->"Info3658744083-8552269"],
-
-Cell[BoxData[
- InterpretationBox[GridBox[{
-    {GridBox[{
-       {
+ RowBox[{"For", "[", 
+  RowBox[{
+   RowBox[{"i", "=", "0"}], ",", 
+   RowBox[{"i", "\[LessEqual]", "n"}], ",", 
+   RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"For", "[", 
+    RowBox[{
+     RowBox[{"j", "=", "i"}], ",", 
+     RowBox[{"j", "\[LessEqual]", "n"}], ",", 
+     RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"For", "[", 
+      RowBox[{
+       RowBox[{"k", "=", "0"}], ",", 
+       RowBox[{"k", "\[LessEqual]", "n"}], ",", 
+       RowBox[{"k", "++"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"For", "[", 
         RowBox[{
-         RowBox[{"caseI", "[", 
-          RowBox[{"i_", ",", "j_", ",", "k_", ",", "l_"}], "]"}], ":=", 
+         RowBox[{"l", "=", "i"}], ",", 
+         RowBox[{"l", "\[LessEqual]", "n"}], ",", 
+         RowBox[{"l", "++"}], ",", "\[IndentingNewLine]", 
          RowBox[{
-          FractionBox["1", 
-           RowBox[{
-            RowBox[{"2", " ", 
-             RowBox[{"Et2", "[", 
-              RowBox[{"i", ",", "j"}], "]"}]}], "+", 
-            RowBox[{"Et3", "[", 
-             RowBox[{"i", ",", "j"}], "]"}]}]], 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{
-             FractionBox["1", 
-              RowBox[{"\[Lambda]", "[", 
-               RowBox[{"t", "[", "l", "]"}], "]"}]], 
-             RowBox[{
-              RowBox[{"Exp", "[", 
-               RowBox[{
-                RowBox[{"-", "2"}], " ", 
-                RowBox[{"Omega", "[", 
-                 RowBox[{
-                  RowBox[{"Et3", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}], ",", 
-                  RowBox[{"Et2", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}]}], "]"}]}], "]"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 UnderoverscriptBox["\[Sum]", 
-                  RowBox[{"a", "=", "0"}], 
-                  RowBox[{"i", "-", "1"}]], 
-                 RowBox[{
-                  FractionBox["1", "3"], " ", 
-                  RowBox[{"Exp", "[", 
-                   RowBox[{
-                    RowBox[{"-", "3"}], " ", 
-                    RowBox[{"Omega", "[", 
-                    RowBox[{
-                    RowBox[{"t", "[", 
-                    RowBox[{"a", "+", "1"}], "]"}], ",", 
-                    RowBox[{"Et3", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], "]"}]}], "]"}], " ", 
-                  RowBox[{"(", 
-                   RowBox[{"1", "-", 
-                    RowBox[{"Exp", "[", 
-                    RowBox[{
-                    RowBox[{"-", "3"}], " ", 
-                    RowBox[{"io", "[", "a", "]"}]}], "]"}]}], ")"}], " ", 
-                  RowBox[{"\[Lambda]", "[", 
-                   RowBox[{"t", "[", "a", "]"}], "]"}]}]}], "+", 
-                RowBox[{
-                 FractionBox["1", "3"], " ", 
-                 RowBox[{"(", 
-                  RowBox[{"1", "-", 
-                   RowBox[{"Exp", "[", 
-                    RowBox[{"-", 
-                    FractionBox[
-                    RowBox[{"3", " ", 
-                    RowBox[{"(", 
-                    RowBox[{
-                    RowBox[{"Et3", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}], "-", 
-                    RowBox[{"t", "[", "i", "]"}]}], ")"}]}], 
-                    RowBox[{"\[Lambda]", "[", 
-                    RowBox[{"t", "[", "i", "]"}], "]"}]]}], "]"}]}], ")"}], 
-                 " ", 
-                 RowBox[{"\[Lambda]", "[", 
-                  RowBox[{"t", "[", "i", "]"}], "]"}]}]}], ")"}], " ", 
-              RowBox[{"Exp", "[", 
-               RowBox[{"-", 
-                RowBox[{"Omega", "[", 
-                 RowBox[{
-                  RowBox[{"Et2", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}], ",", 
-                  RowBox[{"t", "[", "l", "]"}]}], "]"}]}], "]"}], " ", 
-              RowBox[{"\[Lambda]", "[", 
-               RowBox[{"t", "[", "l", "]"}], "]"}], " ", 
-              RowBox[{"(", 
-               RowBox[{"1", "-", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{"-", 
-                  RowBox[{"io", "[", "l", "]"}]}], "]"}]}], ")"}]}]}], "+", 
-            RowBox[{
-             FractionBox["1", 
-              RowBox[{
-               RowBox[{"\[Lambda]", "[", 
-                RowBox[{"t", "[", "l", "]"}], "]"}], " ", "2"}]], 
-             RowBox[{"2", " ", 
-              RowBox[{"\[Lambda]", "[", 
-               RowBox[{"t", "[", "i", "]"}], "]"}], " ", 
-              RowBox[{"(", 
-               RowBox[{"1", "-", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{"-", 
-                  FractionBox[
-                   RowBox[{"2", " ", 
-                    RowBox[{"(", 
-                    RowBox[{
-                    RowBox[{"Et2", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}], "-", 
-                    RowBox[{"Et3", "[", 
-                    RowBox[{"i", ",", "j"}], "]"}]}], ")"}]}], 
-                   RowBox[{"\[Lambda]", "[", 
-                    RowBox[{"t", "[", "i", "]"}], "]"}]]}], "]"}]}], ")"}], 
-              " ", 
-              RowBox[{"Exp", "[", 
-               RowBox[{"-", 
-                RowBox[{"Omega", "[", 
-                 RowBox[{
-                  RowBox[{"Et2", "[", 
-                   RowBox[{"i", ",", "j"}], "]"}], ",", 
-                  RowBox[{"t", "[", "l", "]"}]}], "]"}]}], "]"}], " ", 
-              RowBox[{"\[Lambda]", "[", 
-               RowBox[{"t", "[", "l", "]"}], "]"}], " ", 
-              RowBox[{"(", 
-               RowBox[{"1", "-", 
-                RowBox[{"Exp", "[", 
-                 RowBox[{"-", 
-                  RowBox[{"io", "[", "l", "]"}]}], "]"}]}], ")"}]}]}]}], 
-           ")"}]}]}]}
-      },
-      BaselinePosition->{Baseline, {1, 1}},
-      GridBoxAlignment->{
-       "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
-        "RowsIndexed" -> {}},
-      GridBoxItemSize->{"Columns" -> {{
-           Scaled[0.999]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
-        "RowsIndexed" -> {}}]}
-   },
-   BaselinePosition->{Baseline, {1, 1}},
-   GridBoxAlignment->{
-    "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
-     "RowsIndexed" -> {}}],
-  Definition[$CellContext`caseI],
-  Editable->False]], "Print",
- CellChangeTimes->{3.658762083321898*^9},
- CellTags->"Info3658744083-8552269"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
+          RowBox[{"ijIdx", " ", "=", " ", 
+           RowBox[{"getIndex", "[", 
+            RowBox[{"i", ",", "j", ",", "n"}], "]"}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"klIdx", "=", 
+           RowBox[{"getIndex", "[", 
+            RowBox[{"k", ",", "l", ",", "n"}], "]"}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"allqts", "[", 
+            RowBox[{"[", 
+             RowBox[{"ijIdx", ",", "klIdx"}], "]"}], "]"}], "=", 
+           RowBox[{"qts", "[", 
+            RowBox[{"i", ",", "j", ",", "k", ",", "l"}], "]"}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Print", "[", 
+           RowBox[{"allqts", "[", 
+            RowBox[{"[", 
+             RowBox[{"ijIdx", ",", "klIdx"}], "]"}], "]"}], "]"}], ";"}]}], 
+        "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "]"}]}], 
+    "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.658766508615796*^9, 3.6587665429134617`*^9}, {
+  3.658766616949048*^9, 3.658766710955241*^9}, {3.65876697549165*^9, 
+  3.658766994948653*^9}, {3.658767077371747*^9, 3.658767079472995*^9}, {
+  3.658767528280073*^9, 3.6587675390407963`*^9}, {3.658767641318569*^9, 
+  3.6587676421958647`*^9}, {3.65876769523667*^9, 3.658767696165823*^9}}],
 
 Cell[BoxData[
- RowBox[{"qts", "[", 
-  RowBox[{"4", ",", "4", ",", "4", ",", "7"}], "]"}]], "Input",
- CellChangeTimes->{{3.658763143536891*^9, 3.658763145845181*^9}}],
+ RowBox[{"Export", "[", 
+  RowBox[{"\"\<mathematica_qtsprobs.csv\>\"", ",", "allqts"}], "]"}]], "Input",\
 
-Cell[BoxData["0.07460693542589655`"], "Output",
- CellChangeTimes->{3.6587631467527113`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"intqts", "[", 
-  RowBox[{"4", ",", "4", ",", "4", ",", "7"}], "]"}]], "Input",
- CellChangeTimes->{{3.658763148601985*^9, 3.65876315179068*^9}}],
-
-Cell[BoxData["0.07460693542365467`"], "Output",
- CellChangeTimes->{3.658763153160771*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"caseI", "[", 
-  RowBox[{"4", ",", "4", ",", "4", ",", "7"}], "]"}]], "Input",
- CellChangeTimes->{{3.6587629509815683`*^9, 3.658762956624563*^9}}],
-
-Cell[BoxData["0.06304466274265157`"], "Output",
- CellChangeTimes->{3.6587629572822227`*^9}]
-}, Open  ]]
+ CellChangeTimes->{{3.658767711955941*^9, 3.6587677343913927`*^9}}]
 },
 WindowSize->{1916, 498},
-WindowMargins->{{Automatic, 0}, {Automatic, 26}},
+WindowMargins->{{0, Automatic}, {Automatic, 26}},
 PrivateNotebookOptions->{"VersionedStylesheet"->{"Default.nb"[8.] -> False}},
 ShowSelection->True,
 Magnification->1.25,
@@ -3733,30 +3287,10 @@ StyleDefinitions->"Default.nb"
 
 (* Internal cache information *)
 (*CellTagsOutline
-CellTagsIndex->{
- "Info3658746121-8552269"->{
-  Cell[120789, 3188, 125, 2, 52, "Print",
-   CellTags->"Info3658746121-8552269"],
-  Cell[120917, 3192, 4786, 120, 111, "Print",
-   CellTags->"Info3658746121-8552269"]},
- "Info3658746303-8552269"->{
-  Cell[125891, 3324, 122, 2, 52, "Print",
-   CellTags->"Info3658746303-8552269"],
-  Cell[126016, 3328, 5596, 139, 174, "Print",
-   CellTags->"Info3658746303-8552269"]},
- "Info3658744083-8552269"->{
-  Cell[133473, 3540, 122, 2, 52, "Print",
-   CellTags->"Info3658744083-8552269"],
-  Cell[133598, 3544, 5669, 142, 121, "Print",
-   CellTags->"Info3658744083-8552269"]}
- }
+CellTagsIndex->{}
 *)
 (*CellTagsIndex
-CellTagsIndex->{
- {"Info3658746121-8552269", 140608, 3736},
- {"Info3658746303-8552269", 140806, 3741},
- {"Info3658744083-8552269", 141004, 3746}
- }
+CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
@@ -3786,64 +3320,13 @@ Cell[18726, 534, 7489, 203, 525, "Input"],
 Cell[26218, 739, 37170, 932, 2734, "Input"],
 Cell[63391, 1673, 57229, 1505, 3738, "Input"],
 Cell[CellGroupData[{
-Cell[120645, 3182, 119, 2, 39, "Input"],
-Cell[CellGroupData[{
-Cell[120789, 3188, 125, 2, 52, "Print",
- CellTags->"Info3658746121-8552269"],
-Cell[120917, 3192, 4786, 120, 111, "Print",
- CellTags->"Info3658746121-8552269"]
-}, Open  ]]
+Cell[120645, 3182, 275, 8, 39, "Input"],
+Cell[120923, 3192, 73, 1, 39, "Output"]
 }, Open  ]],
-Cell[CellGroupData[{
-Cell[125752, 3318, 114, 2, 39, "Input"],
-Cell[CellGroupData[{
-Cell[125891, 3324, 122, 2, 52, "Print",
- CellTags->"Info3658746303-8552269"],
-Cell[126016, 3328, 5596, 139, 174, "Print",
- CellTags->"Info3658746303-8552269"]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[131661, 3473, 276, 8, 67, "Input"],
-Cell[131940, 3483, 109, 1, 39, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[132086, 3489, 149, 3, 39, "Input"],
-Cell[132238, 3494, 89, 1, 39, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[132364, 3500, 194, 4, 39, "Input"],
-Cell[132561, 3506, 114, 1, 39, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[132712, 3512, 169, 3, 39, "Input"],
-Cell[132884, 3517, 89, 1, 39, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[133010, 3523, 167, 3, 39, "Input"],
-Cell[133180, 3528, 113, 1, 39, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[133330, 3534, 118, 2, 39, "Input"],
-Cell[CellGroupData[{
-Cell[133473, 3540, 122, 2, 52, "Print",
- CellTags->"Info3658744083-8552269"],
-Cell[133598, 3544, 5669, 142, 121, "Print",
- CellTags->"Info3658744083-8552269"]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[139316, 3692, 165, 3, 39, "Input"],
-Cell[139484, 3697, 91, 1, 39, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[139612, 3703, 167, 3, 39, "Input"],
-Cell[139782, 3708, 89, 1, 39, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[139908, 3714, 169, 3, 39, "Input"],
-Cell[140080, 3719, 91, 1, 39, "Output"]
-}, Open  ]]
+Cell[121011, 3196, 380, 12, 39, "Input"],
+Cell[121394, 3210, 362, 10, 39, "Input"],
+Cell[121759, 3222, 2055, 47, 337, "Input"],
+Cell[123817, 3271, 188, 4, 39, "Input"]
 }
 ]
 *)
