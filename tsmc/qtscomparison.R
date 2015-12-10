@@ -31,5 +31,5 @@ badi = sapply(badIdxs[,1], function(x) states[x,1])
 badj = sapply(badIdxs[,1], function(x) states[x,2])
 badk = sapply(badIdxs[,2], function(x) states[x,1])
 badl = sapply(badIdxs[,2], function(x) states[x,2])
-badOnes = data.frame(i=badi, j = badj, k = badk, l = badl)
+badOnes = data.frame(i = badi, j = badj, k = badk, l = badl)
 badOnes
