@@ -1152,17 +1152,19 @@ For $i<k=l=j$ and $t_3>s_3\,;t_2=s_2$:
     &=\int_{T_k}^{s_2}\left(2\int_0^{s_3}\frac{du}{2s_2+s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\right)dt_3\\
     &=\frac{1}{2s_2+s_3}\int_{T_k}^{s_2}\left(2\int_0^{s_3}e^{-3\Omega(u,s_3)}\frac{2}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}du\right)dt_3\\
     &=\frac{1}{2s_2+s_3}\int_{T_k}^{s_2}\left(\frac{4}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)dt_3\\
-    &=\frac{1}{2s_2+s_3}\int_0^{s_3}e^{-3\Omega(u,s_3)}du\int_{T_k}^{s_2}\frac{4}{\lambda(t_3)}e^{-2\Omega(s_3,t_3)}dt_3\\
-    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}\int_0^{s_3}e^{-3\Omega(u,s_3)}du\int_{T_k}^{s_2}e^{-\frac{2(t_3-s_3)}{\lambda_k}}dt_3\\
-    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}\left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)
+    &=\frac{1}{2s_2+s_3}\left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)\,e^{-2\Omega(s_3,T_k)}\int_{T_k}^{s_2}\frac{4}{\lambda(t_3)}e^{-2\Omega(T_k,t_3)}dt_3\\
+    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}e^{-2\Omega(s_3,T_k)}\left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)\,\int_{T_k}^{s_2}e^{-2\Omega(T_k,t_3)}dt_3\\
+    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}e^{-2\Omega(s_3,T_k)}\left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)
+    \int_{T_k}^{s_2}e^{-\frac{2(t_3-T_k)}{\lambda_k}}dt_3\\
+    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}e^{-2\Omega(s_3,T_k)}\left(\int_0^{s_3}e^{-3\Omega(u,s_3)}du\right)
     \frac{\lambda_k}{2}\left[1-e^{-\frac{2(s_2-T_k)}{\lambda_k}}\right]\\
-    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}\left(
+    &=\frac{1}{2s_2+s_3}\frac{4}{\lambda_k}e^{-2\Omega(s_3,T_k)}\left(
     \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},s_3)}
     \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
     \left[1-e^{-\frac{3 \left(s_3-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
     \right)
     \frac{\lambda_k}{2}\left[1-e^{-\frac{2(s_2-T_k)}{\lambda_k}}\right]\\
-    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{4}{\lambda_k}\left(
+    &=\frac{1}{2\E_{i,j}[s_2]+\E_{i,j}[s_3]}\frac{4}{\lambda_k}e^{-2\Omega(\E_{i,j}[s_3],T_k)}\left(
     \sum_{a=0}^{i-1} e^{-3\Omega(T_{a+1},\E_{i,j}[s_3])}
     \left[1-e^{-\frac{3 \Delta_a}{\lambda_a}}\right]\frac{\lambda_a}{3}+
     \left[1-e^{-\frac{3 \left(\E_{i,j}[s_3]-T_{i}\right)}{\lambda_{i}}}\right]\frac{\lambda_{i}}{3}
