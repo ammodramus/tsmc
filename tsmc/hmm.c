@@ -594,7 +594,7 @@ void Hmm_print_emissions(Hmm * hmm)
         for(j = i; j <= n; j++)
         {
             ijidx = get_index(i, j, n);
-            printf("%i\t%i\t%f\t%f\t%f\t%f\n", i, j, hmm->emissions[ijidx][0], 
+            printf("%i\t%i\t%e\t%e\t%e\t%e\n", i, j, hmm->emissions[ijidx][0], 
                     hmm->emissions[ijidx][1], hmm->emissions[ijidx][2],
                     hmm->emissions[ijidx][3]);
         }

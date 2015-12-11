@@ -41,11 +41,12 @@ double get_omega_interval_Es2(Hmm * hmm, const int a, const int Es2_i,
 double get_omega_Es3_Es2(Hmm * hmm, const int Es3_i, const int Es3_j);
 void Hmm_get_qts(Hmm * hmm);
 void Hmm_get_pts(Hmm * hmm);
+void Hmm_get_emissions(Hmm * hmm);
 void Hmm_print_pis(Hmm * hmm);
 void Hmm_print_demography(Hmm * hmm);
 void Hmm_print_expectations(Hmm * hmm);
 void Hmm_print_qts(Hmm * hmm);
 void Hmm_print_pts(Hmm * hmm);
-void Hmm_get_emissions(Hmm * hmm);
+void Hmm_print_emissions(Hmm * hmm);
 
 #endif
