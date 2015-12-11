@@ -6,7 +6,7 @@
 #define DEBUGREPORTI(x) fprintf(stderr, #x " = %i\n", x)
 #define DEBUGREPORTF(x) fprintf(stderr, #x " = %f\n", x)
 
-typedef double threed[3];
+typedef double fourd[4];
 
 void * chmalloc(size_t size);
 

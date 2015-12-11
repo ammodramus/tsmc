@@ -31,7 +31,7 @@ void Hmm_init(Hmm * hmm, const int n, const double * ts)
     hmm->pis = (double *)chmalloc(sizeof(double)*numStates);
     hmm->qts = (double **)chmalloc(sizeof(double *)*numStates);
     hmm->pts = (double **)chmalloc(sizeof(double *)*numStates);
-    hmm->emissions = (threed *)chmalloc(sizeof(threed)*numStates); 
+    hmm->emissions = (fourd *)chmalloc(sizeof(fourd)*numStates); 
     hmm->numStates = numStates;
     for(i = 0; i < numStates; i++)
     {
@@ -470,21 +470,37 @@ void Hmm_get_pts(Hmm * hmm)
 
 void Hmm_get_emissions(Hmm * hmm)
 {
-    int i, j;
-
     const double numStates = hmm->numStates;
     const double n = hmm->n;
     const double theta = hmm->theta;
+    const double Td = hmm->Td;
     double * const Es3s = hmm->Eijs3s;
     double * const Es2s = hmm->Eijs2s;
+    fourd * const emissions = hmm->emissions;
 
-    double Es3, Es2;
+
+    int i, j, ijidx;
+    double Es3, Es2, treeSize;
 
     for(i = 0; i <= n; i++)
     {
         for(j = i; j <= n; j++)
         {
-            // TODO here
+            ijidx = get_index(i,j,n);
+            Es3 = Es3s[ijidx];
+            Es2 = Es2s[ijidx];
+
+            treeSize = 3.0*Es3 + 2.0*Es2;
+
+            emissions[ijidx][0] = exp(-(treeSize + 3.0*Td)*theta/2.0);
+            emissions[ijidx][1] = exp(-(Es2-Es3)*theta/2.0) *
+                (1 - exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0));
+            emissions[ijidx][2] = (1.0 - exp(-(Es2-Es3)*theta/2.0)) * 
+                exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0);
+            emissions[ijidx][3] = (1.0 - exp(-(Es2-Es3)*theta/2.0)) * 
+                (1 - exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0));
+            }
+    }
 
     return;
 }
@@ -555,7 +571,6 @@ void Hmm_print_pts(Hmm * hmm)
 {
     assert(hmm);
     int row, col;
-    const int n = hmm->n;
     const int numStates = hmm->numStates;
     for(row = 0; row < numStates; row++)
     {
@@ -564,6 +579,25 @@ void Hmm_print_pts(Hmm * hmm)
             printf("%e,", hmm->pts[row][col]);
         }
         printf("%e\n", hmm->pts[row][numStates-1]);
+    }
+    return;
+}
+
+void Hmm_print_emissions(Hmm * hmm)
+{
+    assert(hmm);
+    int i, j, ijidx;
+    const int numStates = hmm->numStates;
+    const int n = hmm->n;
+    for(i = 0; i <= n; i++)
+    {
+        for(j = i; j <= n; j++)
+        {
+            ijidx = get_index(i, j, n);
+            printf("%i\t%i\t%f\t%f\t%f\t%f\n", i, j, hmm->emissions[ijidx][0], 
+                    hmm->emissions[ijidx][1], hmm->emissions[ijidx][2],
+                    hmm->emissions[ijidx][3]);
+        }
     }
     return;
 }
