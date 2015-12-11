@@ -35,11 +35,13 @@ int main(int argc, char ** argv)
     Hmm_get_expectations(&hmm);
     Hmm_get_qts(&hmm);
     Hmm_get_pts(&hmm);
+    Hmm_get_emissions(&hmm);
+    Hmm_print_emissions(&hmm);
     //Hmm_print_demography(&hmm);
     //Hmm_print_pis(&hmm);
     //Hmm_print_expectations(&hmm);
     //Hmm_print_qts(&hmm);
-    Hmm_print_pts(&hmm);
+    //Hmm_print_pts(&hmm);
     //Hmm_free(&hmm);
     return 0;
 }
