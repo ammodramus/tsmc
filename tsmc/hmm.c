@@ -417,6 +417,11 @@ void Hmm_get_qts(Hmm * hmm)
     return;
 }
 
+Hmm_get_pts(Hmm * hmm)
+{
+    return;
+}
+
 void Hmm_print_demography(Hmm * hmm)
 {
     int i;
