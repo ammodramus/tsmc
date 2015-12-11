@@ -407,16 +407,6 @@ double qts_case_I(Hmm * hmm, int i, int j, int k, int l)
 
     prob = part1 + part2;
 
-    if(i == 4 && j == 4 && k == 4 && l == 7)
-    {
-        fprintf(stderr, "I = %f\n", prob);
-        fprintf(stderr, "part1 = %f\n", part1);
-        fprintf(stderr, "part2 = %f\n", part2);
-        fprintf(stderr, "lam[4] = %f\n", lam[4]);
-        DEBUGREPORTF(1.0/(2.0*es2[rowIdx]+es3[rowIdx]));
-        DEBUGREPORTF(es2[rowIdx]);
-    }
-
     assert(0 <= prob && prob <= 1);
     return prob;
 }
@@ -452,13 +442,9 @@ double qts_case_I2(Hmm * hmm, int i, int j, int k, int l)
         exp(-2*get_omega_Es3_Es2(hmm, i, j)) / lam[l] *
          exp(-get_omega_Es2_interval(hmm, l, i, j)) * lam[l] *
          ((l == n) ? 1 : 1-exp(-io[l])) * 
-         ( sum1 + (1-exp(-3*(es3[rowIdx]-t[i])/lam[i]))*lam[i]/3.0);
+         ( sum1 + (1-exp(-3*(es3[rowIdx]-t[i])/lam[i]))*lam[i]/3.0 );
 
     assert(0 <= prob && prob <= 1);
-    if(i == 4 && j == 4 && k == 4 && l == 7)
-    {
-        fprintf(stderr, "I2 = %f\n", prob);
-    }
     return prob;
 }
 
