@@ -18,18 +18,23 @@ states = data.frame(i = s3idx, j = s2idx, ijidx = 1:numStates)
 
 dat.tsmc = as.matrix(read.csv("qtsprobs",header=F))
 dat.mma = as.matrix(read.csv("mathematica_qtsprobs.csv",header=F))
+dat.int = as.matrix(read.csv("mathematica_intqtsprobs.csv",header=F))
 
-hist(c(dat.tsmc)-c(dat.mma))
+head(dat.tsmc)
+entry.tsmc = function(i,j,k,l){
+    ijidx = get_rowcol_index(i,j,10)
+    klidx = get_rowcol_index(k,l,10)
+    return(dat.tsmc[ijidx,klidx])
+}
+entry.mma = function(i,j,k,l){
+    ijidx = get_rowcol_index(i,j,10)
+    klidx = get_rowcol_index(k,l,10)
+    return(dat.mma[ijidx,klidx])
+}
 
-summary(c(dat.tsmc)-c(dat.mma))
-states[which(abs(dat.tsmc-dat.mma) > 0.1, arr.ind=T),c(1,2)]
-states
-dim(which(abs(dat.tsmc-dat.mma) > 0.1, arr.ind=T))
+diffs = abs(c(dat.tsmc)-c(dat.mma))
+hist(abs(c(dat.tsmc)-c(dat.mma)))
 
-badIdxs = which((dat.tsmc-dat.mma) > 0.1, arr.ind=T)
-badi = sapply(badIdxs[,1], function(x) states[x,1])
-badj = sapply(badIdxs[,1], function(x) states[x,2])
-badk = sapply(badIdxs[,2], function(x) states[x,1])
-badl = sapply(badIdxs[,2], function(x) states[x,2])
-badOnes = data.frame(i = badi, j = badj, k = badk, l = badl)
-badOnes
+# all working!
+summary(abs(c(dat.tsmc)-c(dat.mma)))
+summary(abs(c(dat.tsmc)-c(dat.int)))
