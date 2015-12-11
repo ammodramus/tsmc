@@ -1,6 +1,8 @@
 #ifndef HMM_H
 #define HMM_H
 
+#include "definitions.h"
+
 typedef struct 
 {
     int n; // number of changepoints
@@ -17,6 +19,7 @@ typedef struct
     double rho;
     double theta;
     double Td;
+    threed * emissions;
 } Hmm;
 
 inline int get_index(int i, int j, int n);
@@ -42,5 +45,7 @@ void Hmm_print_pis(Hmm * hmm);
 void Hmm_print_demography(Hmm * hmm);
 void Hmm_print_expectations(Hmm * hmm);
 void Hmm_print_qts(Hmm * hmm);
+void Hmm_print_pts(Hmm * hmm);
+void Hmm_get_emissions(Hmm * hmm);
 
 #endif
