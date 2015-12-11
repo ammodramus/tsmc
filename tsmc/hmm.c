@@ -30,14 +30,21 @@ void Hmm_init(Hmm * hmm, const int n, const double * ts)
     hmm->Eijs3s = (double *)chmalloc(sizeof(double)*numStates);
     hmm->pis = (double *)chmalloc(sizeof(double)*numStates);
     hmm->qts = (double **)chmalloc(sizeof(double *)*numStates);
+    hmm->pts = (double **)chmalloc(sizeof(double *)*numStates);
+    hmm->emissions = (threed *)chmalloc(sizeof(threed)*numStates); 
     hmm->numStates = numStates;
     for(i = 0; i < numStates; i++)
     {
         hmm->qts[i] = (double *)chmalloc(sizeof(double)*numStates);
+        hmm->pts[i] = (double *)chmalloc(sizeof(double)*numStates);
         hmm->Eijs3s[i] = -1.0;
         hmm->Eijs2s[i] = -1.0;
         hmm->pis[i] = -1.0;
     }
+
+    // set default values for rho and theta
+    hmm->theta = 1e-3;
+    hmm->rho = 1e-3;
     
     for(i = 0; i < n+1; i++)
     {
@@ -417,8 +424,68 @@ void Hmm_get_qts(Hmm * hmm)
     return;
 }
 
-Hmm_get_pts(Hmm * hmm)
+void Hmm_get_pts(Hmm * hmm)
 {
+    const int numStates = hmm->numStates;
+    const int n = hmm->n;
+    const double rho = hmm->rho;
+    const double theta = hmm->theta;
+    double ** const qts = hmm->qts;
+    double ** const pts = hmm->pts;
+    double * const Es3s = hmm->Eijs3s;
+    double * const Es2s = hmm->Eijs2s;
+
+    int i, j, k, l, ijidx, klidx;
+    double Es3, Es2, treeSize, probRecomb, sum;
+
+    for(i = 0; i <= n; i++)
+    {
+        for(j = i; j <= n; j++)
+        {
+            ijidx = get_index(i, j, n);
+            Es3 = Es3s[ijidx];
+            Es2 = Es2s[ijidx];
+            treeSize = 3.0*Es3 + 2.0*Es2;
+            probRecomb = 1.0-exp(-treeSize * rho/2.0);
+
+            sum = 0.0;
+            
+            for(k = 0; k <= n; k++)
+            {
+                for(l = k; l <=n; l++)
+                {
+                    klidx = get_index(k, l, n);
+                    pts[ijidx][klidx] = qts[ijidx][klidx] * probRecomb;
+
+                    sum += pts[ijidx][klidx];
+                }
+            }
+
+            pts[ijidx][ijidx] = 1.0 - sum;
+        }
+    }
+
+    return;
+}
+
+void Hmm_get_emissions(Hmm * hmm)
+{
+    int i, j;
+
+    const double numStates = hmm->numStates;
+    const double n = hmm->n;
+    const double theta = hmm->theta;
+    double * const Es3s = hmm->Eijs3s;
+    double * const Es2s = hmm->Eijs2s;
+
+    double Es3, Es2;
+
+    for(i = 0; i <= n; i++)
+    {
+        for(j = i; j <= n; j++)
+        {
+            // TODO here
+
     return;
 }
 
@@ -480,6 +547,23 @@ void Hmm_print_qts(Hmm * hmm)
             printf("%f,", hmm->qts[row][col]);
         }
         printf("%f\n", hmm->qts[row][numStates-1]);
+    }
+    return;
+}
+
+void Hmm_print_pts(Hmm * hmm)
+{
+    assert(hmm);
+    int row, col;
+    const int n = hmm->n;
+    const int numStates = hmm->numStates;
+    for(row = 0; row < numStates; row++)
+    {
+        for(col = 0; col < numStates-1; col++)
+        {
+            printf("%e,", hmm->pts[row][col]);
+        }
+        printf("%e\n", hmm->pts[row][numStates-1]);
     }
     return;
 }
