@@ -45,6 +45,7 @@ void Hmm_init(Hmm * hmm, const int n, const double * ts)
     // set default values for rho and theta
     hmm->theta = 1e-3;
     hmm->rho = 1e-3;
+    hmm->Td = 0.2;
     
     for(i = 0; i < n+1; i++)
     {

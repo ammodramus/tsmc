@@ -4,6 +4,7 @@
 #include <assert.h>
 #include "hmm.h"
 #include "definitions.h"
+#include "data.h"
 
 int main(int argc, char ** argv)
 {
@@ -36,7 +37,14 @@ int main(int argc, char ** argv)
     Hmm_get_qts(&hmm);
     Hmm_get_pts(&hmm);
     Hmm_get_emissions(&hmm);
-    Hmm_print_emissions(&hmm);
+    //Hmm_print_emissions(&hmm);
+
+    Data dat;
+    Data_init(&dat, polarized);
+    FILE * fin = chfopen("testseqs", "r");
+    Data_read_data(&dat, fin);
+    Data_print_seqs(&dat);
+
     //Hmm_print_demography(&hmm);
     //Hmm_print_pis(&hmm);
     //Hmm_print_expectations(&hmm);
