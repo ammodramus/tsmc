@@ -1576,6 +1576,98 @@ which satisfy the recursion
     \beta_i(t) = \sum_{j=1}^N \beta_j(t+1)P_{i,j}e_j(y_{t+1}).
 \end{equation}
 
+From these, we can calculate 
+
+\begin{align*}
+    \gamma_i(t) &= \Prob(X_t=i|Y,\theta) \\
+                &= \frac{\Prob(X_t=i,Y|\theta)}{\Prob(Y)}\\
+                &= \frac{\alpha_i(t)\beta_i(t)}
+                    {\sum_{j=1}^N\alpha_j(t)\beta_j(t)}
+\end{align*}
+and
+\begin{align*}
+    \xi_{i,j}(t) &= \Prob(X_t=i,X_{t+1}=j|Y,\theta) \\
+                 &= \frac{\alpha_i(t)P_{i,j}e_j(t+1)\beta_j(t+1)}
+                       {\Prob(Y|\theta)}\\
+                 &= \frac{\alpha_i(t)P_{i,j}e_j(t+1)\beta_j(t+1)}
+                       {\sum_{k=1}^N\alpha_k(T)}
+\end{align*}
+
+With these probabilities, we can calculate $\E_{X|Y}[\log(\Prob(X,Y|\theta))]$:
+
+\begin{align*}
+    \E_{X|Y}\left[\log P\left(X,Y|\theta\right)\right] &= 
+        \E_{X|Y}\left[\log e_{x_1}(y_1)\right] + 
+        \E_{X|Y}\left[\log \pi_{x_1}\right] + \\
+        &\qquad
+        \sum_{i=1}^{T-1}\bigg(\E_{X|Y}\left[\log P_{x_i,x_{i+1}}\right] +
+        \E_{X|Y}\left[\log(e_{x_{i+1}}(y_{i+1}))\right]\bigg)\\
+        &= \sum_{j=1}^N\gamma_j(1) \log \pi_j + 
+        \sum_{t=1}^T\sum_{j=1}^N\log\left[e_j(t)\right]\gamma_j(t)+\\
+        &\qquad\sum_{t=1}^{T-1}\sum_{i=1}^N\sum_{j=1}^N\log(P_{i,j})\xi_{i,j}(t)
+\end{align*}
+
+In order to avoid underflow problems, we calculate scaled versions of
+$\gamma_i(t)$ and $\xi_{i,j}(t)$. We define 
+
+\begin{equation}
+    \tilde{\alpha}_i(t) = \frac{\alpha_i(t)}{\prod_{j=1}^t s_j},
+\end{equation}
+for some scaling constants $s_i$, from which we can see the new recursion
+
+\begin{equation}
+    \tilde{\alpha}_j(t+1) = \frac{1}{s_{i+1}}e_j(y_{t+1})
+        \sum_{i=1}^NP_{i,j}\tilde{\alpha}_i(t).
+\end{equation}
+
+It is convenient to define $s_t$ such that 
+$\sum_{j=1}^N \tilde{\alpha}_j(t) = 1$. This means 
+$s_1 = \sum_{k=1}^N \pi_i e_i(y_1)$ and 
+
+\begin{equation}
+    s_{t+1} = \sum_{j=1}^Ne_j(y_{t+1})\sum_{i=1}^NP_{i,j}\tilde{\alpha}_i(t)
+\end{equation}
+
+We scale $\beta_i(t)$ by the same $s_i$ so that
+
+\begin{equation}
+    \tilde{\beta}_i(t) = \frac{1}{s_i}\sum_{j=1}^N
+    A_{i,j}\tilde{\beta}_j(t+1)e_j(y_{t+1}).
+\end{equation}
+
+Now $\gamma_i(t)$ can be written
+
+\begin{align}
+    \begin{split}
+        \gamma_i(t) &=
+        \frac{\alpha_i(t)\beta_i(t)}{\sum_{j=1}^N\alpha_j(t)\beta_j(t)} \\
+        &=
+        \frac{\tilde{\alpha}_i(t)\tilde{\beta}_i(t)\left(\prod_{j=1}^ts_j\right)^2}
+        {\sum_{j=1}^N\tilde{\alpha}_j(t)\tilde{\beta}_j(t)\left(\prod_{j=1}^ts_j\right)^2} \\
+        &=
+        \frac{\tilde{\alpha}_i(t)\tilde{\beta}_i(t)}
+        {\sum_{j=1}^N\tilde{\alpha}_j(t)\tilde{\beta}_j(t)} \\
+    \end{split}
+\end{align}
+and $\xi_{i,j}(t)$ can now be written
+
+\begin{align}
+    \begin{split}
+        \xi_{i,j}(t) &= 
+                 \frac{\alpha_i(t)P_{i,j}e_j(t+1)\beta_j(t+1)}
+                 {\Prob(Y\,|\,\theta)} \\
+                 &= 
+        \frac{\alpha_i(t)P_{i,j}e_j(t+1)\beta_j(t+1)}
+        {\sum_{k=1}^N\sum_{l=1}^N\alpha_k(t)P_{k,l}e_l(t+1)\beta_l(t+1)} \\
+                 &= 
+        \frac{\tilde{\alpha}_i(t)P_{i,j}e_j(t+1)\tilde{\beta}_j(t+1)\left(\prod_{i=1}^ts_i\right)^2s_{i+1}}
+        {\sum_{k=1}^N\sum_{l=1}^N\tilde{\alpha}_k(t)P_{k,l}e_l(t+1)\tilde{\beta}_l(t+1)\left(\prod_{i=1}^ts_i\right)^2s_{i+1}} \\
+                 &= 
+        \frac{\tilde{\alpha}_i(t)\,P_{i,j}\,e_j(t+1)\,\tilde{\beta}_j(t+1)}
+        {\sum_{k=1}^N\sum_{l=1}^N\tilde{\alpha}_k(t)\,P_{k,l}\,e_l(t+1)\,\tilde{\beta}_l(t+1)}.\\
+    \end{split}
+\end{align}
+
 % omegas and zetas, underflow. write up entire notes in book
 
 \end{document}
