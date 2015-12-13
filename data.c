@@ -125,7 +125,7 @@ void Seq_print_seq(Seq * seq, int idx)
     for(i = 0; i < seq->len; i++)
     {
         printf("%i", seq->data[i]);
-        if(i > 0 && i % 60 == 0)
+        if(i > 0 && (i+1) % width == 0)
         {
             printf("\n");
         }
@@ -152,11 +152,22 @@ void Data_init(Data * dat, SeqType seqtype)
     return;
 }
 
+void Data_free(Data * dat)
+{
+    int i;
+    for(i = 0; i < dat->numSeqs; i++)
+    {
+        Seq_free(&(dat->seqs[i]));
+    }
+    free(dat->seqs);
+    return;
+}
+
 void Data_add_seq_buffer(Data * dat, int increment)
 {
     assert(dat);
     assert(dat->numSeqs <= dat->maxNumSeqs);
-    dat->seqs = chrealloc(dat->seqs, dat->maxNumSeqs + increment);
+    dat->seqs = chrealloc(dat->seqs, sizeof(Seq) * (dat->maxNumSeqs + increment));
     dat->maxNumSeqs += increment;
     return;
 }

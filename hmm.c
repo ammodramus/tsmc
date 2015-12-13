@@ -72,8 +72,11 @@ void Hmm_free(Hmm * hmm)
     for(i = 0; i < hmm->numStates; i++)
     {
         free(hmm->qts[i]);
+        free(hmm->pts[i]);
     }
     free(hmm->qts);
+    free(hmm->pts);
+    free(hmm->emissions);
     return;
 }
 
