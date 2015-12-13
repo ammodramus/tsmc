@@ -1608,7 +1608,7 @@ With these probabilities, we can calculate $\E_{X|Y}[\log(\Prob(X,Y|\theta))]$:
 \end{align*}
 
 In order to avoid underflow problems, we calculate scaled versions of
-$\gamma_i(t)$ and $\xi_{i,j}(t)$. We define 
+$\alpha_i(t)$ and $\beta_{i,j}(t)$. We define 
 
 \begin{equation}
     \tilde{\alpha}_i(t) = \frac{\alpha_i(t)}{\prod_{j=1}^t s_j},
@@ -1631,8 +1631,11 @@ $s_1 = \sum_{k=1}^N \pi_i e_i(y_1)$ and
 We scale $\beta_i(t)$ by the same $s_i$ so that
 
 \begin{equation}
-    \tilde{\beta}_i(t) = \frac{1}{s_i}\sum_{j=1}^N
-    A_{i,j}\tilde{\beta}_j(t+1)e_j(y_{t+1}).
+    \tilde{\beta}_i(T) = \beta_i(T) = 1
+\end{equation}
+and
+\begin{equation}
+    \tilde{\beta}_i(t) = \frac{1}{s_{t+1}}\sum_{j=1}^N\tilde{\beta}_j(t+1)P_{i,j}e_j(y_{t+1})
 \end{equation}
 
 Now $\gamma_i(t)$ can be written
@@ -1642,8 +1645,8 @@ Now $\gamma_i(t)$ can be written
         \gamma_i(t) &=
         \frac{\alpha_i(t)\beta_i(t)}{\sum_{j=1}^N\alpha_j(t)\beta_j(t)} \\
         &=
-        \frac{\tilde{\alpha}_i(t)\tilde{\beta}_i(t)\left(\prod_{j=1}^ts_j\right)^2}
-        {\sum_{j=1}^N\tilde{\alpha}_j(t)\tilde{\beta}_j(t)\left(\prod_{j=1}^ts_j\right)^2} \\
+        \frac{\tilde{\alpha}_i(t)\tilde{\beta}_i(t)\left(\prod_{j=1}^Ts_j\right)}
+        {\sum_{j=1}^N\tilde{\alpha}_j(t)\tilde{\beta}_j(t)\left(\prod_{j=1}^Ts_j\right)} \\
         &=
         \frac{\tilde{\alpha}_i(t)\tilde{\beta}_i(t)}
         {\sum_{j=1}^N\tilde{\alpha}_j(t)\tilde{\beta}_j(t)} \\
@@ -1657,17 +1660,18 @@ and $\xi_{i,j}(t)$ can now be written
                  \frac{\alpha_i(t)P_{i,j}e_j(t+1)\beta_j(t+1)}
                  {\Prob(Y\,|\,\theta)} \\
                  &= 
-        \frac{\alpha_i(t)P_{i,j}e_j(t+1)\beta_j(t+1)}
-        {\sum_{k=1}^N\sum_{l=1}^N\alpha_k(t)P_{k,l}e_l(t+1)\beta_l(t+1)} \\
+                 \frac{\tilde{\alpha}_i(t)P_{i,j}e_j(t+1)\tilde{\beta}_j(t+1)\prod_{k=1}^Ts_k}
+                 {\Prob(Y\,|\,\theta)s_{t+1}} \\
                  &= 
-        \frac{\tilde{\alpha}_i(t)P_{i,j}e_j(t+1)\tilde{\beta}_j(t+1)\left(\prod_{i=1}^ts_i\right)^2s_{i+1}}
-        {\sum_{k=1}^N\sum_{l=1}^N\tilde{\alpha}_k(t)P_{k,l}e_l(t+1)\tilde{\beta}_l(t+1)\left(\prod_{i=1}^ts_i\right)^2s_{i+1}} \\
+                 \frac{\tilde{\alpha}_i(t)P_{i,j}e_j(t+1)\tilde{\beta}_j(t+1)\prod_{k=1}^Ts_k}
+                 {\sum_{l=1}^N\alpha_l(t)\beta_l(t)s_{t+1}} \\
                  &= 
-        \frac{\tilde{\alpha}_i(t)\,P_{i,j}\,e_j(t+1)\,\tilde{\beta}_j(t+1)}
-        {\sum_{k=1}^N\sum_{l=1}^N\tilde{\alpha}_k(t)\,P_{k,l}\,e_l(t+1)\,\tilde{\beta}_l(t+1)}.\\
+                 \frac{\tilde{\alpha}_i(t)P_{i,j}e_j(t+1)\tilde{\beta}_j(t+1)}
+                 {s_{t+1}\sum_{l=1}^N\tilde{\alpha}_l(t)\tilde{\beta}_l(t)} \\
+                 &= 
+                 \frac{\gamma_i(t)P_{i,j}e_j(t+1)\tilde{\beta}_j(t+1)}
+                 {s_{t+1}\beta_i(t)} \\
     \end{split}
 \end{align}
-
-% omegas and zetas, underflow. write up entire notes in book
-
+Difficult to implement, but efficient and apparently correct!
 \end{document}
