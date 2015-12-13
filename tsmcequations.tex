@@ -1500,6 +1500,82 @@ change in mutation rate, this new mutation rate will be unidentifiable,
 impossible to distinguish from a proportionally scaled $T_d$. Thus $T_d$ should
 be viewed as a compound parameter.
 
+\section{HMM inference}
 
+The above equations for $q\big((k,l)|(i,j)\big)$ define a transition matrix
+$\left\{P_{(i,j), (k,l)}\right\}$, where
+
+\begin{equation}
+    P_{(i,j), (k,l)} =
+    \left(1-e^{-\frac{(3\E_{i,j}[t_3]+2\E_{i,j}[t_2])\rho}{2}}\right)
+        q\big((k,l)|(i,j)\big)
+\end{equation}
+is the probability of transitioning from state $(i,j)$ to state $(k,l)$. We
+define a hidden Markov chain $\{X_i\}$ that is governed by this transition matrix.
+The observed process $\{Y_i\}$ represents the different emissions, $0$ through
+$4$. The EM algorithm proceeds by starting with some initial parameters
+$\theta$ and iteratively maximizing the expectation of the full likelihood
+given the data, which is
+
+\begin{equation}
+    P(X,Y | \theta) =
+        e_{x_1}(y_1)\,\pi_{x_1}\prod_{i=1}^{T-1}P_{x_i,x_{i+1}}e_{x_{i+1}}(y_{i+1}),
+\end{equation}
+where $y_i$ is the observed state at position $i$, and $x_i$ is the state of
+the hidden chain at position $i$, and $T$ is the length of the sequence. In
+practice we maximize the log-likelihood:
+
+\begin{equation}
+    \log P(X,Y | \theta) =
+    \log\left(e_{x_1}(y_1)\right) + \log(\pi_{x_1}) + 
+        \sum_{i=1}^{T-1}\log\left(P_{x_i,x_{i+1}}\right) +
+        \log\left(e_{x_{i+1}}(y_{i+1})\right).
+\end{equation}
+
+Since we observe only the observed chain (i.e., the mutation data), we have to
+have some way of integrating over the states of the hidden chain. We do this by
+the expectation-maximization (EM) algorithm, paired with the forward-backward
+algorithm for calculating likelihoods with these chains. In the context of
+HMM's, the EM algorithm iteratively maximizes
+
+\begin{align*}
+    \E_{X|Y}\left[\log P\left(X,Y|\theta\right)\right] &= 
+        \E_{X|Y}\left[\log e_{x_1}(y_1)\right] + 
+        \E_{X|Y}\left[\log \pi_{x_1}\right] + \\
+        &\qquad
+        \E_{X|Y}\left[\log e_{x_1}(y_1)\right] + 
+        \sum_{i=1}^{T-1}\bigg(\E_{X|Y}\left[\log P_{x_i,x_{i+1}}\right] +
+        \E_{X|Y}\left[\log(e_{x_{i+1}}(y_{i+1}))\right]\bigg),
+\end{align*}
+updating the parameters of the chains in each iteration.
+
+Define the forward variable
+
+\begin{equation}
+    \alpha_i(t) = \Prob(Y_1 = y_1, Y_2 = y_2, \dots,
+        Y_t = y_t, X_t = i \,| \,\theta),
+\end{equation}
+which satisfies the recursion
+
+\begin{equation}
+    \alpha_j(t+1) = \sum_{i=1}^N \alpha_i(t)P_{i,j}e_j(y_{t+1}),
+\end{equation}
+where $N = (n+1)(n+2)/2$ is the number of states in the hidden chain. We define 
+
+\begin{equation}
+    \alpha_i(1) = \pi_i e_i(y_1).
+\end{equation}
+
+Define the backward variables
+\begin{equation}
+    \beta_i(t) = \Prob(Y_{t+1}=y_{t+1}, Y_{t+2} = y_{t+2}, \dots, Y_T = y_T |
+    X_t = i, \theta),
+\end{equation}
+which satisfy the recursion 
+\begin{equation}
+    \beta_i(t) = \sum_{j=1}^N \beta_j(t+1)P_{i,j}e_j(y_{t+1}).
+\end{equation}
+
+% omegas and zetas, underflow. write up entire notes in book
 
 \end{document}

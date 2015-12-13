@@ -5,6 +5,7 @@
 #include "hmm.h"
 #include "definitions.h"
 #include "data.h"
+#include "em.h"
 
 int main(int argc, char ** argv)
 {
@@ -41,9 +42,24 @@ int main(int argc, char ** argv)
 
     Data dat;
     Data_init(&dat, polarized);
+
     FILE * fin = chfopen("testseqs", "r");
     Data_read_data(&dat, fin);
-    Data_print_seqs(&dat);
+    fclose(fin);
+
+    Em em;
+    Em_init(&em, &dat, &hmm);
+    Em_get_forward(&em);
+    Em_get_backward(&em);
+    Em_get_expectations(&em);
+
+    //Data_print_seqs(&dat);
+    
+    Em_free(&em);
+    Data_free(&dat);
+    Hmm_free(&hmm);
+    free(ts);
+    free(lambdas);
 
     //Hmm_print_demography(&hmm);
     //Hmm_print_pis(&hmm);
