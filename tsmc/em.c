@@ -6,6 +6,8 @@
 #include "data.h"
 #include "em.h"
 
+Em em;
+
 void Em_init(Em * em, Data * dat, double * lambdas, double * ts, int n, 
         double initTheta, double initRho, double initTd, int maxIterations)
 {
@@ -263,3 +265,18 @@ void Em_get_expectations(Em * em)
     }
     return;
 }
+
+// write a likelihood function
+double get_log_likelihood(double * par)
+{
+    const int n = em.hmm[0].n;
+    const int numHmmStates = em.numHmmStates;
+    // TODO here
+    return 0.0;
+}
+
+void Em_iterate(Em * em)
+{
+    return;
+}
+
