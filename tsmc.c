@@ -29,16 +29,12 @@ int main(int argc, char ** argv)
             lambdas[i] = 2.0;
         }
     }
+    double initRho = 1e-3;
+    double initTheta = 1e-3;
+    double initTd = 0.2;
     Hmm hmm;
     Hmm_init(&hmm, n, ts);
-    Hmm_set_lambdas(&hmm, n, lambdas);
-    Hmm_make_omega_intervals(&hmm);
-    Hmm_get_pis(&hmm);
-    Hmm_get_expectations(&hmm);
-    Hmm_get_qts(&hmm);
-    Hmm_get_pts(&hmm);
-    Hmm_get_emissions(&hmm);
-    //Hmm_print_emissions(&hmm);
+    Hmm_make_hmm(&hmm, lambdas, n, initTheta, initRho, initTd);
 
     Data dat;
     Data_init(&dat, polarized);
@@ -52,6 +48,15 @@ int main(int argc, char ** argv)
     Em_get_forward(&em);
     Em_get_backward(&em);
     Em_get_expectations(&em);
+
+    // Em object should have two Hmm objects as members, one current, one that
+    // is maximized.  Have a flag that switches which is which, iteratively.
+    // each iteration:
+    //  - get forward
+    //  - get backward
+    //  - get expectations
+    //  - maximize likelihood
+    //  - flip flag
 
     //Data_print_seqs(&dat);
     

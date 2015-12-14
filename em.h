@@ -6,7 +6,7 @@ typedef struct
     SeqType seqtype;
     double *** forward;
     double *** backward;
-    double ** firstPosterior;
+    double *** gamma;
     double ** expect;
     double ** normConst;
 } Em;
