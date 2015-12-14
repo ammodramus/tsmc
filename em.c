@@ -6,36 +6,54 @@
 #include "data.h"
 #include "em.h"
 
-void Em_init(Em * em, Data * dat, Hmm * hmm)
+void Em_init(Em * em, Data * dat, double * lambdas, double * ts, int n, 
+        double initTheta, double initRho, double initTd, int maxIterations)
 {
-    assert(em && dat && hmm);
+    assert(em && dat && lambdas && ts);
     assert(dat->numSeqs > 0);
     em->dat = dat;
-    em->hmm = hmm;
     em->numSeqs = dat->numSeqs;
     em->seqtype = dat->seqtype;
     em->forward = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->backward = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->normConst = (double **)chmalloc(sizeof(double *) * em->numSeqs);
     em->gamma = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
+
+    Hmm_init(&(em->hmm[0]), n, ts);
+    Hmm_init(&(em->hmm[1]), n, ts);
+    Hmm_make_hmm(&(em->hmm[0]), lambdas, n, initTheta, initRho, initTd);
+    em->hmmFlag = 0;
+    em->numIterations = 0;
+    em->maxIterations = maxIterations;
+
     int i, j;
+    const int numHmmStates = (n+1)*(n+2)/2;
+    em->numHmmStates = numHmmStates;
+
     for(i = 0; i < em->numSeqs; i++)
     {
-        em->forward[i] = (double **)chmalloc(sizeof(double *) * dat->seqs[i].len);
-        em->backward[i] = (double **)chmalloc(sizeof(double *) * dat->seqs[i].len);
-        em->gamma[i] = (double **)chmalloc(sizeof(double *) * dat->seqs[i].len);
-        em->normConst[i] = (double *)chmalloc(sizeof(double) * dat->seqs[i].len);
+        em->forward[i] = (double **)chmalloc(sizeof(double *) * 
+                dat->seqs[i].len);
+        em->backward[i] = (double **)chmalloc(sizeof(double *) * 
+                dat->seqs[i].len);
+        em->gamma[i] = (double **)chmalloc(sizeof(double *) * 
+                dat->seqs[i].len);
+        em->normConst[i] = (double *)chmalloc(sizeof(double) * 
+                dat->seqs[i].len);
         for(j = 0; j < dat->seqs[i].len; j++)
         {
-            em->forward[i][j] = (double *)chmalloc(sizeof(double) * em->hmm->numStates);
-            em->backward[i][j] = (double *)chmalloc(sizeof(double) * em->hmm->numStates);
-            em->gamma[i][j] = (double *)chmalloc(sizeof(double) * em->hmm->numStates);
+            em->forward[i][j] = (double *)chmalloc(sizeof(double) * 
+                    numHmmStates);
+            em->backward[i][j] = (double *)chmalloc(sizeof(double) * 
+                    numHmmStates);
+            em->gamma[i][j] = (double *)chmalloc(sizeof(double) * 
+                    numHmmStates);
         }
     }
-    em->expect = (double **)chmalloc(sizeof(double *) * hmm->numStates);
-    for(i = 0; i < hmm->numStates; i++)
+    em->expect = (double **)chmalloc(sizeof(double *) * numHmmStates);
+    for(i = 0; i < numHmmStates; i++)
     {
-        em->expect[i] = (double *)chmalloc(sizeof(double) * hmm->numStates);
+        em->expect[i] = (double *)chmalloc(sizeof(double) * numHmmStates);
     }
     return;
 }
@@ -54,22 +72,32 @@ void Em_free(Em * em)
         free(em->forward[i]);
         free(em->backward[i]);
         free(em->gamma[i]);
+        free(em->normConst[i]);
     }
+    for(i = 0; i < em->numHmmStates; i++)
+    {
+        free(em->expect[i]);
+    }
+    free(em->normConst);
+    free(em->expect);
     free(em->forward);
     free(em->backward);
     free(em->gamma);
+    Hmm_free(&(em->hmm[0]));
+    Hmm_free(&(em->hmm[1]));
     return;
 }
 
 void Em_get_forward(Em * em)
 {
-    double * const pis = em->hmm->pis;
-    double ** const pts = em->hmm->pts;
+    const int hmmIdx = em->hmmFlag;
+    double * const pis = em->hmm[hmmIdx].pis;
+    double ** const pts = em->hmm[hmmIdx].pts;
     double *** const forward = em->forward;
     const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
-    const int numHmmStates = em->hmm->numStates;
+    const int numHmmStates = em->hmm[hmmIdx].numStates;
     const int numSeqs = em->numSeqs;
-    fourd * const emissions = em->hmm->emissions;
+    fourd * const emissions = em->hmm[hmmIdx].emissions;
 
     int i, j, k, l;
     int seqLen;
@@ -121,13 +149,14 @@ void Em_get_forward(Em * em)
 
 void Em_get_backward(Em * em)
 {
-    double * const pis = em->hmm->pis;
-    double ** const pts = em->hmm->pts;
+    const int hmmIdx = em->hmmFlag;
+    double * const pis = em->hmm[hmmIdx].pis;
+    double ** const pts = em->hmm[hmmIdx].pts;
     double *** const backward = em->backward;
     const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
-    const int numHmmStates = em->hmm->numStates;
+    const int numHmmStates = em->hmm[hmmIdx].numStates;
     const int numSeqs = em->numSeqs;
-    fourd * const emissions = em->hmm->emissions;
+    fourd * const emissions = em->hmm[hmmIdx].emissions;
 
     int i, j, k, l;
     int seqLen;
@@ -165,13 +194,14 @@ void Em_get_backward(Em * em)
 
 void Em_get_expectations(Em * em)
 {
+    const int hmmIdx = em->hmmFlag;
     double *** const forward = em->forward;
     double *** const backward = em->backward;
     double *** const gamma = em->gamma;
     double ** const expect = em->expect;
-    double ** const pts = em->hmm->pts;
-    fourd * const emissions = em->hmm->emissions;
-    const int numHmmStates = em->hmm->numStates;
+    double ** const pts = em->hmm[hmmIdx].pts;
+    fourd * const emissions = em->hmm[hmmIdx].emissions;
+    const int numHmmStates = em->hmm[hmmIdx].numStates;
     const int numSeqs = em->numSeqs;
 
     char * seqData;
