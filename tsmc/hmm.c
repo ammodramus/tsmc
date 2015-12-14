@@ -43,8 +43,8 @@ void Hmm_init(Hmm * hmm, const int n, const double * ts)
     }
 
     // set default values for rho and theta
-    hmm->theta = 1e-3;
-    hmm->rho = 1e-3;
+    hmm->theta = -1;
+    hmm->rho = -1;
     hmm->Td = 0.2;
     
     for(i = 0; i < n+1; i++)
@@ -508,6 +508,43 @@ void Hmm_get_emissions(Hmm * hmm)
 
     return;
 }
+
+inline void Hmm_set_theta(Hmm * hmm, double theta)
+{
+    hmm->theta = theta;
+    return;
+}
+
+inline void Hmm_set_rho(Hmm * hmm, double rho)
+{
+    hmm->rho = rho;
+    return;
+}
+
+inline void Hmm_set_Td(Hmm * hmm, double Td)
+{
+    hmm->Td = Td;
+    return;
+}
+
+void Hmm_make_hmm(Hmm * hmm, double * lambdas, int numChangepoints, double theta, double rho, double Td)
+{
+
+    Hmm_set_lambdas(hmm, numChangepoints, lambdas);
+    Hmm_set_theta(hmm, theta);
+    Hmm_set_rho(hmm, rho);
+    Hmm_set_Td(hmm, Td);
+
+    Hmm_make_omega_intervals(hmm);
+    Hmm_get_pis(hmm);
+    Hmm_get_expectations(hmm);
+    Hmm_get_qts(hmm);
+    Hmm_get_pts(hmm);
+    Hmm_get_emissions(hmm);
+
+    return;
+}
+
 
 void Hmm_print_demography(Hmm * hmm)
 {
