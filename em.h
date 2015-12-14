@@ -21,3 +21,4 @@ void Em_free(Em * em);
 void Em_get_forward(Em * em);
 void Em_get_backward(Em * em);
 void Em_get_expectations(Em * em);
+void Em_iterate(Em * em);

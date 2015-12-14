@@ -7,6 +7,8 @@
 #include "data.h"
 #include "em.h"
 
+Em em;
+
 int main(int argc, char ** argv)
 {
     int i, n = 10;
@@ -40,11 +42,18 @@ int main(int argc, char ** argv)
     Data_read_data(&dat, fin);
     fclose(fin);
 
-    Em em;
     Em_init(&em, &dat, lambdas, ts, n, initTheta, initRho, initTd, maxIterations);
     Em_get_forward(&em);
     Em_get_backward(&em);
     Em_get_expectations(&em);
+
+    /*
+    for(i = 0; i < maxIterations; i++)
+    {
+        Em_iterate(&em);
+    }
+    */
+
 
     // Em object should have two Hmm objects as members, one current, one that
     // is maximized.  Have a flag that switches which is which, iteratively.
