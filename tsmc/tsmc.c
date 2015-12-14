@@ -32,19 +32,16 @@ int main(int argc, char ** argv)
     double initRho = 1e-3;
     double initTheta = 1e-3;
     double initTd = 0.2;
-    Hmm hmm;
-    Hmm_init(&hmm, n, ts);
-    Hmm_make_hmm(&hmm, lambdas, n, initTheta, initRho, initTd);
+    const int maxIterations = 20;
 
     Data dat;
     Data_init(&dat, polarized);
-
     FILE * fin = chfopen("testseqs", "r");
     Data_read_data(&dat, fin);
     fclose(fin);
 
     Em em;
-    Em_init(&em, &dat, &hmm);
+    Em_init(&em, &dat, lambdas, ts, n, initTheta, initRho, initTd, maxIterations);
     Em_get_forward(&em);
     Em_get_backward(&em);
     Em_get_expectations(&em);
@@ -62,7 +59,6 @@ int main(int argc, char ** argv)
     
     Em_free(&em);
     Data_free(&dat);
-    Hmm_free(&hmm);
     free(ts);
     free(lambdas);
 
