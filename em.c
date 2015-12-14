@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 #include "definitions.h"
 #include "hmm.h"
 #include "data.h"
@@ -266,17 +267,122 @@ void Em_get_expectations(Em * em)
     return;
 }
 
-// write a likelihood function
-double get_log_likelihood(double * par)
+double Em_get_expected_log_likelihood(Em * em)
 {
+    // assume em->hmm[!em->hmmFlag] is the one to get the likelihood for
+    Hmm * hmm = &(em->hmm[!em->hmmFlag]);
+    const int hmmIdx = em->hmmFlag;
+    double *** const gamma = em->gamma;
+    double ** const expect = em->expect;
+    double ** const pts = hmm->pts;
+    double * const pis = hmm->pis;
+    fourd * const emissions = hmm->emissions;
+    const int numHmmStates = hmm->numStates;
+    const int numSeqs = em->numSeqs;
+
+    int i,j,k,l;
+
+    double loglike = 0.0;
+    for(i = 0; i < numSeqs; i++)
+    {
+        for(j = 0; j < numHmmStates; j++)
+        {
+            loglike += gamma[i][0][j] * log(pis[j]);
+        }
+    }
+    for(i = 0; i < numHmmStates; i++)
+    {
+        for(j = 0; j < numHmmStates; j++)
+        {
+            if(expect[i][j] > 0.0)
+            {
+                loglike += expect[i][j] * log(pts[i][j]);
+            }
+        }
+    }
+    return loglike;
+}
+
+// write an objective function
+double objective_function(double * par)
+{
+    // (em is a global)
     const int n = em.hmm[0].n;
     const int numHmmStates = em.numHmmStates;
-    // TODO here
-    return 0.0;
+
+    int i;
+    for(i = 0; i < n+4; i++)
+    {
+        if(par[i] <= 0.0)
+        {
+            return INFINITY;
+        }
+    }
+
+    // parameters are lambdas, rho, theta, Td
+    // n+1 lambdas, so n+4 parameters
+    // first n+1 lambdas, then rho, theta, and Td
+
+    double * const lambdas = par; // only use the first n+1
+    const double rho = par[n];
+    const double theta = par[n+1];
+    const double Td = par[n+2];
+
+    Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
+
+    Hmm_make_hmm(scratchHmm, lambdas, n, theta, rho, Td);
+
+    double loglike = Em_get_expected_log_likelihood(&em);
+    assert(loglike < 0);
+
+    return -loglike;
 }
 
 void Em_iterate(Em * em)
 {
+    // each iteration:
+    // maximize likelihood
+    // set Hmm model as max
+    // flip hmmFlag
+    //void nelmin ( double fn ( double x[] ), int n, double start[], double xmin[], 
+        //double *ynewlo, double reqmin, double step[], int konvge, int kcount, 
+        //int *icount, int *numres, int *ifault );
+
+    assert(em->hmm[0].n == em->hmm[1].n);
+    const int n = em->hmm[0].n;
+    double fmin;
+    int i;
+
+
+    double * start = (double *)chmalloc(sizeof(double) * (n+4));
+    for(i = 0; i < n; i++)
+    {
+        start[i] = em->hmm[em->hmmFlag].lambdas[i];
+    }
+    start[n+1] = em->hmm[em->hmmFlag].rho;
+    start[n+2] = em->hmm[em->hmmFlag].theta;
+    start[n+3] = em->hmm[em->hmmFlag].Td;
+
+    int konvge = 1, maxNumEval = 10000;
+    int iterationCount, numRestarts, errorNum;
+    double * fargmin = (double *)chmalloc(sizeof(double) * (n+4));
+    double reqmin = 0.001;
+
+    double * step = (double *)chmalloc(sizeof(double) * (n+4));
+    for(i = 0; i < n; i++)
+    {
+        step[i] = 10.0;
+    }
+    for(i = n; i < n+4; i++)
+    {
+        step[i] = 1e-2;
+    }
+
+    nelmin(objective_function, n+4, start, fargmin, &fmin, reqmin, step,
+            konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
+
+    DEBUGREPORTI(errorNum);
+
     return;
 }
 
