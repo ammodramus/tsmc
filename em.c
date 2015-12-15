@@ -323,6 +323,7 @@ double objective_function(double * par)
         if(par[i] <= 0.0)
         {
             //fprintf(stdout, "%f\n", INFINITY);
+            free(lambdas);
             return INFINITY;
         }
     }
@@ -344,6 +345,8 @@ double objective_function(double * par)
     assert(loglike < 0);
 
     //fprintf(stdout, "%f\n", -loglike);
+
+    free(lambdas);
 
     return -loglike;
 }
@@ -377,7 +380,7 @@ void Em_iterate(Em * em)
     int konvge = 1, maxNumEval = 100000;
     int iterationCount, numRestarts, errorNum;
     double * fargmin = (double *)chmalloc(sizeof(double) * (4));
-    double reqmin = 0.001;
+    double reqmin = 1e-8;
 
     double * step = (double *)chmalloc(sizeof(double) * (4));
     step[0] = 1;
@@ -402,6 +405,13 @@ void Em_iterate(Em * em)
     DEBUGREPORTI(errorNum);
     DEBUGREPORTF(fmin);
     DEBUGREPORTF(fargmin[0]);
+    DEBUGREPORTF(fargmin[1]);
+    DEBUGREPORTF(fargmin[2]);
+    DEBUGREPORTF(fargmin[3]);
+
+    free(start);
+    free(fargmin);
+    free(step);
 
     return;
 }
