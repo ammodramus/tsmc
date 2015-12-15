@@ -459,12 +459,14 @@ void Hmm_get_pts(Hmm * hmm)
                 for(l = k; l <=n; l++)
                 {
                     klidx = get_index(k, l, n);
+                    if(klidx == ijidx)
+                    {
+                        continue;
+                    }
                     pts[ijidx][klidx] = qts[ijidx][klidx] * probRecomb;
-
                     sum += pts[ijidx][klidx];
                 }
             }
-
             pts[ijidx][ijidx] = 1.0 - sum;
         }
     }
