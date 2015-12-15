@@ -315,6 +315,7 @@ double objective_function(double * par)
     {
         if(par[i] <= 0.0)
         {
+            fprintf(stderr, "%f\n", INFINITY);
             return INFINITY;
         }
     }
@@ -334,6 +335,8 @@ double objective_function(double * par)
 
     double loglike = Em_get_expected_log_likelihood(&em);
     assert(loglike < 0);
+
+    fprintf(stderr, "%f\n", -loglike);
 
     return -loglike;
 }
