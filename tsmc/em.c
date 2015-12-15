@@ -310,24 +310,31 @@ double objective_function(double * par)
     const int n = em.hmm[0].n;
     const int numHmmStates = em.numHmmStates;
 
+    const double oneLambda = par[0];
+    const double rho = par[1];
+    const double theta = par[2];
+    const double Td = par[3];
+
+    double * const lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+
     int i;
-    for(i = 0; i < n+4; i++)
+    for(i = 0; i < 4; i++)
     {
         if(par[i] <= 0.0)
         {
-            fprintf(stdout, "%f\n", INFINITY);
+            //fprintf(stdout, "%f\n", INFINITY);
             return INFINITY;
         }
+    }
+
+    for(i = 0; i < n+1; i++)
+    {
+        lambdas[i] = oneLambda;
     }
 
     // parameters are lambdas, rho, theta, Td
     // n+1 lambdas, so n+4 parameters
     // first n+1 lambdas, then rho, theta, and Td
-
-    double * const lambdas = par; // only use the first n+1
-    const double rho = par[n+1];
-    const double theta = par[n+2];
-    const double Td = par[n+3];
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
@@ -336,7 +343,7 @@ double objective_function(double * par)
     double loglike = Em_get_expected_log_likelihood(&em);
     assert(loglike < 0);
 
-    fprintf(stdout, "%f\n", -loglike);
+    //fprintf(stdout, "%f\n", -loglike);
 
     return -loglike;
 }
@@ -351,40 +358,50 @@ void Em_iterate(Em * em)
         //double *ynewlo, double reqmin, double step[], int konvge, int kcount, 
         //int *icount, int *numres, int *ifault );
 
+    Em_get_forward(em);
+    Em_get_backward(em);
+    Em_get_expectations(em);
+
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
     double fmin;
     int i;
 
 
-    double * start = (double *)chmalloc(sizeof(double) * (n+4));
-    for(i = 0; i < n+1; i++)
-    {
-        start[i] = em->hmm[em->hmmFlag].lambdas[i];
-    }
-    start[n+1] = em->hmm[em->hmmFlag].rho;
-    start[n+2] = em->hmm[em->hmmFlag].theta;
-    start[n+3] = em->hmm[em->hmmFlag].Td;
+    double * start = (double *)chmalloc(sizeof(double) * (4));
+    start[0] = em->hmm[em->hmmFlag].lambdas[0];
+    start[1] = em->hmm[em->hmmFlag].rho;
+    start[2] = em->hmm[em->hmmFlag].theta;
+    start[3] = em->hmm[em->hmmFlag].Td;
 
     int konvge = 1, maxNumEval = 100000;
     int iterationCount, numRestarts, errorNum;
-    double * fargmin = (double *)chmalloc(sizeof(double) * (n+4));
-    double reqmin = 0.01;
+    double * fargmin = (double *)chmalloc(sizeof(double) * (4));
+    double reqmin = 0.001;
 
-    double * step = (double *)chmalloc(sizeof(double) * (n+4));
-    for(i = 0; i < n; i++)
+    double * step = (double *)chmalloc(sizeof(double) * (4));
+    step[0] = 1;
+    for(i = 1; i < 4; i++)
     {
-        step[i] = 10.0;
-    }
-    for(i = n; i < n+4; i++)
-    {
-        step[i] = 1;
+        step[i] = 0.1;
     }
 
-    nelmin(objective_function, n+4, start, fargmin, &fmin, reqmin, step,
+    nelmin(objective_function, 4, start, fargmin, &fmin, reqmin, step,
             konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
 
+    for(i = 0; i < n+1; i++)
+    {
+        em->hmm[!em->hmmFlag].lambdas[i] = fargmin[0];
+    }
+
+    em->hmm[!em->hmmFlag].rho = fargmin[1];
+    em->hmm[!em->hmmFlag].theta = fargmin[2];
+    em->hmm[!em->hmmFlag].Td = fargmin[3];
+    em->hmmFlag = !em->hmmFlag;
+
     DEBUGREPORTI(errorNum);
+    DEBUGREPORTF(fmin);
+    DEBUGREPORTF(fargmin[0]);
 
     return;
 }
