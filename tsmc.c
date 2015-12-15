@@ -52,23 +52,15 @@ int main(int argc, char ** argv)
     {
         par[i] = lambdas[i];
     }
-    par[n+1] = initRho;
-    par[n+2] = initTheta;
-    par[n+3] = initTd;
+    par[n] = initRho;
+    par[n+1] = initTheta;
+    par[n+2] = initTd;
 
     //printf("%e\n", objective_function(par));
     for(i = 0; i < 1; i++)
     {
         Em_iterate(&em);
     }
-
-    /*
-    for(i = 0; i < maxIterations; i++)
-    {
-        Em_iterate(&em);
-    }
-    */
-
 
     // Em object should have two Hmm objects as members, one current, one that
     // is maximized.  Have a flag that switches which is which, iteratively.
