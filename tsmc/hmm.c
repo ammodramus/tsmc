@@ -449,7 +449,7 @@ void Hmm_get_pts(Hmm * hmm)
             ijidx = get_index(i, j, n);
             Es3 = Es3s[ijidx];
             Es2 = Es2s[ijidx];
-            treeSize = 3.0*Es3 + 2.0*Es2;
+            treeSize = 3.0*Es3 + 2.0*(Es2-Es3);
             probRecomb = 1.0-exp(-treeSize * rho/2.0);
 
             sum = 0.0;
