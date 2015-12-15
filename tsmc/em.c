@@ -315,7 +315,7 @@ double objective_function(double * par)
     {
         if(par[i] <= 0.0)
         {
-            fprintf(stderr, "%f\n", INFINITY);
+            fprintf(stdout, "%f\n", INFINITY);
             return INFINITY;
         }
     }
@@ -325,9 +325,9 @@ double objective_function(double * par)
     // first n+1 lambdas, then rho, theta, and Td
 
     double * const lambdas = par; // only use the first n+1
-    const double rho = par[n];
-    const double theta = par[n+1];
-    const double Td = par[n+2];
+    const double rho = par[n+1];
+    const double theta = par[n+2];
+    const double Td = par[n+3];
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
@@ -336,7 +336,7 @@ double objective_function(double * par)
     double loglike = Em_get_expected_log_likelihood(&em);
     assert(loglike < 0);
 
-    fprintf(stderr, "%f\n", -loglike);
+    fprintf(stdout, "%f\n", -loglike);
 
     return -loglike;
 }
@@ -358,7 +358,7 @@ void Em_iterate(Em * em)
 
 
     double * start = (double *)chmalloc(sizeof(double) * (n+4));
-    for(i = 0; i < n; i++)
+    for(i = 0; i < n+1; i++)
     {
         start[i] = em->hmm[em->hmmFlag].lambdas[i];
     }
@@ -366,10 +366,10 @@ void Em_iterate(Em * em)
     start[n+2] = em->hmm[em->hmmFlag].theta;
     start[n+3] = em->hmm[em->hmmFlag].Td;
 
-    int konvge = 1, maxNumEval = 10000;
+    int konvge = 1, maxNumEval = 100000;
     int iterationCount, numRestarts, errorNum;
     double * fargmin = (double *)chmalloc(sizeof(double) * (n+4));
-    double reqmin = 0.001;
+    double reqmin = 0.01;
 
     double * step = (double *)chmalloc(sizeof(double) * (n+4));
     for(i = 0; i < n; i++)
@@ -378,7 +378,7 @@ void Em_iterate(Em * em)
     }
     for(i = n; i < n+4; i++)
     {
-        step[i] = 1e-2;
+        step[i] = 1;
     }
 
     nelmin(objective_function, n+4, start, fargmin, &fmin, reqmin, step,
