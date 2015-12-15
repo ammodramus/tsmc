@@ -52,9 +52,9 @@ int main(int argc, char ** argv)
     {
         par[i] = lambdas[i];
     }
-    par[n] = initRho;
-    par[n+1] = initTheta;
-    par[n+2] = initTd;
+    par[n+1] = initRho;
+    par[n+2] = initTheta;
+    par[n+3] = initTd;
 
     //printf("%e\n", objective_function(par));
     for(i = 0; i < 1; i++)
