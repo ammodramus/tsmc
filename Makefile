@@ -9,3 +9,6 @@ debug:
 emissionstest:
 	gcc emissionstest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o emissionstest -g
 
+inputtest:
+	gcc inputtest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o inputtest -g
+
