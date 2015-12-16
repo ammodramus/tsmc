@@ -1,3 +1,6 @@
+#ifndef EH_H
+#define EM_H
+
 typedef struct 
 {
     Data * dat;
@@ -24,3 +27,5 @@ void Em_get_expectations(Em * em);
 void Em_iterate(Em * em);
 double Em_get_expected_log_likelihood(Em * em);
 double objective_function(double * par);
+
+#endif
