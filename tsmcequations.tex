@@ -1507,15 +1507,15 @@ $\left\{P_{(i,j), (k,l)}\right\}$, where
 
 \begin{equation}
     P_{(i,j), (k,l)} =
-    \left(1-e^{-\frac{(3\E_{i,j}[t_3]+2\E_{i,j}[t_2])\rho}{2}}\right)
+    \left(1-e^{-\frac{\rho(2\E_{i,j}[t_2]+\E_{i,j}[t_3])}{2}}\right)
         q\big((k,l)|(i,j)\big)
 \end{equation}
-is the probability of transitioning from state $(i,j)$ to state $(k,l)$. We
-define a hidden Markov chain $\{X_i\}$ that is governed by this transition matrix.
-The observed process $\{Y_i\}$ represents the different emissions, $0$ through
-$4$. The EM algorithm proceeds by starting with some initial parameters
-$\theta$ and iteratively maximizing the expectation of the full likelihood
-given the data, which is
+is the probability of transitioning from state $(i,j)$ to state $(k,l)$, for
+$(i,j) \neq (k,l)$. We define a hidden Markov chain $\{X_i\}$ that is governed
+by this transition matrix.  The observed process $\{Y_i\}$ represents the
+different emissions, $0$ through $3$. The EM algorithm proceeds by starting
+with some initial parameters $\theta$ and iteratively maximizing the
+expectation of the full likelihood given the data, which is
 
 \begin{equation}
     P(X,Y | \theta) =
@@ -1573,8 +1573,9 @@ Define the backward variables
 \end{equation}
 which satisfy the recursion 
 \begin{equation}
-    \beta_i(t) = \sum_{j=1}^N \beta_j(t+1)P_{i,j}e_j(y_{t+1}).
+    \beta_i(t) = \sum_{j=1}^N \beta_j(t+1)P_{i,j}e_j(y_{t+1}),
 \end{equation}
+defining $\beta_i(T) = 1$.
 
 From these, we can calculate 
 
@@ -1631,12 +1632,13 @@ $s_1 = \sum_{k=1}^N \pi_i e_i(y_1)$ and
 We scale $\beta_i(t)$ by the same $s_i$ so that
 
 \begin{equation}
-    \tilde{\beta}_i(T) = \beta_i(T) = 1
+    \tilde{\beta}_i(t) = \frac{\beta_i(t)}{\prod_{j=t+1}^T s_j}
 \end{equation}
 and
 \begin{equation}
-    \tilde{\beta}_i(t) = \frac{1}{s_{t+1}}\sum_{j=1}^N\tilde{\beta}_j(t+1)P_{i,j}e_j(y_{t+1})
+    \tilde{\beta}_i(t) = \frac{1}{s_{t+1}}\sum_{j=1}^N\tilde{\beta}_j(t+1)P_{i,j}e_j(y_{t+1}),
 \end{equation}
+with $\tilde{\beta}_i(T) = \beta_i(T) = 1$.
 
 Now $\gamma_i(t)$ can be written
 
