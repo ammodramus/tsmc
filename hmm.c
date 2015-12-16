@@ -505,7 +505,7 @@ void Hmm_get_emissions(Hmm * hmm)
                 exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0);
             emissions[ijidx][3] = (1.0 - exp(-(Es2-Es3)*theta/2.0)) * 
                 (1 - exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0));
-            }
+        }
     }
 
     return;
