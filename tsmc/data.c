@@ -125,7 +125,7 @@ void Seq_print_seq(Seq * seq, int idx)
     for(i = 0; i < seq->len; i++)
     {
         printf("%i", seq->data[i]);
-        if(i > 0 && (i+1) % width == 0)
+        if(i > 0 && (i+1) % width == 0 && i < seq->len-1)
         {
             printf("\n");
         }
