@@ -532,6 +532,7 @@ inline void Hmm_set_Td(Hmm * hmm, double Td)
 void Hmm_make_hmm(Hmm * hmm, double * lambdas, int numChangepoints, double theta, double rho, double Td)
 {
 
+    // numChangepoints is n in the notation of the paper
     Hmm_set_lambdas(hmm, numChangepoints, lambdas);
     Hmm_set_theta(hmm, theta);
     Hmm_set_rho(hmm, rho);

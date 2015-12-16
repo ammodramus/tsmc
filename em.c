@@ -99,6 +99,7 @@ void Em_get_forward(Em * em)
     double *** const forward = em->forward;
     const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
     const int numHmmStates = em->hmm[hmmIdx].numStates;
+    assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
     const int numSeqs = em->numSeqs;
     fourd * const emissions = em->hmm[hmmIdx].emissions;
 
@@ -114,16 +115,18 @@ void Em_get_forward(Em * em)
         seqData = em->dat->seqs[i].data;
         seqLen = em->dat->seqs[i].len;
         seqFor = forward[i];
+        // deal first with first position in sequence
         sum1 = 0.0;
         for(k = 0; k < numHmmStates; k++)
         {
-            seqFor[0][k] = pis[k]*emissions[k][seqData[0]];
+            seqFor[0][k] = pis[k] * emissions[k][seqData[0]];
+            assert(seqFor[0][k] > 0.0);
             sum1 += seqFor[0][k];
         }
         em->normConst[i][0] = sum1;
         for(k = 0; k < numHmmStates; k++)
         {
-            seqFor[0][k] /= sum1;
+            seqFor[0][k] /= em->normConst[i][0];
         }
 
         for(j = 1; j < seqLen; j++)
@@ -135,7 +138,7 @@ void Em_get_forward(Em * em)
                 sum1 = 0.0;
                 for(l = 0; l < numHmmStates; l++)
                 {
-                    sum1 += seqFor[j-1][l]*pts[l][k];
+                    sum1 += seqFor[j-1][l] * pts[l][k];
                 }
                 seqFor[j][k] = emissions[k][seqData[j]] * sum1;
                 sum2 += seqFor[j][k];
@@ -143,7 +146,7 @@ void Em_get_forward(Em * em)
             em->normConst[i][j] = sum2;
             for(k = 0; k < numHmmStates; k++)
             {
-                seqFor[j][k] /= sum2;
+                seqFor[j][k] /= em->normConst[i][j];
             }
         }
     }
@@ -185,7 +188,7 @@ void Em_get_backward(Em * em)
                 sum = 0.0;
                 for(l = 0; l < numHmmStates; l++)
                 {
-                    sum += seqBack[j+1][l]*pts[k][l]*emissions[l][seqData[j+1]];
+                    sum += seqBack[j+1][l] * pts[k][l] * emissions[l][seqData[j+1]];
                 }
                 assert(sum > 0);
                 seqBack[j][k] = sum / em->normConst[i][j+1];
@@ -256,8 +259,9 @@ void Em_get_expectations(Em * em)
             {
                 for(l = 0; l < numHmmStates; l++)
                 {
-                    thisExpect = em->gamma[i][j][k]*pts[k][l]*seqBack[j+1][l] *
-                        emissions[l][seqData[j+1]] / (em->normConst[i][j+1] * seqBack[j][k]);
+                    thisExpect = em->gamma[i][j][k] * pts[k][l] * 
+                        seqBack[j+1][l] * emissions[l][seqData[j+1]] / 
+                        (em->normConst[i][j+1] * seqBack[j][k]);
                     expect[k][l] += thisExpect;
                     assert(0 <= thisExpect && thisExpect <= 1);
                 }
@@ -267,11 +271,8 @@ void Em_get_expectations(Em * em)
     return;
 }
 
-double Em_get_expected_log_likelihood(Em * em)
+double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
 {
-    // assume em->hmm[!em->hmmFlag] is the one to get the likelihood for
-    Hmm * hmm = &(em->hmm[!em->hmmFlag]);
-    const int hmmIdx = em->hmmFlag;
     double *** const gamma = em->gamma;
     double ** const expect = em->expect;
     double ** const pts = hmm->pts;
@@ -341,7 +342,7 @@ double objective_function(double * par)
 
     Hmm_make_hmm(scratchHmm, lambdas, n, theta, rho, Td);
 
-    double loglike = Em_get_expected_log_likelihood(&em);
+    double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
 
     //fprintf(stdout, "%f\n", -loglike);
