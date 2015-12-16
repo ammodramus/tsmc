@@ -496,7 +496,7 @@ void Hmm_get_emissions(Hmm * hmm)
             Es3 = Es3s[ijidx];
             Es2 = Es2s[ijidx];
 
-            treeSize = 3.0*Es3 + 2.0*Es2;
+            treeSize = 2.0*Es2 + Es3;
 
             emissions[ijidx][0] = exp(-(treeSize + 3.0*Td)*theta/2.0);
             emissions[ijidx][1] = exp(-(Es2-Es3)*theta/2.0) *
