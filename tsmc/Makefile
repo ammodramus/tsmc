@@ -5,3 +5,7 @@ optimize:
 
 debug:
 	gcc tsmc.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o tsmc -g
+
+emissionstest:
+	gcc emissionstest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o emissionstest -g
+
