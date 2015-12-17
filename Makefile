@@ -1,14 +1,34 @@
 all: optimize
 
-optimize:
+optimize: *.[ch]
 	gcc tsmc.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o tsmc -O3 -DNDEBUG -march=native
 
-debug:
+debug: *.[ch]
 	gcc tsmc.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o tsmc -g
 
-emissionstest:
+emissionstest: *.[ch]
 	gcc emissionstest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o emissionstest -g
 
-inputtest:
+inputtest: *.[ch]
 	gcc inputtest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o inputtest -g
 
+forwardtest: *.[ch]
+	gcc forwardtest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o forwardtest -g
+
+backwardtest: *.[ch]
+	gcc backwardtest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o backwardtest -g
+
+normtest: *.[ch]
+	gcc normtest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o normtest -g
+
+pitest: *.[ch]
+	gcc pitest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o pitest -g
+
+gammatest: *.[ch]
+	gcc gammatest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o gammatest -g
+
+expecttest: *.[ch]
+	gcc expecttest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o expecttest -g
+
+logliketest: *.[ch]
+	gcc likelihoodtest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o logliketest -g
