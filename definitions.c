@@ -45,3 +45,9 @@ inline FILE * chfopen(const char * path, const char * mode)
     }
     return fi;
 }
+
+inline void perror(const char * msg)
+{
+    fprintf(stderr, "%s\n", msg);
+    exit(1);
+}
