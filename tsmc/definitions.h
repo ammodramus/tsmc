@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define DEBUGREPORTI(x) fprintf(stderr, #x " = %i\n", x)
-#define DEBUGREPORTF(x) fprintf(stderr, #x " = %f\n", x)
+#define DEBUGREPORTF(x) fprintf(stderr, #x " = %.15f\n", x)
 #define PERROR(msg,...) do {fprintf(stderr,"\n\nProgram error:\n%s\n\n",msg); exit(-1);} while(0)
 
 typedef double fourd[4];
