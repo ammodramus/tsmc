@@ -38,7 +38,15 @@ int main(int argc, char ** argv)
 
     Data dat;
     Data_init(&dat, polarized);
-    FILE * fin = chfopen("testseqs", "r");
+    FILE * fin;
+    if(argc == 2)
+    {
+        fin = chfopen(argv[1], "r");
+    }
+    else
+    {
+        FILE * fin = chfopen("testseqs", "r");
+    }
     Data_read_data(&dat, fin);
     fclose(fin);
 

@@ -371,6 +371,33 @@ double objective_function(double * par)
     return -loglike;
 }
 
+double Em_get_loglikelihood(Em * em)
+{
+    double loglike = 0.0;
+    const int numSeqs = em->numSeqs;
+    const int numHmmStates = em->numHmmStates;
+    int i, j, seqLen;
+    double ** seqFor;
+    double sum;
+    for(i = 0; i < numSeqs; i++)
+    {
+        seqLen = em->dat->seqs[i].len;
+        seqFor = em->forward[i];
+        sum = 0.0;
+        for(j = 0; j < numHmmStates; j++)
+        {
+            sum += seqFor[seqLen-1][j];
+        }
+        loglike += log(sum);
+
+        for(j = 0; j < seqLen; j++)
+        {
+            loglike += log(em->normConst[i][j]);
+        }
+    }
+    return loglike;
+}
+
 void Em_iterate(Em * em)
 {
     // each iteration:
@@ -385,7 +412,8 @@ void Em_iterate(Em * em)
     Em_get_backward(em);
     Em_get_expectations(em);
 
-    DEBUGREPORTF(Em_get_expected_log_likelihood(em, em->hmmFlag));
+    DEBUGREPORTF(Em_get_loglikelihood(em));
+    DEBUGREPORTI(em->hmmFlag);
 
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
@@ -406,7 +434,7 @@ void Em_iterate(Em * em)
     double * step = (double *)chmalloc(sizeof(double) * (3));
     step[0] = 1.0;
     step[1] = 1.0;
-    step[2] = 10.0;
+    step[2] = 1.0;
 
     nelmin(objective_function, 3, start, fargmin, &fmin, reqmin, step,
             konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
