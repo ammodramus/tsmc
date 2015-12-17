@@ -243,7 +243,7 @@ void Em_get_expectations(Em * em)
             for(l = 0; l < numHmmStates; l++)
             {
                 em->gamma[i][j][l] = seqFor[j][l]*seqBack[j][l];
-                sum += seqFor[j][l]*seqBack[j][l];
+                sum += em->gamma[i][j][l];
             }
             for(l = 0; l < numHmmStates; l++)
             {
@@ -368,9 +368,9 @@ void Em_iterate(Em * em)
 
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
+
     double fmin;
     int i;
-
 
     double * start = (double *)chmalloc(sizeof(double) * (4));
     start[0] = em->hmm[em->hmmFlag].lambdas[0];
@@ -417,3 +417,28 @@ void Em_iterate(Em * em)
     return;
 }
 
+void Em_print_forward(Em * em)
+{
+    const int numSeqs = em->numSeqs;
+    const int numHmmStates = em->hmm[0].numStates;
+    assert(em->hmm[0].numStates == em->hmm[1].numStates);
+    int i, j, k, seqLen;
+    double seqFor;
+    Hmm * hmm = &(em->hmm[em->hmmFlag]);
+    Data * dat = em->dat;
+
+    for(i = 0; i < numSeqs; i++)
+    {
+        seqFor = em->forward[i];
+        seqLen = dat->seqs[i].len;
+        for(j = 0; j < seqLen; j++)
+        {
+            for(k = 0; k < numHmmStates; k++)
+            {
+                printf("%f\t", seqFor[j][k]);
+            }
+            printf("\n");
+        }
+    }
+    return;
+}
