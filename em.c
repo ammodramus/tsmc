@@ -138,7 +138,10 @@ void Em_get_forward(Em * em)
                 sum1 = 0.0;
                 for(l = 0; l < numHmmStates; l++)
                 {
-                    sum1 += seqFor[j-1][l] * pts[l][k];
+                    if(pts[l][k])
+                    {
+                        sum1 += seqFor[j-1][l] * pts[l][k];
+                    }
                 }
                 seqFor[j][k] = emissions[k][seqData[j]] * sum1;
                 sum2 += seqFor[j][k];
@@ -188,7 +191,10 @@ void Em_get_backward(Em * em)
                 sum = 0.0;
                 for(l = 0; l < numHmmStates; l++)
                 {
-                    sum += seqBack[j+1][l] * pts[k][l] * emissions[l][seqData[j+1]];
+                    if(pts[k][l])
+                    {
+                        sum += seqBack[j+1][l] * pts[k][l] * emissions[l][seqData[j+1]];
+                    }
                 }
                 assert(sum > 0);
                 seqBack[j][k] = sum / em->normConst[i][j+1];
@@ -259,11 +265,14 @@ void Em_get_expectations(Em * em)
             {
                 for(l = 0; l < numHmmStates; l++)
                 {
-                    thisExpect = em->gamma[i][j][k] * pts[k][l] * 
-                        seqBack[j+1][l] * emissions[l][seqData[j+1]] / 
-                        (em->normConst[i][j+1] * seqBack[j][k]);
-                    expect[k][l] += thisExpect;
-                    assert(0 <= thisExpect && thisExpect <= 1);
+                    if(pts[k][l])
+                    {
+                        thisExpect = em->gamma[i][j][k] * pts[k][l] * 
+                            seqBack[j+1][l] * emissions[l][seqData[j+1]] / 
+                            (em->normConst[i][j+1] * seqBack[j][k]);
+                        expect[k][l] += thisExpect;
+                        assert(0 <= thisExpect && thisExpect <= 1);
+                    }
                 }
             }
         }
@@ -273,6 +282,7 @@ void Em_get_expectations(Em * em)
 
 double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
 {
+    Hmm * const hmm = &(em->hmm[hmmIdx]);
     double *** const gamma = em->gamma;
     double ** const expect = em->expect;
     double ** const pts = hmm->pts;
@@ -281,21 +291,32 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
     const int numHmmStates = hmm->numStates;
     const int numSeqs = em->numSeqs;
 
-    int i,j,k,l;
+    int i,j,k,l, seqLen;
+
+    char * seqData;
 
     double loglike = 0.0;
     for(i = 0; i < numSeqs; i++)
     {
+        seqData = em->dat->seqs[i].data;
+        seqLen = em->dat->seqs[i].len;
         for(j = 0; j < numHmmStates; j++)
         {
             loglike += gamma[i][0][j] * log(pis[j]);
+        }
+        for(j = 0; j < seqLen; j++)
+        {
+            for(k = 0; k < numHmmStates; k++)
+            {
+                loglike += gamma[i][j][k] * log(emissions[k][seqData[j]]);
+            }
         }
     }
     for(i = 0; i < numHmmStates; i++)
     {
         for(j = 0; j < numHmmStates; j++)
         {
-            if(expect[i][j] > 0.0)
+            if(pts[i][j] || expect[i][j] > 0.0)
             {
                 loglike += expect[i][j] * log(pts[i][j]);
             }
@@ -309,17 +330,17 @@ double objective_function(double * par)
 {
     // (em is a global)
     const int n = em.hmm[0].n;
+    assert(em.hmm[0].n == em.hmm[1].n);
     const int numHmmStates = em.numHmmStates;
 
-    const double oneLambda = par[0];
-    const double rho = par[1];
-    const double theta = par[2];
-    const double Td = par[3];
+    const double rho = par[0];
+    const double theta = par[1];
+    const double Td = par[2];
 
-    double * const lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+    double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
 
     int i;
-    for(i = 0; i < 4; i++)
+    for(i = 0; i < 3; i++)
     {
         if(par[i] <= 0.0)
         {
@@ -331,11 +352,11 @@ double objective_function(double * par)
 
     for(i = 0; i < n+1; i++)
     {
-        lambdas[i] = oneLambda;
+        lambdas[i] = 1.0;
     }
 
     // parameters are lambdas, rho, theta, Td
-    // n+1 lambdas, so n+4 parameters
+    // n+1 lambdas, so n+3 parameters
     // first n+1 lambdas, then rho, theta, and Td
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
@@ -344,8 +365,6 @@ double objective_function(double * par)
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
-
-    //fprintf(stdout, "%f\n", -loglike);
 
     free(lambdas);
 
@@ -366,41 +385,41 @@ void Em_iterate(Em * em)
     Em_get_backward(em);
     Em_get_expectations(em);
 
+    DEBUGREPORTF(Em_get_expected_log_likelihood(em, em->hmmFlag));
+
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
     double fmin;
     int i;
 
-    double * start = (double *)chmalloc(sizeof(double) * (4));
-    start[0] = em->hmm[em->hmmFlag].lambdas[0];
-    start[1] = em->hmm[em->hmmFlag].rho;
-    start[2] = em->hmm[em->hmmFlag].theta;
-    start[3] = em->hmm[em->hmmFlag].Td;
+    double * start = (double *)chmalloc(sizeof(double) * (3));
+    start[0] = em->hmm[em->hmmFlag].rho;
+    start[1] = em->hmm[em->hmmFlag].theta;
+    start[2] = em->hmm[em->hmmFlag].Td;
 
-    int konvge = 1, maxNumEval = 100000;
+    int konvge = 1, maxNumEval = 1000000;
     int iterationCount, numRestarts, errorNum;
-    double * fargmin = (double *)chmalloc(sizeof(double) * (4));
+    double * fargmin = (double *)chmalloc(sizeof(double) * (3));
     double reqmin = 1e-8;
 
-    double * step = (double *)chmalloc(sizeof(double) * (4));
-    step[0] = 1;
-    for(i = 1; i < 4; i++)
-    {
-        step[i] = 0.1;
-    }
+    double * step = (double *)chmalloc(sizeof(double) * (3));
+    step[0] = 1.0;
+    step[1] = 1.0;
+    step[2] = 10.0;
 
-    nelmin(objective_function, 4, start, fargmin, &fmin, reqmin, step,
+    nelmin(objective_function, 3, start, fargmin, &fmin, reqmin, step,
             konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
 
     for(i = 0; i < n+1; i++)
     {
-        em->hmm[!em->hmmFlag].lambdas[i] = fargmin[0];
+        em->hmm[!em->hmmFlag].lambdas[i] = 1.0;
     }
 
-    em->hmm[!em->hmmFlag].rho = fargmin[1];
-    em->hmm[!em->hmmFlag].theta = fargmin[2];
-    em->hmm[!em->hmmFlag].Td = fargmin[3];
+    em->hmm[!em->hmmFlag].rho = fargmin[0];
+    em->hmm[!em->hmmFlag].theta = fargmin[1];
+    em->hmm[!em->hmmFlag].Td = fargmin[2];
+
     em->hmmFlag = !em->hmmFlag;
 
     DEBUGREPORTI(errorNum);
@@ -408,7 +427,6 @@ void Em_iterate(Em * em)
     DEBUGREPORTF(fargmin[0]);
     DEBUGREPORTF(fargmin[1]);
     DEBUGREPORTF(fargmin[2]);
-    DEBUGREPORTF(fargmin[3]);
 
     free(start);
     free(fargmin);
@@ -423,7 +441,7 @@ void Em_print_forward(Em * em)
     const int numHmmStates = em->hmm[0].numStates;
     assert(em->hmm[0].numStates == em->hmm[1].numStates);
     int i, j, k, seqLen;
-    double seqFor;
+    double ** seqFor;
     Hmm * hmm = &(em->hmm[em->hmmFlag]);
     Data * dat = em->dat;
 
@@ -435,10 +453,107 @@ void Em_print_forward(Em * em)
         {
             for(k = 0; k < numHmmStates; k++)
             {
-                printf("%f\t", seqFor[j][k]);
+                printf("%.15f\t", seqFor[j][k]);
             }
             printf("\n");
         }
     }
     return;
 }
+
+void Em_print_backward(Em * em)
+{
+    const int numSeqs = em->numSeqs;
+    const int numHmmStates = em->hmm[0].numStates;
+    assert(em->hmm[0].numStates == em->hmm[1].numStates);
+    int i, j, k, seqLen;
+    double ** seqBack;
+    Hmm * hmm = &(em->hmm[em->hmmFlag]);
+    Data * dat = em->dat;
+
+    for(i = 0; i < numSeqs; i++)
+    {
+        seqBack = em->backward[i];
+        seqLen = dat->seqs[i].len;
+        for(j = 0; j < seqLen; j++)
+        {
+            for(k = 0; k < numHmmStates; k++)
+            {
+                printf("%.15f\t", seqBack[j][k]);
+            }
+            printf("\n");
+        }
+    }
+    return;
+}
+
+void Em_print_norm_const(Em * em)
+{
+    const int numSeqs = em->numSeqs;
+    const int numHmmStates = em->hmm[0].numStates;
+    assert(em->hmm[0].numStates == em->hmm[1].numStates);
+    int i, j, k, seqLen;
+    double * seqNorm;
+    Hmm * hmm = &(em->hmm[em->hmmFlag]);
+    Data * dat = em->dat;
+
+    for(i = 0; i < numSeqs; i++)
+    {
+        seqNorm = em->normConst[i];
+        seqLen = dat->seqs[i].len;
+        for(j = 0; j < seqLen; j++)
+        {
+            printf("%.15f\t", seqNorm[j]);
+            printf("\n");
+        }
+    }
+    return;
+}
+
+void Em_print_gamma(Em * em)
+{
+    const int numSeqs = em->numSeqs;
+    const int numHmmStates = em->hmm[0].numStates;
+    assert(em->hmm[0].numStates == em->hmm[1].numStates);
+    int i, j, k, seqLen;
+    double ** seqGamma;
+    Hmm * hmm = &(em->hmm[em->hmmFlag]);
+    Data * dat = em->dat;
+
+    for(i = 0; i < numSeqs; i++)
+    {
+        seqGamma = em->gamma[i];
+        seqLen = dat->seqs[i].len;
+        for(j = 0; j < seqLen; j++)
+        {
+            for(k = 0; k < numHmmStates; k++)
+            {
+                printf("%.15f\t", seqGamma[j][k]);
+            }
+            printf("\n");
+        }
+    }
+    return;
+}
+
+void Em_print_expect(Em * em)
+{
+    const int numSeqs = em->numSeqs;
+    const int numHmmStates = em->hmm[0].numStates;
+    assert(em->hmm[0].numStates == em->hmm[1].numStates);
+    int i, j, k, seqLen;
+    double ** seqGamma;
+    Hmm * hmm = &(em->hmm[em->hmmFlag]);
+    Data * dat = em->dat;
+
+    for(i = 0; i < numHmmStates; i++)
+    {
+        for(j = 0; j < numHmmStates; j++)
+        {
+            printf("%.15f\t", em->expect[i][j]);
+        }
+        printf("\n");
+    }
+    return;
+}
+
