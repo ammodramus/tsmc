@@ -45,14 +45,14 @@ int main(int argc, char ** argv)
     }
     else
     {
-        FILE * fin = chfopen("testseqs", "r");
+        fin = chfopen("testseqs", "r");
     }
     Data_read_data(&dat, fin);
     fclose(fin);
 
     Em_init(&em, &dat, lambdas, ts, n, initTheta, initRho, initTd, maxIterations);
 
-    for(i = 0; i < 30; i++)
+    for(i = 0; i < 2; i++)
     {
         Em_iterate(&em);
     }
