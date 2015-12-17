@@ -43,7 +43,9 @@ int main(int argc, char ** argv)
     Em em;
     Em_init(&em, &dat, lambdas, ts, n, initTheta, initRho, initTd, 20);
     Em_get_forward(&em);
-    Em_print_forward(&em);
+    Em_get_backward(&em);
+    Em_get_expectations(&em);
+    printf("likelihood = %.10e\n", Em_get_expected_log_likelihood(&em, 0));
 
     Data_free(&dat);
     free(ts);

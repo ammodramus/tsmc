@@ -9,7 +9,8 @@
 
 int main(int argc, char ** argv)
 {
-    int i, n = 10;
+    const int n = 10;
+    int i;
     double F;
     double * ts = (double *)chmalloc(sizeof(double) * (n+1));
     double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
@@ -29,31 +30,16 @@ int main(int argc, char ** argv)
             lambdas[i] = 2.0;
         }
     }
+
     double initRho = 1e-3;
     double initTheta = 1e-3;
     double initTd = 0.2;
     const int maxIterations = 20;
 
-    Data dat;
-    Data_init(&dat, polarized);
-    FILE * fin = chfopen("testseqs", "r");
-    Data_read_data(&dat, fin);
-    fclose(fin);
+    Hmm hmm;
+    Hmm_init(&hmm, n, ts);
+    Hmm_make_hmm(&hmm, lambdas, n, initTheta, initRho, initTd);
+    Hmm_print_pis(&hmm);
 
-    Em em;
-    Em_init(&em, &dat, lambdas, ts, n, initTheta, initRho, initTd, 20);
-    Em_get_forward(&em);
-    Em_print_forward(&em);
-
-    Data_free(&dat);
-    free(ts);
-    free(lambdas);
-
-    //Hmm_print_demography(&hmm);
-    //Hmm_print_pis(&hmm);
-    //Hmm_print_expectations(&hmm);
-    //Hmm_print_qts(&hmm);
-    //Hmm_print_pts(&hmm);
-    //Hmm_free(&hmm);
     return 0;
 }
