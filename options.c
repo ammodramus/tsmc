@@ -187,7 +187,7 @@ void Options_parse_options(int argc, char ** argv, Options * opt)
 
 	while(1)
 	{
-		c = getopt_long(argc, argv, "hi:f:p:", long_options, &optionIndex);
+		c = getopt_long(argc, argv, "hi:p:", long_options, &optionIndex);
 		if(c == -1)
 			break;
 		switch(c)
@@ -199,9 +199,6 @@ void Options_parse_options(int argc, char ** argv, Options * opt)
             case 'i':
                 success = sscanf(optarg, "%i", &(opt->numEmIterations));
                 break;
-            case 'f':
-                success = sscanf(optarg, "%s", &(opt->filename[0]));
-                break;
             case 'p':
                 success = sscanf(optarg, "%s", &(opt->paramString[0]));
                 break;
@@ -211,6 +208,13 @@ void Options_parse_options(int argc, char ** argv, Options * opt)
 				break;
 		}
 	}
+    if(optind == argc)
+    {
+        fprintf(stderr, "\nNo input file specified\n\n");
+        Options_print_help_statement();
+        exit(1);
+    }
+    success = sscanf(argv[optind], "%s", &(opt->filename[0]));
 
     Options_get_lambda_params(opt);
 
