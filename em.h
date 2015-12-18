@@ -1,9 +1,12 @@
 #ifndef EH_H
 #define EM_H
 
+#include "options.h"
+
 typedef struct 
 {
     Data * dat;
+    Options * opt;
     Hmm hmm[2];
     int hmmFlag;
     int numSeqs;
@@ -16,10 +19,11 @@ typedef struct
     double *** gamma;
     double ** expect;
     double ** normConst;
+    double * freeLambdas;
 } Em;
 
-void Em_init(Em * em, Data * dat, double * lambdas, double * ts, int n, 
-        double initTheta, double initRho, double initTd, int maxIterations);
+void Em_init(Em * em, Data * dat, Options * opt, double * ts, double initTheta,
+        double initRho, double initTd);
 void Em_free(Em * em);
 void Em_get_forward(Em * em);
 void Em_get_backward(Em * em);
