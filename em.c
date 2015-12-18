@@ -24,11 +24,12 @@ void Em_init(Em * em, Data * dat, Options * opt, double * ts, double initTheta,
     em->normConst = (double **)chmalloc(sizeof(double *) * em->numSeqs);
     em->gamma = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->freeLambdas = (double *)chmalloc(sizeof(double) * em->opt->numFreeLambdas);
+    em->numFreeLambdas = em->opt->numFreeLambdas;
 
     int i, j;
 
     const int n = opt->n;
-    for(i = 0; i < em->opt->numFreeLambdas; i++)
+    for(i = 0; i < em->numFreeLambdas; i++)
     {
         em->freeLambdas[i] = 1.0;
     }
@@ -103,9 +104,9 @@ void Em_free(Em * em)
     free(em->forward);
     free(em->backward);
     free(em->gamma);
+    free(em->freeLambdas);
     Hmm_free(&(em->hmm[0]));
     Hmm_free(&(em->hmm[1]));
-    free(em->freeLambdas);
     return;
 }
 
@@ -355,27 +356,41 @@ double objective_function(double * par)
     const double theta = par[1];
     const double Td = par[2];
 
+    const int numParams = em.numFreeLambdas+3;
+
     double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
 
-    int i;
-    for(i = 0; i < 3; i++)
+    int i, j;
+    for(i = 0; i < numParams; i++)
     {
-        if(par[i] <= 0.0)
+        if(i == 2)
         {
-            //fprintf(stdout, "%f\n", INFINITY);
+            if(par[i] < 0.0)
+            {
+                free(lambdas);
+                return INFINITY;
+            }
+        }
+        else if(par[i] <= 0.0)
+        {
             free(lambdas);
             return INFINITY;
         }
     }
 
-    for(i = 0; i < n+1; i++)
+    for(i = 0; i < em.opt->lambdaCounts[0]; i++)
     {
+        // set the first, fixed lambdas at 1
         lambdas[i] = 1.0;
     }
-
-    // parameters are lambdas, rho, theta, Td
-    // n+1 lambdas, so n+3 parameters
-    // first n+1 lambdas, then rho, theta, and Td
+    int lambdaIdx = em.opt->lambdaCounts[0];
+    for(i = 0; i < em.numFreeLambdas; i++)
+    {
+        for(j = 0; j < em.opt->lambdaCounts[i+1]; j++)
+        {
+            lambdas[lambdaIdx++] = par[i+3];
+        }
+    }
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
@@ -422,9 +437,6 @@ void Em_iterate(Em * em)
     // maximize likelihood
     // set Hmm model as max
     // flip hmmFlag
-    //void nelmin ( double fn ( double x[] ), int n, double start[], double xmin[], 
-        //double *ynewlo, double reqmin, double step[], int konvge, int kcount, 
-        //int *icount, int *numres, int *ifault );
 
     Em_get_forward(em);
     Em_get_backward(em);
@@ -439,25 +451,25 @@ void Em_iterate(Em * em)
     double fmin;
     int i, j;
 
-    const int numParams = em->opt->numFreeLambdas + 3;
+    const int numParams = em->numFreeLambdas + 3;
 
     double * start = (double *)chmalloc(sizeof(double) * numParams);
     start[0] = em->hmm[em->hmmFlag].rho;
     start[1] = em->hmm[em->hmmFlag].theta;
     start[2] = em->hmm[em->hmmFlag].Td;
     double * step = (double *)chmalloc(sizeof(double) * numParams);
-    step[0] = 1.0;
-    step[1] = 1.0;
-    step[2] = 5.0;
+    step[0] = 0.1;
+    step[1] = 0.1;
+    step[2] = 0.5;
     for(i = 3; i < numParams; i++)
     {
         start[i] = em->freeLambdas[i-3];
-        step[i] = 5.0;
+        step[i] = 0.5;
     }
+    double * fargmin = (double *)chmalloc(sizeof(double) * numParams);
 
     int konvge = 1, maxNumEval = 1000000;
     int iterationCount, numRestarts, errorNum;
-    double * fargmin = (double *)chmalloc(sizeof(double) * numParams);
     double reqmin = 1e-8;
 
 
@@ -468,18 +480,19 @@ void Em_iterate(Em * em)
     em->hmm[!em->hmmFlag].theta = fargmin[1];
     em->hmm[!em->hmmFlag].Td = fargmin[2];
 
-    for(i = 0; i < em->opt->numFreeLambdas; i++)
+    for(i = 0; i < em->numFreeLambdas; i++)
     {
         em->freeLambdas[i] = fargmin[i+3];
     }
     for(i = 0; i < em->opt->lambdaCounts[0]; i++)
     {
+        // set the first, fixed lambdas at 1
         em->hmm[!em->hmmFlag].lambdas[i] = 1.0;
     }
     int lambdaIdx = em->opt->lambdaCounts[0];
-    for(i = 0; i < em->opt->numFreeLambdas; i++)
+    for(i = 0; i < em->numFreeLambdas; i++)
     {
-        for(j = 0; j < em->opt->lambdaCounts[i]; j++)
+        for(j = 0; j < em->opt->lambdaCounts[i+1]; j++)
         {
             em->hmm[!em->hmmFlag].lambdas[lambdaIdx++] = em->freeLambdas[i];
         }
@@ -492,6 +505,10 @@ void Em_iterate(Em * em)
     DEBUGREPORTF(fargmin[0]);
     DEBUGREPORTF(fargmin[1]);
     DEBUGREPORTF(fargmin[2]);
+    for(i = 0; i < em->numFreeLambdas; i++)
+    {
+        DEBUGREPORTF(em->freeLambdas[i]);
+    }
 
     free(start);
     free(fargmin);
