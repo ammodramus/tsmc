@@ -32,3 +32,6 @@ expecttest: *.[ch]
 
 logliketest: *.[ch]
 	gcc likelihoodtest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o logliketest -g
+
+optionstest: *.[ch]
+	gcc optionstest.c options.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o optionstest -g
