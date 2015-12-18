@@ -13,6 +13,7 @@ typedef struct
     int numHmmStates;
     int numIterations;
     int maxIterations;
+    int numFreeLambdas;
     SeqType seqtype;
     double *** forward;
     double *** backward;
