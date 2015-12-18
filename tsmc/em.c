@@ -5,31 +5,47 @@
 #include "definitions.h"
 #include "hmm.h"
 #include "data.h"
+#include "options.h"
 #include "em.h"
 
 Em em;
 
-void Em_init(Em * em, Data * dat, double * lambdas, double * ts, int n, 
-        double initTheta, double initRho, double initTd, int maxIterations)
+void Em_init(Em * em, Data * dat, Options * opt, double * ts, double initTheta,
+        double initRho, double initTd)
 {
-    assert(em && dat && lambdas && ts);
+    assert(em && dat && opt && ts);
     assert(dat->numSeqs > 0);
     em->dat = dat;
+    em->opt = opt;
     em->numSeqs = dat->numSeqs;
     em->seqtype = dat->seqtype;
     em->forward = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->backward = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->normConst = (double **)chmalloc(sizeof(double *) * em->numSeqs);
     em->gamma = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
+    em->freeLambdas = (double *)chmalloc(sizeof(double) * em->opt->numFreeLambdas);
+
+    int i, j;
+
+    const int n = opt->n;
+    for(i = 0; i < em->opt->numFreeLambdas; i++)
+    {
+        em->freeLambdas[i] = 1.0;
+    }
+
+    double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+    for(i = 0; i < n+1; i++)
+    {
+        lambdas[i] = 1.0;
+    }
 
     Hmm_init(&(em->hmm[0]), n, ts);
     Hmm_init(&(em->hmm[1]), n, ts);
     Hmm_make_hmm(&(em->hmm[0]), lambdas, n, initTheta, initRho, initTd);
     em->hmmFlag = 0;
     em->numIterations = 0;
-    em->maxIterations = maxIterations;
+    em->maxIterations = opt->numEmIterations;
 
-    int i, j;
     const int numHmmStates = (n+1)*(n+2)/2;
     em->numHmmStates = numHmmStates;
 
@@ -58,6 +74,7 @@ void Em_init(Em * em, Data * dat, double * lambdas, double * ts, int n,
     {
         em->expect[i] = (double *)chmalloc(sizeof(double) * numHmmStates);
     }
+    free(lambdas);
     return;
 }
 
@@ -88,6 +105,7 @@ void Em_free(Em * em)
     free(em->gamma);
     Hmm_free(&(em->hmm[0]));
     Hmm_free(&(em->hmm[1]));
+    free(em->freeLambdas);
     return;
 }
 
@@ -419,34 +437,53 @@ void Em_iterate(Em * em)
     const int n = em->hmm[0].n;
 
     double fmin;
-    int i;
+    int i, j;
 
-    double * start = (double *)chmalloc(sizeof(double) * (3));
+    const int numParams = em->opt->numFreeLambdas + 3;
+
+    double * start = (double *)chmalloc(sizeof(double) * numParams);
     start[0] = em->hmm[em->hmmFlag].rho;
     start[1] = em->hmm[em->hmmFlag].theta;
     start[2] = em->hmm[em->hmmFlag].Td;
+    double * step = (double *)chmalloc(sizeof(double) * numParams);
+    step[0] = 1.0;
+    step[1] = 1.0;
+    step[2] = 5.0;
+    for(i = 3; i < numParams; i++)
+    {
+        start[i] = em->freeLambdas[i-3];
+        step[i] = 5.0;
+    }
 
     int konvge = 1, maxNumEval = 1000000;
     int iterationCount, numRestarts, errorNum;
-    double * fargmin = (double *)chmalloc(sizeof(double) * (3));
+    double * fargmin = (double *)chmalloc(sizeof(double) * numParams);
     double reqmin = 1e-8;
 
-    double * step = (double *)chmalloc(sizeof(double) * (3));
-    step[0] = 1.0;
-    step[1] = 1.0;
-    step[2] = 1.0;
 
-    nelmin(objective_function, 3, start, fargmin, &fmin, reqmin, step,
+    nelmin(objective_function, numParams, start, fargmin, &fmin, reqmin, step,
             konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
-
-    for(i = 0; i < n+1; i++)
-    {
-        em->hmm[!em->hmmFlag].lambdas[i] = 1.0;
-    }
 
     em->hmm[!em->hmmFlag].rho = fargmin[0];
     em->hmm[!em->hmmFlag].theta = fargmin[1];
     em->hmm[!em->hmmFlag].Td = fargmin[2];
+
+    for(i = 0; i < em->opt->numFreeLambdas; i++)
+    {
+        em->freeLambdas[i] = fargmin[i+3];
+    }
+    for(i = 0; i < em->opt->lambdaCounts[0]; i++)
+    {
+        em->hmm[!em->hmmFlag].lambdas[i] = 1.0;
+    }
+    int lambdaIdx = em->opt->lambdaCounts[0];
+    for(i = 0; i < em->opt->numFreeLambdas; i++)
+    {
+        for(j = 0; j < em->opt->lambdaCounts[i]; j++)
+        {
+            em->hmm[!em->hmmFlag].lambdas[lambdaIdx++] = em->freeLambdas[i];
+        }
+    }
 
     em->hmmFlag = !em->hmmFlag;
 
