@@ -171,7 +171,7 @@ void Options_get_lambda_params(Options * opt)
     return;
 }
 
-void Options_parse_options(int argc, char ** argv, Options * opt)
+void Options_parse_options(Options * opt, int argc, char ** argv)
 {
 	int optionIndex, success;
 	char c;
