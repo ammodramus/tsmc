@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
+#include <assert.h>
 #include "definitions.h"
 #include "options.h"
 
@@ -73,40 +74,19 @@ inline int is_numeric(char ch)
     return (numCh >= 0 && numCh <= 9);
 }
 
-/*
- * Algorithm for parsing options
- *
- * initialize
- * -----
- *  expectNum = True
- *  times = 1
- *  numIdx = 0
- *  num = empty string
- * 
- * iterate
- * ------
- *  - get character ch
- *  - end if ch is '\0'
- *  - if expectNum:
- *       is not numeric:
- *         error
- *       else:
- *         num[numIdx] = 
- */     
-
 void Options_get_lambda_params(Options * opt)
 {
-    char * const filename = opt->filename;
+    char * const pattern = opt->paramString;
     char ch;
     int i;
     char chnum[20];
     int num, success;
     int strIdx = 0, numIdx = 0;
     int done = 0, good;
-    int expectNum = 1, times = 1;
+    int expectNum = 1, times = 1, haveNum = 0;
     readState state = count;
     opt->numFreeLambdas = 0;
-    while((ch = filename[strIdx++]) != '\0')
+    while((ch = pattern[strIdx++]) != '\0')
     {
         good = check_char(ch);
         if(!good)
@@ -121,6 +101,7 @@ void Options_get_lambda_params(Options * opt)
             }
             chnum[numIdx++] = ch;
             expectNum = 0;
+            haveNum = 1;
             continue;
         }
         else
@@ -133,16 +114,15 @@ void Options_get_lambda_params(Options * opt)
             }
             else
             {
-                num[numIdx] = '\0';
+                chnum[numIdx] = '\0';
+                success = sscanf(chnum, "%i", &num);
                 numIdx = 0;
-                success = sscanf("%i", &num);
                 if(!success)
                 {
                     perror("invalid -p argument");
                 }
                 if(ch == '+')
                 {
-                    opt->lambdaCounts[opt->numFreeLambdas] = times;
                     for(i = 0; i < times; i++)
                     {
                         opt->lambdaCounts[opt->numFreeLambdas] = num;
@@ -150,6 +130,7 @@ void Options_get_lambda_params(Options * opt)
                     }
                     times = 1;
                     expectNum = 1;
+                    haveNum = 0;
                     continue;
                 }
                 else if(ch == '*')
@@ -157,6 +138,7 @@ void Options_get_lambda_params(Options * opt)
                     // times
                     times = num;
                     expectNum = 1;
+                    haveNum = 0;
                 }
                 else
                 {
@@ -165,6 +147,27 @@ void Options_get_lambda_params(Options * opt)
             }
         }
     }
+    if(haveNum) // (haveNum might always be equal to !expectNum)
+    {
+        success = sscanf(chnum, "%i", &num);
+        if(!success)
+        {
+            perror("invalid -p argument\n");
+        }
+        for(i = 0; i < times; i++)
+        {
+            opt->lambdaCounts[opt->numFreeLambdas] = num;
+            opt->numFreeLambdas++;
+        }
+    }
+    opt->numFreeLambdas--;  // the first lambda is not a free param (always
+                            // equal to 1)
+    opt->n = 0;
+    for(i = 0; i < opt->numFreeLambdas+1; i++)
+    {
+        opt->n += opt->lambdaCounts[i];
+    }
+
     return;
 }
 
@@ -197,10 +200,10 @@ void Options_parse_options(int argc, char ** argv, Options * opt)
                 success = sscanf(optarg, "%i", &(opt->numEmIterations));
                 break;
             case 'f':
-                success = sscanf(optarg, "%s", &(opt->filename));
+                success = sscanf(optarg, "%s", &(opt->filename[0]));
                 break;
             case 'p':
-                success = sscanf(optarg, "%s", &(opt->paramString));
+                success = sscanf(optarg, "%s", &(opt->paramString[0]));
                 break;
 			default:
 				Options_print_help_statement();
@@ -221,10 +224,11 @@ void Options_print_options(Options * opt)
     printf("filename: %s\n", opt->filename);
     printf("numIterations: %i\n", opt->numEmIterations);
     printf("numFreeLambdas: %i\n", opt->numFreeLambdas);
+    printf("n: %i\n", opt->n);
     assert(opt->numFreeLambdas > 0);
-    for(i = 0; i < opt->numFreeLambdas; i++)
+    for(i = 0; i < opt->numFreeLambdas+1; i++)
     {
-        printf("lambda count %i = %i\n", opt->lambdaCounts[i]);
+        printf("lambda count %i = %i\n", i, opt->lambdaCounts[i]);
     }
     return;
 }
