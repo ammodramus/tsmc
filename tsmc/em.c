@@ -454,19 +454,19 @@ void Em_iterate(Em * em)
 
     int konvge = 1, maxNumEval = 1000000;
     int iterationCount = 0, numRestarts, errorNum;
-    double reqmin = 1e-3;
+    double reqmin = 1e-1;
 
 
     nelmin(objective_function, numParams, start, fargmin, &fmin, reqmin, step,
             konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
 
-    em->hmm[!em->hmmFlag].rho = fargmin[0]*fargmin[0];
-    em->hmm[!em->hmmFlag].theta = fargmin[1]*fargmin[1];
-    em->hmm[!em->hmmFlag].Td = fargmin[2]*fargmin[2];
+    em->hmm[!em->hmmFlag].rho = sqrt(fabs(fargmin[0]));
+    em->hmm[!em->hmmFlag].theta = sqrt(fabs(fargmin[1]));
+    em->hmm[!em->hmmFlag].Td = sqrt(fabs(fargmin[2]));
 
     for(i = 0; i < em->numFreeLambdas; i++)
     {
-        em->freeLambdas[i] = fargmin[i+3]*fargmin[i+3];
+        em->freeLambdas[i] = sqrt(fabs(fargmin[i+3]));
     }
 
     for(i = 0; i < em->opt->lambdaCounts[0]; i++)
