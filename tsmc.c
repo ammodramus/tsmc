@@ -14,7 +14,7 @@ int main(int argc, char ** argv)
 {
 
     Options opt;
-    Options_parse_options(argc, argv, &opt);
+    Options_parse_options(&opt, argc, argv);
 
     const int n = opt.n;
 
@@ -30,7 +30,6 @@ int main(int argc, char ** argv)
     double initRho = 1e-3;
     double initTheta = 1e-3;
     double initTd = 0.2;
-    const int maxIterations = 20;
 
     Data dat;
     Data_init(&dat, polarized);
@@ -45,7 +44,10 @@ int main(int argc, char ** argv)
         fin = stdin;
     }
     Data_read_data(&dat, fin);
-    fclose(fin);
+    if(strcmp(opt.filename, "-") != 0)
+    {
+        fclose(fin);
+    }
 
     Em_init(&em, &dat, &opt, ts, initTheta, initRho, initTd);
 
