@@ -114,9 +114,10 @@ void Options_get_lambda_params(Options * opt)
             }
             else
             {
+                assert(!is_numeric(ch));
                 chnum[numIdx] = '\0';
-                success = sscanf(chnum, "%i", &num);
                 numIdx = 0;
+                success = sscanf(chnum, "%i", &num);
                 if(!success)
                 {
                     perror("invalid -p argument");
@@ -149,6 +150,7 @@ void Options_get_lambda_params(Options * opt)
     }
     if(haveNum) // (haveNum might always be equal to !expectNum)
     {
+        chnum[numIdx] = '\0';
         success = sscanf(chnum, "%i", &num);
         if(!success)
         {
@@ -229,7 +231,7 @@ void Options_print_options(Options * opt)
     printf("numIterations: %i\n", opt->numEmIterations);
     printf("numFreeLambdas: %i\n", opt->numFreeLambdas);
     printf("n: %i\n", opt->n);
-    assert(opt->numFreeLambdas > 0);
+    assert(opt->numFreeLambdas >= 0);
     for(i = 0; i < opt->numFreeLambdas+1; i++)
     {
         printf("lambda count %i = %i\n", i, opt->lambdaCounts[i]);
