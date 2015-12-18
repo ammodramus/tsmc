@@ -352,31 +352,15 @@ double objective_function(double * par)
     assert(em.hmm[0].n == em.hmm[1].n);
     const int numHmmStates = em.numHmmStates;
 
-    const double rho = par[0];
-    const double theta = par[1];
-    const double Td = par[2];
+    const double rho = par[0]*par[0];
+    const double theta = par[1]*par[1];
+    const double Td = par[2]*par[2];
 
     const int numParams = em.numFreeLambdas+3;
 
     double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
 
     int i, j;
-    for(i = 0; i < numParams; i++)
-    {
-        if(i == 2)
-        {
-            if(par[i] < 0.0)
-            {
-                free(lambdas);
-                return INFINITY;
-            }
-        }
-        else if(par[i] <= 0.0)
-        {
-            free(lambdas);
-            return INFINITY;
-        }
-    }
 
     for(i = 0; i < em.opt->lambdaCounts[0]; i++)
     {
@@ -388,7 +372,7 @@ double objective_function(double * par)
     {
         for(j = 0; j < em.opt->lambdaCounts[i+1]; j++)
         {
-            lambdas[lambdaIdx++] = par[i+3];
+            lambdas[lambdaIdx++] = par[i+3]*par[i+3];
         }
     }
 
@@ -454,36 +438,37 @@ void Em_iterate(Em * em)
     const int numParams = em->numFreeLambdas + 3;
 
     double * start = (double *)chmalloc(sizeof(double) * numParams);
-    start[0] = em->hmm[em->hmmFlag].rho;
-    start[1] = em->hmm[em->hmmFlag].theta;
-    start[2] = em->hmm[em->hmmFlag].Td;
+    start[0] = sqrt(em->hmm[em->hmmFlag].rho);
+    start[1] = sqrt(em->hmm[em->hmmFlag].theta);
+    start[2] = sqrt(em->hmm[em->hmmFlag].Td);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
-    step[0] = 0.1;
-    step[1] = 0.1;
-    step[2] = 0.5;
+    step[0] = sqrt(0.1);
+    step[1] = sqrt(0.1);
+    step[2] = sqrt(0.5);
     for(i = 3; i < numParams; i++)
     {
-        start[i] = em->freeLambdas[i-3];
-        step[i] = 0.5;
+        start[i] = sqrt(em->freeLambdas[i-3]);
+        step[i] = sqrt(0.5);
     }
     double * fargmin = (double *)chmalloc(sizeof(double) * numParams);
 
     int konvge = 1, maxNumEval = 1000000;
-    int iterationCount, numRestarts, errorNum;
-    double reqmin = 1e-8;
+    int iterationCount = 0, numRestarts, errorNum;
+    double reqmin = 1e-3;
 
 
     nelmin(objective_function, numParams, start, fargmin, &fmin, reqmin, step,
             konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
 
-    em->hmm[!em->hmmFlag].rho = fargmin[0];
-    em->hmm[!em->hmmFlag].theta = fargmin[1];
-    em->hmm[!em->hmmFlag].Td = fargmin[2];
+    em->hmm[!em->hmmFlag].rho = fargmin[0]*fargmin[0];
+    em->hmm[!em->hmmFlag].theta = fargmin[1]*fargmin[1];
+    em->hmm[!em->hmmFlag].Td = fargmin[2]*fargmin[2];
 
     for(i = 0; i < em->numFreeLambdas; i++)
     {
-        em->freeLambdas[i] = fargmin[i+3];
+        em->freeLambdas[i] = fargmin[i+3]*fargmin[i+3];
     }
+
     for(i = 0; i < em->opt->lambdaCounts[0]; i++)
     {
         // set the first, fixed lambdas at 1
@@ -501,10 +486,11 @@ void Em_iterate(Em * em)
     em->hmmFlag = !em->hmmFlag;
 
     DEBUGREPORTI(errorNum);
+    DEBUGREPORTI(iterationCount);
     DEBUGREPORTF(fmin);
-    DEBUGREPORTF(fargmin[0]);
-    DEBUGREPORTF(fargmin[1]);
-    DEBUGREPORTF(fargmin[2]);
+    DEBUGREPORTF(em->hmm[em->hmmFlag].rho);
+    DEBUGREPORTF(em->hmm[em->hmmFlag].theta);
+    DEBUGREPORTF(em->hmm[em->hmmFlag].Td);
     for(i = 0; i < em->numFreeLambdas; i++)
     {
         DEBUGREPORTF(em->freeLambdas[i]);
