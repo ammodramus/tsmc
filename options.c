@@ -6,6 +6,8 @@
 #include "definitions.h"
 #include "options.h"
 
+#define DEFAULTPATTERN "5*4"
+
 
 static struct option long_options[] =
 {
@@ -32,14 +34,7 @@ void Options_set_defaults(Options * opt)
     // 2*4+8*2+1*4
     int i;
     opt->numFreeLambdas = 10;
-    int counts[] = {4,4,2,2,2,2,2,2,2,2,4};
-    int sum = 0;
-    for(i = 0; i < opt->numFreeLambdas+1; i++)
-    {
-        opt->lambdaCounts[i] = counts[i];
-        sum += counts[i];
-    }
-    opt->n = sum;
+    strcpy(&(opt->paramString[0]), DEFAULTPATTERN); 
 
     opt->numEmIterations = 20;
 
