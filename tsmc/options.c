@@ -162,6 +162,10 @@ void Options_get_lambda_params(Options * opt)
             opt->numFreeLambdas++;
         }
     }
+    else
+    {
+        perror("invalid -p argument");
+    }
     opt->numFreeLambdas--;  // the first lambda is not a free param (always
                             // equal to 1)
     opt->n = 0;
