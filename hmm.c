@@ -138,6 +138,7 @@ void Hmm_get_pis(Hmm * hmm)
                 {
                     hmm->pis[idx] = exp(-3.0*get_omega_interval_interval(
                                 hmm, 0, n));
+                    assert(0 < hmm->pis[idx] && hmm->pis[idx] < 1);
                 }
                 else
                 {
@@ -145,6 +146,7 @@ void Hmm_get_pis(Hmm * hmm)
                             hmm, 0, i))*
                             (2.0 - 3.0*exp(-hmm->intervalOmegas[i]) 
                              + exp(-3.0*hmm->intervalOmegas[i]));
+                    assert(0 < hmm->pis[idx] && hmm->pis[idx] < 1);
                 }
             }
             // i < j
@@ -159,6 +161,7 @@ void Hmm_get_pis(Hmm * hmm)
                         * (exp(-hmm->intervalOmegas[i])
                                 - exp(-3.0*hmm->intervalOmegas[i]))
                         * (1.0 - exp(-hmm->intervalOmegas[j]));
+                    assert(0 < hmm->pis[idx] && hmm->pis[idx] < 1);
                 }
                 else
                 {
@@ -168,6 +171,7 @@ void Hmm_get_pis(Hmm * hmm)
                         exp(-get_omega_interval_interval(hmm,i+1,j)) *
                         (exp(-hmm->intervalOmegas[i]) - 
                                 exp(-3.0*hmm->intervalOmegas[i]));
+                    assert(0 < hmm->pis[idx] && hmm->pis[idx] < 1);
                 }
             }
         }
@@ -190,6 +194,8 @@ void Hmm_get_expectations(Hmm * hmm)
                 {
                     hmm->Eijs3s[idx] = hmm->ts[n] + hmm->lambdas[n]/3.0;
                     hmm->Eijs2s[idx] = hmm->Eijs3s[idx] + hmm->lambdas[n];
+                    assert(0 < hmm->Eijs3s[idx] && hmm->Eijs3s[idx] < INFINITY);
+                    assert(0 < hmm->Eijs2s[idx] && hmm->Eijs2s[idx] < INFINITY);
                 }
                 else
                 {
@@ -201,6 +207,7 @@ void Hmm_get_expectations(Hmm * hmm)
                          (6*hmm->ts[i+1]+5*hmm->lambdas[i]) -
                         9*exp(-hmm->intervalOmegas[i]) *
                         (2*hmm->ts[i] + hmm->lambdas[i]));
+                    assert(0 < hmm->Eijs3s[idx] && hmm->Eijs3s[idx] < INFINITY);
                         
                     hmm->Eijs2s[idx] = 1.0/(6.0*hmm->pis[idx])
                         * exp(-3*get_omega_interval_interval(hmm, 0, i))
@@ -209,6 +216,7 @@ void Hmm_get_expectations(Hmm * hmm)
                            + 6*hmm->ts[i] + 8*hmm->lambdas[i]
                            - 9*exp(-hmm->intervalOmegas[i]) *
                            (hmm->ts[i+1]+hmm->lambdas[i]));
+                    assert(0 < hmm->Eijs2s[idx] && hmm->Eijs3s[idx] < INFINITY);
                 }
             }
             else
