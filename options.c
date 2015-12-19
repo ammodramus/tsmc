@@ -168,6 +168,7 @@ void Options_get_lambda_params(Options * opt)
     {
         opt->n += opt->lambdaCounts[i];
     }
+    opt->n--;
 
     return;
 }
