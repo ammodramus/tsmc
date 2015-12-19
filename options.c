@@ -31,7 +31,6 @@ void Options_print_help_statement()
 void Options_set_defaults(Options * opt)
 {
     strcpy(&(opt->filename[0]), "-");
-    // 2*4+8*2+1*4
     int i;
     opt->numFreeLambdas = 10;
     strcpy(&(opt->paramString[0]), DEFAULTPATTERN); 
