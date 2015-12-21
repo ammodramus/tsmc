@@ -422,8 +422,11 @@ void Em_iterate(Em * em)
     // set Hmm model as max
     // flip hmmFlag
 
+    timestamp("making forward");
     Em_get_forward(em);
+    timestamp("making backward");
     Em_get_backward(em);
+    timestamp("making gamma and xi");
     Em_get_expectations(em);
 
     DEBUGREPORTF(Em_get_loglikelihood(em));
@@ -457,8 +460,10 @@ void Em_iterate(Em * em)
     double reqmin = 1e-1;
 
 
+    timestamp("optimization start");
     nelmin(objective_function, numParams, start, fargmin, &fmin, reqmin, step,
             konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
+    timestamp("optimization end");
 
     em->hmm[!em->hmmFlag].rho = fargmin[0]*fargmin[0];
     em->hmm[!em->hmmFlag].theta = fargmin[1]*fargmin[1];
