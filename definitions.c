@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "definitions.h"
+
 
 inline void * chmalloc(size_t size)
 {
@@ -50,4 +52,16 @@ inline void perror(const char * msg)
 {
     fprintf(stderr, "%s\n", msg);
     exit(1);
+}
+
+void timestamp(const char * msg)
+{
+    char timestmp[100];
+    struct tm * timeInfo;
+    time_t rawTime;
+    time(&rawTime);
+    timeInfo = localtime(&rawTime);
+    strftime(timestmp, 100, "%c", timeInfo);
+    fprintf(stderr, "%s -- %s\n", timestmp, msg);
+    return;
 }

@@ -13,5 +13,6 @@ void * chmalloc(size_t size);
 inline void * chrealloc(void * oldptr, size_t size);
 inline void * chcalloc(size_t nmemb, size_t size);
 inline FILE * chfopen(const char * path, const char * mode);
+void timestamp(const char * msg);
 
 #endif
