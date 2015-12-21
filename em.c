@@ -378,7 +378,6 @@ double objective_function(double * par)
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
-    // should not have to make hmm for this step!!!
     Hmm_make_hmm(scratchHmm, lambdas, n, theta, rho, Td);
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
