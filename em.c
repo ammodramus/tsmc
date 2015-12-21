@@ -347,6 +347,7 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
 // write an objective function
 double objective_function(double * par)
 {
+    timestamp("objective function evaluation");
     // (em is a global)
     const int n = em.hmm[0].n;
     assert(em.hmm[0].n == em.hmm[1].n);
