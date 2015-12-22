@@ -27,9 +27,6 @@ int main(int argc, char ** argv)
         F = (double)(i) * 1.0/((double)n+1.0);
         ts[i] = -log(1-F);
     }
-    double initRho = 1e-3;
-    double initTheta = 1e-3;
-    double initTd = 0.2;
 
     Data dat;
     Data_init(&dat, polarized);
@@ -49,7 +46,9 @@ int main(int argc, char ** argv)
         fclose(fin);
     }
 
-    Em_init(&em, &dat, &opt, ts, initTheta, initRho, initTd);
+    double initRho = 1e-1;
+    double initTd = 0.2;
+    Em_init(&em, &dat, &opt, ts, initRho, initTd);
 
     for(i = 0; i < opt.numEmIterations; i++)
     {
