@@ -1604,7 +1604,7 @@ With these probabilities, we can calculate $\E_{X|Y}[\log(\Prob(X,Y|\theta))]$:
         \sum_{i=1}^{T-1}\bigg(\E_{X|Y}\left[\log P_{x_i,x_{i+1}}\right] +
         \E_{X|Y}\left[\log(e_{x_{i+1}}(y_{i+1}))\right]\bigg)\\
         &= \sum_{j=1}^N\gamma_j(1) \log \pi_j + 
-        \sum_{t=1}^T\sum_{j=1}^N\log\left[e_j(t)\right]\gamma_j(t)+\\
+        \sum_{t=1}^T\sum_{j=1}^N\log\left[e_j(y_t)\right]\gamma_j(t)+\\
         &\qquad\sum_{t=1}^{T-1}\sum_{i=1}^N\sum_{j=1}^N\log(P_{i,j})\xi_{i,j}(t)
 \end{align*}
 
