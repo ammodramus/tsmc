@@ -6,6 +6,9 @@ optimize: *.[ch]
 debug: *.[ch]
 	gcc tsmc.c options.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o tsmc -g
 
+profile: *.[ch]
+	gcc tsmc.c options.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o tsmcprofile -pg
+
 emissionstest: *.[ch]
 	gcc emissionstest.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o emissionstest -g
 
