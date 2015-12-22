@@ -18,7 +18,8 @@ typedef struct
     double *** forward;
     double *** backward;
     double *** gamma;
-    double ** expect;
+    double ** expectTransitions;
+    fourd * expectEmissions;
     double ** normConst;
     double * freeLambdas;
 } Em;
