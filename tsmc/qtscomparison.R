@@ -38,3 +38,14 @@ hist(abs(c(dat.tsmc)-c(dat.mma)))
 # all working!
 summary(abs(c(dat.tsmc)-c(dat.mma)))
 summary(abs(c(dat.tsmc)-c(dat.int)))
+
+################################
+# working with ms transitions
+################################
+
+ms.tallies = as.matrix(read.csv("qtstallies",header=F))
+qtsprobs = as.matrix(read.csv("qtstestout",header=F))
+dim(ms.tallies)
+hist(abs(c(ms.tallies) - c(qtsprobs)), breaks = 100)
+ms.tallies[1:4,1:4]
+qtsprobs[1:4,1:4]
