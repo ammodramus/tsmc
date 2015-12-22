@@ -70,11 +70,12 @@ void Em_init(Em * em, Data * dat, Options * opt, double * ts, double initTheta,
                     numHmmStates);
         }
     }
-    em->expect = (double **)chmalloc(sizeof(double *) * numHmmStates);
+    em->expectTransitions = (double **)chmalloc(sizeof(double *) * numHmmStates);
     for(i = 0; i < numHmmStates; i++)
     {
-        em->expect[i] = (double *)chmalloc(sizeof(double) * numHmmStates);
+        em->expectTransitions[i] = (double *)chmalloc(sizeof(double) * numHmmStates);
     }
+    em->expectEmissions = (fourd *)chmalloc(sizeof(fourd) * numHmmStates);
     free(lambdas);
     return;
 }
@@ -97,14 +98,15 @@ void Em_free(Em * em)
     }
     for(i = 0; i < em->numHmmStates; i++)
     {
-        free(em->expect[i]);
+        free(em->expectTransitions[i]);
     }
     free(em->normConst);
-    free(em->expect);
+    free(em->expectTransitions);
     free(em->forward);
     free(em->backward);
     free(em->gamma);
     free(em->freeLambdas);
+    free(em->expectEmissions);
     Hmm_free(&(em->hmm[0]));
     Hmm_free(&(em->hmm[1]));
     return;
@@ -229,7 +231,8 @@ void Em_get_expectations(Em * em)
     double *** const forward = em->forward;
     double *** const backward = em->backward;
     double *** const gamma = em->gamma;
-    double ** const expect = em->expect;
+    fourd * const expectEmissions = em->expectEmissions;
+    double ** const expectTransitions = em->expectTransitions;
     double ** const pts = em->hmm[hmmIdx].pts;
     fourd * const emissions = em->hmm[hmmIdx].emissions;
     const int numHmmStates = em->hmm[hmmIdx].numStates;
@@ -248,7 +251,11 @@ void Em_get_expectations(Em * em)
     {
         for(k = 0; k < numHmmStates; k++)
         {
-            expect[j][k] = 0.0;
+            expectTransitions[j][k] = 0.0;
+        }
+        for(k = 0; k < 4; k++)
+        {
+            expectEmissions[j][k] = 0.0;
         }
     }
 
@@ -273,6 +280,7 @@ void Em_get_expectations(Em * em)
             for(l = 0; l < numHmmStates; l++)
             {
                 em->gamma[i][j][l] /= sum;
+                expectEmissions[l][seqData[j]] += em->gamma[i][j][l];
                 assert(0 < em->gamma[i][j][l] && em->gamma[i][j][l] < 1);
             }
         }
@@ -289,7 +297,7 @@ void Em_get_expectations(Em * em)
                         thisExpect = em->gamma[i][j][k] * pts[k][l] * 
                             seqBack[j+1][l] * emissions[l][seqData[j+1]] / 
                             (em->normConst[i][j+1] * seqBack[j][k]);
-                        expect[k][l] += thisExpect;
+                        expectTransitions[k][l] += thisExpect;
                         assert(0 <= thisExpect && thisExpect <= 1);
                     }
                 }
@@ -303,7 +311,8 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
 {
     Hmm * const hmm = &(em->hmm[hmmIdx]);
     double *** const gamma = em->gamma;
-    double ** const expect = em->expect;
+    double ** const expectTransitions = em->expectTransitions;
+    fourd * expectEmissions = em->expectEmissions;
     double ** const pts = hmm->pts;
     double * const pis = hmm->pis;
     fourd * const emissions = hmm->emissions;
@@ -323,21 +332,18 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
         {
             loglike += gamma[i][0][j] * log(pis[j]);
         }
-        for(j = 0; j < seqLen; j++)
-        {
-            for(k = 0; k < numHmmStates; k++)
-            {
-                loglike += gamma[i][j][k] * log(emissions[k][seqData[j]]);
-            }
-        }
     }
     for(i = 0; i < numHmmStates; i++)
     {
+        for(j = 0; j < 4; j++)
+        {
+            loglike += log(emissions[i][j]) * expectEmissions[i][j];
+        }
         for(j = 0; j < numHmmStates; j++)
         {
-            if(pts[i][j] || expect[i][j] > 0.0)
+            if(pts[i][j] || expectTransitions[i][j] > 0.0)
             {
-                loglike += expect[i][j] * log(pts[i][j]);
+                loglike += expectTransitions[i][j] * log(pts[i][j]);
             }
         }
     }
@@ -621,7 +627,7 @@ void Em_print_expect(Em * em)
     {
         for(j = 0; j < numHmmStates; j++)
         {
-            printf("%.15f\t", em->expect[i][j]);
+            printf("%.15f\t", em->expectTransitions[i][j]);
         }
         printf("\n");
     }
