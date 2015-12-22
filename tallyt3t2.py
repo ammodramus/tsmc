@@ -1,9 +1,14 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
 import numpy as np
 import fileinput
 import sys
 
+
 if len(sys.argv) != 3:
-    raise Exception("Usage: python tallyt3t2.py timegraphy input")
+    print("\nUsage: python tallyt3t2.py demography input\n", file=sys.stderr)
+    sys.exit(1)
 
 def get_time_index(time):
     global timepoints
@@ -55,9 +60,9 @@ totalCounts = np.zeros(shape = (numStates,), dtype = np.int)
 for t3sChrom, t2sChrom in zip(t3s, t2s):
     s3 = t3sChrom[0]
     s2 = t2sChrom[0]
-    i = get_time_index(s3)
-    j = get_time_index(s2)
     for t3, t2 in zip(t3sChrom[1:], t2sChrom[1:]):
+        i = get_time_index(s3)
+        j = get_time_index(s2)
         rowIdx = get_rowcol_index(i,j)
         totalCounts[rowIdx] += 1
         if t3 == s3 and t2 == s2:
@@ -73,6 +78,5 @@ for t3sChrom, t2sChrom in zip(t3s, t2s):
 
 probs = counts.astype(np.double)
 for i in xrange(probs.shape[0]):
-    probs[i] /= totalCounts[i].astype(np.double)
-
+    probs[i] /= totalCounts[i].astype(np.double) 
 np.savetxt(sys.stdout, probs, delimiter = ',')
