@@ -482,8 +482,8 @@ void Em_iterate(Em * em)
     start[1] = sqrt(em->hmm[em->hmmFlag].theta);
     start[2] = sqrt(em->hmm[em->hmmFlag].Td);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
-    step[0] = sqrt(0.1);
-    step[1] = sqrt(0.1);
+    step[0] = sqrt(0.5);
+    step[1] = sqrt(0.5);
     step[2] = sqrt(0.5);
     for(i = 3; i < numParams; i++)
     {
