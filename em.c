@@ -10,7 +10,7 @@
 
 Em em;
 
-void Em_init(Em * em, Data * dat, Options * opt, double * ts, double initTheta,
+void Em_init(Em * em, Data * dat, Options * opt, double * ts,
         double initRho, double initTd)
 {
     assert(em && dat && opt && ts);
@@ -25,6 +25,8 @@ void Em_init(Em * em, Data * dat, Options * opt, double * ts, double initTheta,
     em->gamma = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->freeLambdas = (double *)chmalloc(sizeof(double) * em->opt->numFreeLambdas);
     em->numFreeLambdas = em->opt->numFreeLambdas;
+
+    const double initTheta = Em_get_initial_theta(em);
 
     int i, j;
 
@@ -111,6 +113,35 @@ void Em_free(Em * em)
     Hmm_free(&(em->hmm[1]));
     return;
 }
+
+double Em_get_initial_theta(Em * em)
+{
+    assert(em && em->dat);
+    int i, j, seqLen, totalLen = 0;
+    int sfs[] = {0,0};
+    char * seqData;
+    for(i = 0; i < em->numSeqs; i++)
+    {
+        seqLen = em->dat->seqs[i].len;
+        seqData = em->dat->seqs[i].data;
+        for(j = 0; j < seqLen; j++)
+        {
+            totalLen++;
+            if(seqData[j] > 0)
+            {
+                sfs[seqData[j]-1] += 1;
+            }
+        }
+    }
+    double thetaDoubleton = 2.0*sfs[1]/(double)totalLen;
+    double thetaSingleton = sfs[0]/(double)totalLen;
+    double meanTheta = (thetaDoubleton + thetaSingleton)/2.0;
+    DEBUGREPORTF(meanTheta);
+    return meanTheta;
+}
+            
+
+
 
 void Em_get_forward(Em * em)
 {

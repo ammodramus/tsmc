@@ -24,9 +24,10 @@ typedef struct
     double * freeLambdas;
 } Em;
 
-void Em_init(Em * em, Data * dat, Options * opt, double * ts, double initTheta,
+void Em_init(Em * em, Data * dat, Options * opt, double * ts,
         double initRho, double initTd);
 void Em_free(Em * em);
+double Em_get_initial_theta(Em * em);
 void Em_get_forward(Em * em);
 void Em_get_backward(Em * em);
 void Em_get_expectations(Em * em);
