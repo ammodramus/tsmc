@@ -44,8 +44,20 @@ summary(abs(c(dat.tsmc)-c(dat.int)))
 ################################
 
 ms.tallies = as.matrix(read.csv("qtstallies",header=F))
+ms.tallies2 = as.matrix(read.csv("qtstallies_mspms_2",header=F))
 qtsprobs = as.matrix(read.csv("qtstestout",header=F))
 dim(ms.tallies)
 hist(abs(c(ms.tallies) - c(qtsprobs)), breaks = 100)
 ms.tallies[1:4,1:4]
 qtsprobs[1:4,1:4]
+
+sum((c(ms.tallies) > 0) & (c(qtsprobs) == 0))
+
+which((ms.tallies > 0) & (qtsprobs == 0), arr.ind = T)
+
+which((ms.tallies2 > 0) & (qtsprobs == 0), arr.ind = T)
+
+states[states$ijidx %in% c(46,30),]
+
+# one explanation:
+# sites hit twice by recombination
