@@ -44,7 +44,9 @@ int main(int argc, char ** argv)
     }
 
     double initRho;
+    timestamp("getting initial rho");
     initRho = Em_get_initial_rho(&dat);
+    timestamp("finished initial rho");
     const double initTd = 0.2;
 
     Em_init(&em, &dat, ts, initRho, initTd, opt.numFreeLambdas, opt.n,
