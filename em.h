@@ -10,7 +10,7 @@ typedef struct
     int hmmFlag;
     int numSeqs;
     int numHmmStates;
-    int numIterations;
+    int curIteration;
     int maxIterations;
     int numFreeLambdas;
     SeqType seqtype;
@@ -42,5 +42,6 @@ void Em_print_norm_const(Em * em);
 void Em_print_gamma(Em * em);
 void Em_print_expect(Em * em);
 double Em_get_loglikelihood(Em * em);
+void Em_print_iteration(Em * em);
 
 #endif
