@@ -47,7 +47,7 @@ void Em_init(Em * em, Data * dat, double * ts,
     Hmm_init(&(em->hmm[1]), n, ts);
     Hmm_make_hmm(&(em->hmm[0]), lambdas, n, initTheta, initRho, initTd);
     em->hmmFlag = 0;
-    em->numIterations = 0;
+    em->curIteration = 0;
     em->maxIterations = numEmIterations;
 
     const int numHmmStates = (n+1)*(n+2)/2;
@@ -170,7 +170,6 @@ double Em_get_initial_theta(Em * em)
     double thetaDoubleton = 2.0*sfs[1]/(double)totalLen;
     double thetaSingleton = sfs[0]/(double)totalLen;
     double meanTheta = (thetaDoubleton + thetaSingleton)/2.0;
-    DEBUGREPORTF(meanTheta);
     return meanTheta;
 }
             
@@ -488,20 +487,18 @@ double Em_get_loglikelihood(Em * em)
 
 void Em_iterate(Em * em)
 {
+    em->curIteration++;
     // each iteration:
     // maximize likelihood
     // set Hmm model as max
     // flip hmmFlag
 
-    timestamp("making forward");
+    //timestamp("making forward");
     Em_get_forward(em);
-    timestamp("making backward");
+    //timestamp("making backward");
     Em_get_backward(em);
-    timestamp("making gamma and xi");
+    //timestamp("making gamma and xi");
     Em_get_expectations(em);
-
-    DEBUGREPORTF(Em_get_loglikelihood(em));
-    DEBUGREPORTI(em->hmmFlag);
 
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
@@ -546,11 +543,11 @@ void Em_iterate(Em * em)
     for(i = 0; i < numOptimStarts; i++)
     {
         fargmins[i] = (double *)chmalloc(sizeof(double) * numParams);
-        timestamp("optimization start");
+        //timestamp("optimization start");
         nelmin(objective_function, numParams, randstarts[i], fargmins[i],
                 &(fmins[i]), reqmin, step, konvge, maxNumEval, &iterationCount,
                 &numRestarts, &errorNum);
-        timestamp("optimization end");
+        //timestamp("optimization end");
     }
 
     int minFminIdx = 0;
@@ -587,14 +584,6 @@ void Em_iterate(Em * em)
     }
 
     em->hmmFlag = !em->hmmFlag;
-
-    DEBUGREPORTF(em->hmm[em->hmmFlag].rho);
-    DEBUGREPORTF(em->hmm[em->hmmFlag].theta);
-    DEBUGREPORTF(em->hmm[em->hmmFlag].Td);
-    for(i = 0; i < em->numFreeLambdas; i++)
-    {
-        DEBUGREPORTF(em->freeLambdas[i]);
-    }
 
     free(start);
     for(i = 0; i < numOptimStarts; i++)
@@ -729,6 +718,29 @@ void Em_print_expect(Em * em)
         }
         printf("\n");
     }
+    return;
+}
+
+void Em_print_parameters(Em * em)
+{
+    Hmm * hmm = &(em->hmm[em->hmmFlag]);
+    printf("PA\trho\t%g\n", hmm->rho);
+    printf("PA\ttheta\t%g\n", hmm->theta);
+    printf("PA\tTd\t%g\n", hmm->Td);
+    int i;
+    for(i = 0; i < hmm->n+1; i++)
+    {
+        printf("PA\tlam%i\t%g\t%g\n", i, hmm->ts[i], hmm->lambdas[i]);
+    }
+    return;
+}
+
+void Em_print_iteration(Em * em)
+{
+    printf("IT\t%i\n", em->curIteration);
+    printf("LL\t%e\n", Em_get_loglikelihood(em));
+    Em_print_parameters(em);
+    printf("CC\t---------------\n");
     return;
 }
 

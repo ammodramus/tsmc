@@ -53,6 +53,7 @@ int main(int argc, char ** argv)
     for(i = 0; i < opt.numEmIterations; i++)
     {
         Em_iterate(&em);
+        Em_print_iteration(&em);
     }
 
     // Em object should have two Hmm objects as members, one current, one that
