@@ -11,27 +11,27 @@
 
 Em em;
 
-void Em_init(Em * em, Data * dat, Options * opt, double * ts,
-        double initRho, double initTd)
+void Em_init(Em * em, Data * dat, double * ts,
+        double initRho, double initTd, int numFreeLambdas, 
+        int n, int numEmIterations, int * lambdaCounts)
 {
-    assert(em && dat && opt && ts);
+    assert(em && dat && ts);
     assert(dat->numSeqs > 0);
     em->dat = dat;
-    em->opt = opt;
     em->numSeqs = dat->numSeqs;
     em->seqtype = dat->seqtype;
+    em->lambdaCounts = lambdaCounts;
     em->forward = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->backward = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->normConst = (double **)chmalloc(sizeof(double *) * em->numSeqs);
     em->gamma = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
-    em->freeLambdas = (double *)chmalloc(sizeof(double) * em->opt->numFreeLambdas);
-    em->numFreeLambdas = em->opt->numFreeLambdas;
+    em->freeLambdas = (double *)chmalloc(sizeof(double) * numFreeLambdas);
+    em->numFreeLambdas = numFreeLambdas;
 
     const double initTheta = Em_get_initial_theta(em);
 
     int i, j;
 
-    const int n = opt->n;
     for(i = 0; i < em->numFreeLambdas; i++)
     {
         em->freeLambdas[i] = 1.0;
@@ -48,7 +48,7 @@ void Em_init(Em * em, Data * dat, Options * opt, double * ts,
     Hmm_make_hmm(&(em->hmm[0]), lambdas, n, initTheta, initRho, initTd);
     em->hmmFlag = 0;
     em->numIterations = 0;
-    em->maxIterations = opt->numEmIterations;
+    em->maxIterations = numEmIterations;
 
     const int numHmmStates = (n+1)*(n+2)/2;
     em->numHmmStates = numHmmStates;
@@ -113,6 +113,39 @@ void Em_free(Em * em)
     Hmm_free(&(em->hmm[0]));
     Hmm_free(&(em->hmm[1]));
     return;
+}
+
+double Em_get_initial_rho(Data * dat)
+{
+    const int n = 8;
+    double * ts = chmalloc(sizeof(double) * (n+1));
+    get_ts(ts, n);
+    const double initTd = 0.2;
+    int lambdaCounts = 8;
+    Em tempEm;
+    double initRhos[6] = {5e-3, 1e-3, 5e-3, 1e-2, 5e-2, 1e-1};
+    double maxloglike = -1.0*INFINITY;
+    double loglike;
+    int maxLLidx = 0;
+    const int numInitRhos = 6;
+    int i;
+    for(i = 0; i < numInitRhos; i++)
+    {
+        Em_init(&tempEm, dat, ts, initRhos[i], initTd, 0, n, 2, &lambdaCounts);
+        Em_get_forward(&tempEm);
+        Em_get_backward(&tempEm);
+        Em_get_expectations(&tempEm);
+        loglike = Em_get_loglikelihood(&tempEm);
+        if(loglike > maxloglike)
+        {
+            maxLLidx = i;
+            maxloglike = loglike;
+        }
+        Em_free(&tempEm);
+    }
+    free(ts);
+    double initRho = initRhos[maxLLidx];
+    return initRho;
 }
 
 double Em_get_initial_theta(Em * em)
@@ -400,15 +433,15 @@ double objective_function(double * par)
 
     int i, j;
 
-    for(i = 0; i < em.opt->lambdaCounts[0]; i++)
+    for(i = 0; i < em.lambdaCounts[0]; i++)
     {
         // set the first, fixed lambdas at 1
         lambdas[i] = 1.0;
     }
-    int lambdaIdx = em.opt->lambdaCounts[0];
+    int lambdaIdx = em.lambdaCounts[0];
     for(i = 0; i < em.numFreeLambdas; i++)
     {
-        for(j = 0; j < em.opt->lambdaCounts[i+1]; j++)
+        for(j = 0; j < em.lambdaCounts[i+1]; j++)
         {
             lambdas[lambdaIdx++] = par[i+3]*par[i+3];
         }
@@ -485,7 +518,7 @@ void Em_iterate(Em * em)
     start[1] = sqrt(em->hmm[em->hmmFlag].theta);
     start[2] = sqrt(em->hmm[em->hmmFlag].Td);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
-    step[0] = sqrt(0.5);
+    step[0] = sqrt(5.0);
     step[1] = sqrt(0.5);
     step[2] = sqrt(0.5);
     for(i = 3; i < numParams; i++)
@@ -539,15 +572,15 @@ void Em_iterate(Em * em)
         em->freeLambdas[i] = fargmins[minFminIdx][i+3]*fargmins[minFminIdx][i+3];
     }
 
-    for(i = 0; i < em->opt->lambdaCounts[0]; i++)
+    for(i = 0; i < em->lambdaCounts[0]; i++)
     {
         // set the first, fixed lambdas at 1
         em->hmm[!em->hmmFlag].lambdas[i] = 1.0;
     }
-    int lambdaIdx = em->opt->lambdaCounts[0];
+    int lambdaIdx = em->lambdaCounts[0];
     for(i = 0; i < em->numFreeLambdas; i++)
     {
-        for(j = 0; j < em->opt->lambdaCounts[i+1]; j++)
+        for(j = 0; j < em->lambdaCounts[i+1]; j++)
         {
             em->hmm[!em->hmmFlag].lambdas[lambdaIdx++] = em->freeLambdas[i];
         }

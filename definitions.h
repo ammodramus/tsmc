@@ -3,8 +3,8 @@
 
 #include <stdlib.h>
 
-#define DEBUGREPORTI(x) fprintf(stderr, #x " = %i\n", x)
-#define DEBUGREPORTF(x) fprintf(stderr, #x " = %.15f\n", x)
+#define DEBUGREPORTI(x) do {fprintf(stderr, #x " = %i\n", x);} while(0)
+#define DEBUGREPORTF(x) do {fprintf(stderr, #x " = %.15f\n", x);} while(0)
 #define PERROR(msg,...) do {fprintf(stderr,"\n\nProgram error:\n%s\n\n",msg); exit(-1);} while(0)
 
 typedef double fourd[4];
@@ -14,5 +14,6 @@ inline void * chrealloc(void * oldptr, size_t size);
 inline void * chcalloc(size_t nmemb, size_t size);
 inline FILE * chfopen(const char * path, const char * mode);
 void timestamp(const char * msg);
+void get_ts(double * ts, const int n);
 
 #endif

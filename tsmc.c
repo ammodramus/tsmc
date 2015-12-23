@@ -22,14 +22,8 @@ int main(int argc, char ** argv)
     const int n = opt.n;
 
     int i;
-    double F;
     double * ts = (double *)chmalloc(sizeof(double) * (n+1));
-    ts[0] = 0.0;
-    for(i = 1; i < n+1; i++)
-    {
-        F = (double)(i) * 1.0/((double)n+1.0);
-        ts[i] = -log(1-F);
-    }
+    get_ts(ts, n);
 
     Data dat;
     Data_init(&dat, polarized);
@@ -49,10 +43,12 @@ int main(int argc, char ** argv)
         fclose(fin);
     }
 
-    double initRho = 1e-1;
-    double initTd = 0.2;
+    double initRho;
+    initRho = Em_get_initial_rho(&dat);
+    const double initTd = 0.2;
 
-    Em_init(&em, &dat, &opt, ts, initRho, initTd);
+    Em_init(&em, &dat, ts, initRho, initTd, opt.numFreeLambdas, opt.n,
+            opt.numEmIterations, opt.lambdaCounts);
 
     for(i = 0; i < opt.numEmIterations; i++)
     {
