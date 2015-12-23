@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include "definitions.h"
 
 
@@ -65,3 +66,17 @@ void timestamp(const char * msg)
     fprintf(stderr, "%s -- %s\n", timestmp, msg);
     return;
 }
+
+void get_ts(double * ts, const int n)
+{
+    double F;
+    int i;
+    ts[0] = 0.0;
+    for(i = 1; i < n+1; i++)
+    {
+        F = (double)(i) * 1.0/((double)n+1.0);
+        ts[i] = -log(1-F);
+    }
+    return;
+}
+

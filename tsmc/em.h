@@ -6,7 +6,6 @@
 typedef struct 
 {
     Data * dat;
-    Options * opt;
     Hmm hmm[2];
     int hmmFlag;
     int numSeqs;
@@ -22,10 +21,13 @@ typedef struct
     fourd * expectEmissions;
     double ** normConst;
     double * freeLambdas;
+    int * lambdaCounts;
 } Em;
 
-void Em_init(Em * em, Data * dat, Options * opt, double * ts,
-        double initRho, double initTd);
+void Em_init(Em * em, Data * dat, double * ts,
+        double initRho, double initTd, int numFreeLambdas, 
+        int n, int numEmIterations, int * lambdaCounts);
+double Em_get_initial_rho(Data * dat);
 void Em_free(Em * em);
 double Em_get_initial_theta(Em * em);
 void Em_get_forward(Em * em);
@@ -39,5 +41,6 @@ void Em_print_backward(Em * em);
 void Em_print_norm_const(Em * em);
 void Em_print_gamma(Em * em);
 void Em_print_expect(Em * em);
+double Em_get_loglikelihood(Em * em);
 
 #endif
