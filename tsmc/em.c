@@ -7,6 +7,7 @@
 #include "data.h"
 #include "options.h"
 #include "em.h"
+#include "random.h"
 
 Em em;
 
@@ -472,6 +473,8 @@ void Em_iterate(Em * em)
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
+    const int numOptimStarts = 10;
+
     double fmin;
     int i, j;
 
@@ -490,25 +493,50 @@ void Em_iterate(Em * em)
         start[i] = sqrt(em->freeLambdas[i-3]);
         step[i] = sqrt(0.5);
     }
-    double * fargmin = (double *)chmalloc(sizeof(double) * numParams);
+
+    double ** randstarts = (double **)chmalloc(sizeof(double *) * numOptimStarts);
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        randstarts[i] = (double *)chmalloc(sizeof(double) * numParams);
+        for(j = 0; j < numParams; j++)
+        {
+            randstarts[i][j] = runifab(0.1, 2.0) * start[j];
+        }
+    }
 
     int konvge = 1, maxNumEval = 1000000;
     int iterationCount = 0, numRestarts, errorNum;
-    double reqmin = 1e-1;
+    double reqmin = 1e-10;
 
+    double ** fargmins = (double **)chmalloc(sizeof(double *) * numOptimStarts);
+    double * fmins = (double *)chmalloc(sizeof(double) * numOptimStarts);
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        fargmins[i] = (double *)chmalloc(sizeof(double) * numParams);
+        timestamp("optimization start");
+        nelmin(objective_function, numParams, randstarts[i], fargmins[i],
+                &(fmins[i]), reqmin, step, konvge, maxNumEval, &iterationCount,
+                &numRestarts, &errorNum);
+        timestamp("optimization end");
+    }
 
-    timestamp("optimization start");
-    nelmin(objective_function, numParams, start, fargmin, &fmin, reqmin, step,
-            konvge, maxNumEval, &iterationCount, &numRestarts, &errorNum);
-    timestamp("optimization end");
+    int minFminIdx = 0;
+    double minfmin = fmins[0];
+    for(i = 1; i < numOptimStarts; i++)
+    {
+        if(fmins[i] < minfmin)
+        {
+            minFminIdx = i;
+        }
+    }
 
-    em->hmm[!em->hmmFlag].rho = fargmin[0]*fargmin[0];
-    em->hmm[!em->hmmFlag].theta = fargmin[1]*fargmin[1];
-    em->hmm[!em->hmmFlag].Td = fargmin[2]*fargmin[2];
+    em->hmm[!em->hmmFlag].rho = fargmins[minFminIdx][0]*fargmins[minFminIdx][0];
+    em->hmm[!em->hmmFlag].theta = fargmins[minFminIdx][1]*fargmins[minFminIdx][1];
+    em->hmm[!em->hmmFlag].Td = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
 
     for(i = 0; i < em->numFreeLambdas; i++)
     {
-        em->freeLambdas[i] = fargmin[i+3]*fargmin[i+3];
+        em->freeLambdas[i] = fargmins[minFminIdx][i+3]*fargmins[minFminIdx][i+3];
     }
 
     for(i = 0; i < em->opt->lambdaCounts[0]; i++)
@@ -536,8 +564,15 @@ void Em_iterate(Em * em)
     }
 
     free(start);
-    free(fargmin);
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        free(fargmins[i]);
+        free(randstarts[i]);
+    }
+    free(fargmins);
+    free(randstarts);
     free(step);
+    free(fmins);
 
     return;
 }

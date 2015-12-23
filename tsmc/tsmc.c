@@ -7,6 +7,7 @@
 #include "data.h"
 #include "em.h"
 #include "options.h"
+#include "random.h"
 
 Em em;
 
@@ -15,6 +16,8 @@ int main(int argc, char ** argv)
 
     Options opt;
     Options_parse_options(&opt, argc, argv);
+
+    randseed();
 
     const int n = opt.n;
 
@@ -48,6 +51,7 @@ int main(int argc, char ** argv)
 
     double initRho = 1e-1;
     double initTd = 0.2;
+
     Em_init(&em, &dat, &opt, ts, initRho, initTd);
 
     for(i = 0; i < opt.numEmIterations; i++)
