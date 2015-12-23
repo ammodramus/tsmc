@@ -44,20 +44,30 @@ summary(abs(c(dat.tsmc)-c(dat.int)))
 ################################
 
 ms.tallies = as.matrix(read.csv("qtstallies",header=F))
-ms.tallies2 = as.matrix(read.csv("qtstallies_mspms_2",header=F))
 qtsprobs = as.matrix(read.csv("qtstestout",header=F))
-dim(ms.tallies)
 hist(abs(c(ms.tallies) - c(qtsprobs)), breaks = 100)
-ms.tallies[1:4,1:4]
-qtsprobs[1:4,1:4]
+ms.tallies[1:10,1:5]
+qtsprobs[1:10,1:5]
 
-sum((c(ms.tallies) > 0) & (c(qtsprobs) == 0))
+#cutoff = 0.08
+#mstal = c(ms.tallies)[which(abs(c(ms.tallies) - c(qtsprobs)) > cutoff)]
+#qtsprob = c(qtsprobs)[which(abs(c(ms.tallies) - c(qtsprobs)) > cutoff)]
+#which(abs(ms.tallies - qtsprobs) > cutoff, arr.ind=T)
+#badIjs = which(abs(ms.tallies - qtsprobs) > cutoff, arr.ind=T)[,1]
+#badKls = which(abs(ms.tallies - qtsprobs) > cutoff, arr.ind=T)[,2]
+#badIs = sapply(badIjs, function(x) states$i[states$ijidx==x])
+#badJs = sapply(badIjs, function(x) states$j[states$ijidx==x])
+#badKs = sapply(badKls, function(x) states$i[states$ijidx==x])
+#badLs = sapply(badKls, function(x) states$j[states$ijidx==x])
 
-which((ms.tallies > 0) & (qtsprobs == 0), arr.ind = T)
+#bad.dat = data.frame(ms = mstal, qts = qtsprob, ij = badIjs, kl = badKls,
+#                     i = badIs, j = badJs, k = badKs, l = badLs)
+#bad.dat
 
-which((ms.tallies2 > 0) & (qtsprobs == 0), arr.ind = T)
-
-states[states$ijidx %in% c(46,30),]
+#summary(abs(c(ms.tallies) - c(qtsprobs)), breaks = 100)
 
 # one explanation:
 # sites hit twice by recombination
+
+#hist(rowSums(qtsprobs)-rowSums(ms.tallies))
+
