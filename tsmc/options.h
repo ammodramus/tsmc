@@ -11,6 +11,7 @@ typedef struct
     int numFreeLambdas;
     int lambdaCounts[MAXNUMFREELAMBDAS];
     int numEmIterations;
+    int asexEnabled;
     char paramString[200];
 } Options;
 
