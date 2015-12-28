@@ -738,7 +738,7 @@ void Em_print_parameters(Em * em)
 void Em_print_iteration(Em * em)
 {
     printf("IT\t%i\n", em->curIteration);
-    printf("LL\t%e\n", Em_get_loglikelihood(em));
+    printf("LL\t%g\n", Em_get_loglikelihood(em));
     Em_print_parameters(em);
     printf("CC\t---------------\n");
     return;
