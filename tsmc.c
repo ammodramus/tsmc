@@ -47,10 +47,10 @@ int main(int argc, char ** argv)
     timestamp("getting initial rho");
     initRho = Em_get_initial_rho(&dat);
     timestamp("finished initial rho");
-    const double initTd = 0.2;
+    const double initTd = opt.asexEnabled ? 0.2 : 0.0;
 
     Em_init(&em, &dat, ts, initRho, initTd, opt.numFreeLambdas, opt.n,
-            opt.numEmIterations, opt.lambdaCounts);
+            opt.numEmIterations, opt.lambdaCounts, opt.asexEnabled);
 
     for(i = 0; i < opt.numEmIterations; i++)
     {
