@@ -15,6 +15,7 @@ static struct option long_options[] =
     {"iterations", required_argument, 0, 'i'},
     {"filename", required_argument, 0, 'f'},
     {"popsizes", required_argument, 0, 'p'},
+    {"no-asex", no_argument, 0, 1},
 	{0, 0, 0, 0}
 };
 
@@ -36,6 +37,7 @@ void Options_set_defaults(Options * opt)
     strcpy(&(opt->paramString[0]), DEFAULTPATTERN); 
 
     opt->numEmIterations = 20;
+    opt->asexEnabled = 1;
 
     return;
 }
@@ -203,6 +205,9 @@ void Options_parse_options(Options * opt, int argc, char ** argv)
             case 'p':
                 success = sscanf(optarg, "%s", &(opt->paramString[0]));
                 break;
+            case 1:
+                opt->asexEnabled = 0;
+                break;
 			default:
 				Options_print_help_statement();
 				exit(1);
@@ -235,5 +240,6 @@ void Options_print_options(Options * opt)
     {
         printf("lambda count %i = %i\n", i, opt->lambdaCounts[i]);
     }
+    printf("options enabled: %i\n", opt->asexEnabled);
     return;
 }
