@@ -22,11 +22,12 @@ typedef struct
     double ** normConst;
     double * freeLambdas;
     int * lambdaCounts;
+    int asexEnabled;
 } Em;
 
-void Em_init(Em * em, Data * dat, double * ts,
-        double initRho, double initTd, int numFreeLambdas, 
-        int n, int numEmIterations, int * lambdaCounts);
+void Em_init(Em * em, Data * dat, double * ts, double initRho, double initTd,
+        int numFreeLambdas, int n, int numEmIterations, int * lambdaCounts,
+        int asexEnabled);
 double Em_get_initial_rho(Data * dat);
 void Em_free(Em * em);
 double Em_get_initial_theta(Em * em);
@@ -34,8 +35,11 @@ void Em_get_forward(Em * em);
 void Em_get_backward(Em * em);
 void Em_get_expectations(Em * em);
 void Em_iterate(Em * em);
+void Em_iterate_asex(Em * em);
+void Em_iterate_no_asex(Em * em);
 double Em_get_expected_log_likelihood(Em * em, const int hmmIdx);
-double objective_function(double * par);
+double objective_function_asex(double * par);
+double objective_function_no_asex(double * par);
 void Em_print_forward(Em * em);
 void Em_print_backward(Em * em);
 void Em_print_norm_const(Em * em);
