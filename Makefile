@@ -41,3 +41,7 @@ qtstest: *.[ch]
 
 optionstest: *.[ch]
 	gcc optionstest.c options.c hmm.c definitions.c qtscases.c data.c em.c asa047.c -lm -o optionstest -g
+
+optimtest: *.[ch]
+	gcc optimtest.c definitions.c asa047.c -lm -o optimtest -g
+
