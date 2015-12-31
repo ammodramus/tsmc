@@ -8,6 +8,7 @@
 #include "options.h"
 #include "em.h"
 #include "random.h"
+#include "asa047.h"
 
 Em em;
 
