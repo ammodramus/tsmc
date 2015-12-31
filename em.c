@@ -546,10 +546,6 @@ void Em_iterate(Em * em)
 void Em_iterate_asex(Em * em)
 {
     em->curIteration++;
-    // each iteration:
-    // maximize likelihood
-    // set Hmm model as max
-    // flip hmmFlag
 
     //timestamp("making forward");
     Em_get_forward(em);
@@ -594,7 +590,7 @@ void Em_iterate_asex(Em * em)
 
     int konvge = 1, maxNumEval = 1000000;
     int iterationCount = 0, numRestarts, errorNum;
-    double reqmin = 1e-10;
+    double reqmin = 1e-16;
 
     double ** fargmins = (double **)chmalloc(sizeof(double *) * numOptimStarts);
     double * fmins = (double *)chmalloc(sizeof(double) * numOptimStarts);
@@ -658,10 +654,6 @@ void Em_iterate_asex(Em * em)
 void Em_iterate_no_asex(Em * em)
 {
     em->curIteration++;
-    // each iteration:
-    // maximize likelihood
-    // set Hmm model as max
-    // flip hmmFlag
 
     //timestamp("making forward");
     Em_get_forward(em);
