@@ -1608,6 +1608,24 @@ With these probabilities, we can calculate $\E_{X|Y}[\log(\Prob(X,Y|\theta))]$:
         &\qquad\sum_{t=1}^{T-1}\sum_{i=1}^N\sum_{j=1}^N\log(P_{i,j})\xi_{i,j}(t)
 \end{align*}
 
+If we define the variables 
+
+\begin{equation}
+    \Gamma_j = \sum_{t=1}^T \gamma_j(t)
+\end{equation}
+and
+\begin{equation}
+    \Xi_{i,j} = \sum_{t=1}^{T-1}\xi_{i,j}(t),
+\end{equation}
+the log-likelihood can be written % TODO here
+\begin{align*}
+    \E_{X|Y}\left[\log P\left(X,Y|\theta\right)\right] &= 
+        \sum_{j=1}^N\gamma_j(1) \log \pi_j + 
+        \sum_{j=1}^N\log\left[e_j(y_t)\right]\gamma_j(t)+\\
+        &\qquad\sum_{t=1}^{T-1}\sum_{i=1}^N\sum_{j=1}^N\log(P_{i,j})\xi_{i,j}(t)
+\end{align*}
+
+\subsection{Underflow}
 In order to avoid underflow problems, we calculate scaled versions of
 $\alpha_i(t)$ and $\beta_{i,j}(t)$. We define 
 
