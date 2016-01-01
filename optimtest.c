@@ -43,6 +43,7 @@ int main(int argc, char ** argv)
         &fmin, reqmin, step, konvge, maxNumEval, &iterationCount,
         &numRestarts, &errorNum);
 
+    printf("\nshould be minimized at f(1,1,1,1,1,...) = 0\n\n");
     for(i = 0; i < N; i++)
     {
         printf("%i: %g\n", i, end[i]);
