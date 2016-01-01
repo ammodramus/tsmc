@@ -14,6 +14,7 @@ for line in inp:
         splitcmd = line.strip().split(' ')
         numSites = int(splitcmd[splitcmd.index('-r')+2])
         numHaps = int(splitcmd[1])
+        continue
     line = line.strip()
     if line[:11] == 'positions: ':
         if numHaps == 2:   # diploid
@@ -31,12 +32,12 @@ for line in inp:
             print
             chromCount += 1
         elif numHaps == 3:   # triploid
-            chromPositions = [float(el) for el in line.split(' ')[1:]]
-            chromPositions = np.array([int(numSites*pos) for pos in chromPositions])
+            chromPositions = np.array([float(el) for el in line.split(' ')[1:]], dtype = np.float64)
+            chromPositions = (numSites * chromPositions).astype(np.int)
             chromSNPtypes = np.zeros(len(chromPositions), dtype = np.int)
             for i in xrange(3):
                 line = inp.readline().strip()
-                chromSNPtypes += np.array([int(el) for el in line])
+                chromSNPtypes += np.array([int(el) for el in line], dtype = np.int)
             numBlocks = numSites/BLOCK_LEN+1
             blockBits = np.zeros((numBlocks, 2))
             for SNPpos, SNPtype in zip(list(chromPositions), list(chromSNPtypes)):
