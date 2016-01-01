@@ -67,7 +67,7 @@ void timestamp(const char * msg)
     return;
 }
 
-void get_ts(double * ts, const int n)
+void get_ts_msmc(double * ts, const int n)
 {
     double F;
     int i;
@@ -76,6 +76,17 @@ void get_ts(double * ts, const int n)
     {
         F = (double)(i) * 1.0/((double)n+1.0);
         ts[i] = -log(1-F);
+    }
+    return;
+}
+
+void get_ts_psmc(double * ts, const double tmax, const double n)
+{
+    int i;
+    ts[0] = 0.0;
+    for(i = 1; i <= n; i++)
+    {
+        ts[i] = 0.1*(exp((double)i/n*log(1.0+10.0*tmax))-1.0);
     }
     return;
 }
