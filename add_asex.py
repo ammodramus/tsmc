@@ -83,7 +83,7 @@ elif args.triploid:
             thirdHap = np.array([int(el) for el in list(line)])
 
             # simulate asexual / Meselson-effect mutations
-            numAsexMuts = npr.poisson(args.divtime * 3.0/2.0*theta)  # note 3/2 multiplier
+            numAsexMuts = npr.poisson(args.divtime * 3.0*theta/2.0)  # note 3/2 multiplier
             asexMutPositions = npr.rand(numAsexMuts)  # npr.rand(n) simulates n Unif(0,1)'s
             asexTypes = npr.choice(np.array([0,1,2]), size=numAsexMuts, replace = True)
             asexFirstHapTypes = np.zeros(asexTypes.shape[0], dtype = np.int)
@@ -115,12 +115,6 @@ elif args.triploid:
             print ''.join([str(el) for el in list(firstHap)])
             print ''.join([str(el) for el in list(secondHap)])
             print ''.join([str(el) for el in list(thirdHap)])
-
-            #hapMat = np.vstack((firstHap,secondHap,thirdHap))
-            #gencounts = np.bincount(hapMat.sum(axis=0))
-            #R = float(gencounts[1])/(gencounts.sum())
-            #print (3.0*R-2)/(3*(1-R))
-            #sys.exit(0)
 
         else:
             print line
