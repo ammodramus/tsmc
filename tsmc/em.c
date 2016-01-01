@@ -122,7 +122,7 @@ double Em_get_initial_rho(Data * dat)
 {
     const int n = 8;
     double * ts = chmalloc(sizeof(double) * (n+1));
-    get_ts(ts, n);
+    get_ts_msmc(ts, n);
     const double initTd = 0.2;
     int lambdaCounts = 8;
     Em tempEm;

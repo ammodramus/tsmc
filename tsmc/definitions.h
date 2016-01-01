@@ -14,6 +14,7 @@ inline void * chrealloc(void * oldptr, size_t size);
 inline void * chcalloc(size_t nmemb, size_t size);
 inline FILE * chfopen(const char * path, const char * mode);
 void timestamp(const char * msg);
-void get_ts(double * ts, const int n);
+void get_ts_msmc(double * ts, const int n);
+void get_ts_psmc(double * ts, const double tmax, const double n);
 
 #endif

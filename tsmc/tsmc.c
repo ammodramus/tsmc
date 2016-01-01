@@ -23,7 +23,14 @@ int main(int argc, char ** argv)
 
     int i;
     double * ts = (double *)chmalloc(sizeof(double) * (n+1));
-    get_ts(ts, n);
+    if(opt.psmcIntervals)
+    {
+        get_ts_psmc(ts, opt.maxT, n);
+    }
+    else
+    {
+        get_ts_msmc(ts, n);
+    }
 
     Data dat;
     Data_init(&dat, polarized);

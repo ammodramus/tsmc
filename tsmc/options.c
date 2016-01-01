@@ -16,6 +16,8 @@ static struct option long_options[] =
     {"filename", required_argument, 0, 'f'},
     {"popsizes", required_argument, 0, 'p'},
     {"no-asex", no_argument, 0, 1},
+    {"psmc-intervals", no_argument, 0, 2},
+    {"psmc-max-time", required_argument, 0, 3},
 	{0, 0, 0, 0}
 };
 
@@ -38,6 +40,8 @@ void Options_set_defaults(Options * opt)
 
     opt->numEmIterations = 20;
     opt->asexEnabled = 1;
+    opt->psmcIntervals = 0;
+    opt->maxT = 15.0;
 
     return;
 }
@@ -205,8 +209,18 @@ void Options_parse_options(Options * opt, int argc, char ** argv)
             case 'p':
                 success = sscanf(optarg, "%s", &(opt->paramString[0]));
                 break;
-            case 1:
+            case 1: // --no-asex
                 opt->asexEnabled = 0;
+                break;
+            case 2: // --psmc-intervals
+                opt->psmcIntervals = 1;
+                break;
+            case 3: // --psmc-max-time
+                success = sscanf(optarg, "%lf", &(opt->maxT));
+                if(opt->maxT <= 0.0)
+                {
+                    perror("--psmc-max-time must be > 0");
+                }
                 break;
 			default:
 				Options_print_help_statement();
