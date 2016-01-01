@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage[margin=1in]{geometry}
 
 \DeclareMathOperator{\Pois}{Pois}
@@ -1608,22 +1609,26 @@ With these probabilities, we can calculate $\E_{X|Y}[\log(\Prob(X,Y|\theta))]$:
         &\qquad\sum_{t=1}^{T-1}\sum_{i=1}^N\sum_{j=1}^N\log(P_{i,j})\xi_{i,j}(t)
 \end{align*}
 
-If we define the variables 
+The expected number of emissions of state $k \in \{0,1,2,3\}$ from (hidden) state
+$i$ is 
 
 \begin{equation}
-    \Gamma_j = \sum_{t=1}^T \gamma_j(t)
+    E_i(k) = \sum_{t=1}^T \gamma_i(t)\mathbb{I}(y_t = k),
 \end{equation}
-and
+and the expected number of transitions from hidden state $i$ to hidden state
+$j$ is
 \begin{equation}
-    \Xi_{i,j} = \sum_{t=1}^{T-1}\xi_{i,j}(t),
+    E_{i,j} = \sum_{t=1}^{T-1}\xi_{i,j}(t).
 \end{equation}
-the log-likelihood can be written % TODO here
+Then the expected log-likelihood can be written
 \begin{align*}
     \E_{X|Y}\left[\log P\left(X,Y|\theta\right)\right] &= 
         \sum_{j=1}^N\gamma_j(1) \log \pi_j + 
-        \sum_{j=1}^N\log\left[e_j(y_t)\right]\gamma_j(t)+\\
-        &\qquad\sum_{t=1}^{T-1}\sum_{i=1}^N\sum_{j=1}^N\log(P_{i,j})\xi_{i,j}(t)
+        \sum_{j=1}^N\sum_{k=0}^3\log\left[e_j(k)\right]E_j(k)+\\
+        &\qquad\sum_{i=1}^N\sum_{j=1}^N\log(P_{i,j})E_{i,j}
 \end{align*}
+
+% do you maximize the log-likelihood or the likelihood, in EM?
 
 \subsection{Underflow}
 In order to avoid underflow problems, we calculate scaled versions of
