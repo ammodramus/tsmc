@@ -547,17 +547,16 @@ void Em_iterate_asex(Em * em)
 {
     em->curIteration++;
 
-    //timestamp("making forward");
+    timestamp("starting forward-backward...");
     Em_get_forward(em);
-    //timestamp("making backward");
     Em_get_backward(em);
-    //timestamp("making gamma and xi");
     Em_get_expectations(em);
+    timestamp("finished forward-backward...");
 
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
-    const int numOptimStarts = 50;
+    const int numOptimStarts = 100;
 
     double fmin;
     int i, j;
@@ -584,6 +583,22 @@ void Em_iterate_asex(Em * em)
     {
         randstarts[0][j] = start[j];
     }
+    double ** steps = (double **)chmalloc(sizeof(double *) * numOptimStarts);
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        steps[i] = (double *)chmalloc(sizeof(double) * numParams);
+    }
+    for(i = 0; i < numParams; i++)
+    {
+        steps[0][i] = step[i];
+    }
+    for(i = 1; i < numOptimStarts; i++)
+    {
+        for(j = 0; j < numParams; j++)
+        {
+            steps[i][j] = pow(2, runifab(-2, 2)) * steps[0][j];
+        }
+    }
     for(i = 1; i < numOptimStarts; i++)
     {
         randstarts[i] = (double *)chmalloc(sizeof(double) * numParams);
@@ -599,13 +614,21 @@ void Em_iterate_asex(Em * em)
 
     double ** fargmins = (double **)chmalloc(sizeof(double *) * numOptimStarts);
     double * fmins = (double *)chmalloc(sizeof(double) * numOptimStarts);
+    timestamp("starting optimization...");
     for(i = 0; i < numOptimStarts; i++)
     {
         fargmins[i] = (double *)chmalloc(sizeof(double) * numParams);
         nelmin(objective_function_asex, numParams, randstarts[i], fargmins[i],
-                &(fmins[i]), reqmin, step, konvge, maxNumEval, &iterationCount,
+                &(fmins[i]), reqmin, steps[i], konvge, maxNumEval, &iterationCount,
                 &numRestarts, &errorNum);
     }
+    timestamp("optimization finished...");
+
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        free(steps[i]);
+    }
+    free(steps);
 
     int minFminIdx = 0;
     double minfmin = fmins[0];
@@ -671,7 +694,7 @@ void Em_iterate_no_asex(Em * em)
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
-    const int numOptimStarts = 50;
+    const int numOptimStarts = 500;
 
     double fmin;
     int i, j;
