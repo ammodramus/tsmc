@@ -579,7 +579,12 @@ void Em_iterate_asex(Em * em)
     }
 
     double ** randstarts = (double **)chmalloc(sizeof(double *) * numOptimStarts);
-    for(i = 0; i < numOptimStarts; i++)
+    randstarts[0] = (double *)chmalloc(sizeof(double) * numParams);
+    for(j = 0; j < numParams; j++)
+    {
+        randstarts[0][j] = start[j];
+    }
+    for(i = 1; i < numOptimStarts; i++)
     {
         randstarts[i] = (double *)chmalloc(sizeof(double) * numParams);
         for(j = 0; j < numParams; j++)
