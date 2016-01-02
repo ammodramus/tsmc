@@ -50,11 +50,10 @@ int main(int argc, char ** argv)
         fclose(fin);
     }
 
-
     double initRho;
-    timestamp("getting initial rho");
+    timestamp("getting initial rho...");
     initRho = Em_get_initial_rho(&dat);
-    timestamp("finished initial rho");
+    timestamp("finished initial rho...");
     const double asexInitTd = 0.2;
     const double initTd = opt.asexEnabled ? asexInitTd : 0.0;
 
@@ -67,26 +66,9 @@ int main(int argc, char ** argv)
         Em_print_iteration(&em);
     }
 
-    // Em object should have two Hmm objects as members, one current, one that
-    // is maximized.  Have a flag that switches which is which, iteratively.
-    // each iteration:
-    //  - get forward
-    //  - get backward
-    //  - get expectations
-    //  - maximize likelihood
-    //  - flip flag
-
-    //Data_print_seqs(&dat);
-    
     Em_free(&em);
     Data_free(&dat);
     free(ts);
 
-    //Hmm_print_demography(&hmm);
-    //Hmm_print_pis(&hmm);
-    //Hmm_print_expectations(&hmm);
-    //Hmm_print_qts(&hmm);
-    //Hmm_print_pts(&hmm);
-    //Hmm_free(&hmm);
     return 0;
 }
