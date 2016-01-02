@@ -155,7 +155,7 @@ double Em_get_initial_theta(Em * em)
 {
     assert(em && em->dat);
     int i, j, seqLen, totalLen = 0;
-    int sfs[] = {0,0};
+    int sfs[] = {0,0,0};
     char * seqData;
     for(i = 0; i < em->numSeqs; i++)
     {
@@ -170,8 +170,8 @@ double Em_get_initial_theta(Em * em)
             }
         }
     }
-    double thetaDoubleton = 2.0*sfs[1]/(double)totalLen;
-    double thetaSingleton = sfs[0]/(double)totalLen;
+    double thetaDoubleton = 2.0*(sfs[1]+sfs[2])/(double)totalLen;
+    double thetaSingleton = (sfs[0]+sfs[2])/(double)totalLen;
     double meanTheta = (thetaDoubleton + thetaSingleton)/2.0;
     return meanTheta;
 }
