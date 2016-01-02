@@ -614,6 +614,7 @@ void Em_iterate_asex(Em * em)
         if(fmins[i] < minfmin)
         {
             minFminIdx = i;
+            minfmin = fmins[i];
         }
     }
 
@@ -720,6 +721,7 @@ void Em_iterate_no_asex(Em * em)
         if(fmins[i] < minfmin)
         {
             minFminIdx = i;
+            minfmin = fmins[i];
         }
     }
 
