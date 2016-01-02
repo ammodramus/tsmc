@@ -557,7 +557,7 @@ void Em_iterate_asex(Em * em)
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
-    const int numOptimStarts = 10;
+    const int numOptimStarts = 50;
 
     double fmin;
     int i, j;
@@ -569,9 +569,9 @@ void Em_iterate_asex(Em * em)
     start[1] = sqrt(em->hmm[em->hmmFlag].theta);
     start[2] = sqrt(em->hmm[em->hmmFlag].Td);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
-    step[0] = sqrt(5.0);
-    step[1] = sqrt(0.5);
-    step[2] = sqrt(0.5);
+    step[0] = sqrt(0.1);
+    step[1] = sqrt(0.1);
+    step[2] = sqrt(0.1);
     for(i = 3; i < numParams; i++)
     {
         start[i] = sqrt(em->freeLambdas[i-3]);
@@ -584,7 +584,7 @@ void Em_iterate_asex(Em * em)
         randstarts[i] = (double *)chmalloc(sizeof(double) * numParams);
         for(j = 0; j < numParams; j++)
         {
-            randstarts[i][j] = runifab(0.1, 2.0) * start[j];
+            randstarts[i][j] = pow(10.0, runifab(-1.0, 1.0)) * start[j];
         }
     }
 
@@ -665,7 +665,7 @@ void Em_iterate_no_asex(Em * em)
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
-    const int numOptimStarts = 10;
+    const int numOptimStarts = 50;
 
     double fmin;
     int i, j;
@@ -676,8 +676,8 @@ void Em_iterate_no_asex(Em * em)
     start[0] = sqrt(em->hmm[em->hmmFlag].rho);
     start[1] = sqrt(em->hmm[em->hmmFlag].theta);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
-    step[0] = sqrt(5.0);
-    step[1] = sqrt(0.5);
+    step[0] = sqrt(0.1);
+    step[1] = sqrt(0.1);
     for(i = 2; i < numParams; i++)
     {
         start[i] = sqrt(em->freeLambdas[i-2]);
