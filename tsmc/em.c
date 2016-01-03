@@ -13,7 +13,7 @@
 Em em;
 
 void Em_init(Em * em, Data * dat, double * ts,
-        double initRho, double initTd, int numFreeLambdas, 
+        double initRho, int numFreeLambdas, 
         int n, int numEmIterations, int * lambdaCounts, int asexEnabled)
 {
     assert(em && dat && ts);
@@ -31,7 +31,13 @@ void Em_init(Em * em, Data * dat, double * ts,
     em->freeLambdas = (double *)chmalloc(sizeof(double) * numFreeLambdas);
     em->numFreeLambdas = numFreeLambdas;
 
-    const double initTheta = Em_get_initial_theta(em);
+    double thetaAndTd[2];
+    Em_get_initial_theta_and_Td(em, &(thetaAndTd[0]));
+
+    const double initTheta = thetaAndTd[0];
+    const double initTd = thetaAndTd[1];
+    DEBUGREPORTF(initTheta);
+    DEBUGREPORTF(initTd);
 
     int i, j;
 
@@ -123,7 +129,6 @@ double Em_get_initial_rho(Data * dat)
     const int n = 8;
     double * ts = chmalloc(sizeof(double) * (n+1));
     get_ts_msmc(ts, n);
-    const double initTd = 0.2;
     int lambdaCounts = 8;
     Em tempEm;
     double initRhos[6] = {5e-3, 1e-3, 5e-3, 1e-2, 5e-2, 1e-1};
@@ -134,7 +139,7 @@ double Em_get_initial_rho(Data * dat)
     int i;
     for(i = 0; i < numInitRhos; i++)
     {
-        Em_init(&tempEm, dat, ts, initRhos[i], initTd, 0, n, 2, &lambdaCounts, 1);
+        Em_init(&tempEm, dat, ts, initRhos[i], 0, n, 2, &lambdaCounts, 1);
         Em_get_forward(&tempEm);
         Em_get_backward(&tempEm);
         Em_get_expectations(&tempEm);
@@ -151,7 +156,7 @@ double Em_get_initial_rho(Data * dat)
     return initRho;
 }
 
-double Em_get_initial_theta(Em * em)
+void Em_get_initial_theta_and_Td(Em * em, double * out)
 {
     assert(em && em->dat);
     int i, j, seqLen, totalLen = 0;
@@ -173,11 +178,17 @@ double Em_get_initial_theta(Em * em)
     double thetaDoubleton = 2.0*(sfs[1]+sfs[2])/(double)totalLen;
     double thetaSingleton = (sfs[0]+sfs[2])/(double)totalLen;
     double meanTheta = (thetaDoubleton + thetaSingleton)/2.0;
-    return meanTheta;
+    out[0] = meanTheta;
+
+    double R = (double)(sfs[0]+sfs[2]) / (sfs[0] + sfs[1] + 2*sfs[2]);
+    double initTd = (3.0*R-2.0) / (3.0*(1.0-R));
+    if(initTd < 0)
+    {
+        initTd = 0.0;
+    }
+    out[1] = initTd;
+    return;
 }
-            
-
-
 
 void Em_get_forward(Em * em)
 {

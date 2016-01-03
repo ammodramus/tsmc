@@ -57,7 +57,7 @@ int main(int argc, char ** argv)
     const double asexInitTd = 0.2;
     const double initTd = opt.asexEnabled ? asexInitTd : 0.0;
 
-    Em_init(&em, &dat, ts, initRho, initTd, opt.numFreeLambdas, opt.n,
+    Em_init(&em, &dat, ts, initRho, opt.numFreeLambdas, opt.n,
             opt.numEmIterations, opt.lambdaCounts, opt.asexEnabled);
 
     for(i = 0; i < opt.numEmIterations; i++)
