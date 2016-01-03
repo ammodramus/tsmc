@@ -556,7 +556,7 @@ void Em_iterate_asex(Em * em)
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
-    const int numOptimStarts = 100;
+    const int numOptimStarts = 20;
 
     double fmin;
     int i, j;
@@ -641,31 +641,42 @@ void Em_iterate_asex(Em * em)
         }
     }
 
-    em->hmm[!em->hmmFlag].rho = fargmins[minFminIdx][0]*fargmins[minFminIdx][0];
-    em->hmm[!em->hmmFlag].theta = fargmins[minFminIdx][1]*fargmins[minFminIdx][1];
-    em->hmm[!em->hmmFlag].Td = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
+    double rho, theta, Td;
+
+    rho = fargmins[minFminIdx][0]*fargmins[minFminIdx][0];
+    theta = fargmins[minFminIdx][1]*fargmins[minFminIdx][1];
+    Td = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
 
     for(i = 0; i < em->numFreeLambdas; i++)
     {
         em->freeLambdas[i] = fargmins[minFminIdx][i+3]*fargmins[minFminIdx][i+3];
     }
 
+    double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+
     for(i = 0; i < em->lambdaCounts[0]; i++)
     {
         // set the first, fixed lambdas at 1
-        em->hmm[!em->hmmFlag].lambdas[i] = 1.0;
+        lambdas[i] = 1.0;
     }
     int lambdaIdx = em->lambdaCounts[0];
     for(i = 0; i < em->numFreeLambdas; i++)
     {
         for(j = 0; j < em->lambdaCounts[i+1]; j++)
         {
-            em->hmm[!em->hmmFlag].lambdas[lambdaIdx++] = em->freeLambdas[i];
+            lambdas[lambdaIdx++] = em->freeLambdas[i];
         }
     }
+    assert(lambdaIdx == n+1);
 
+    // set the HMM for the next iteration
+    Hmm_make_hmm(&(em->hmm[!em->hmmFlag]), lambdas, n, theta, rho, Td);
+
+    // flip the hmm flag
     em->hmmFlag = !em->hmmFlag;
 
+    // free things
+    free(lambdas);
     free(start);
     for(i = 0; i < numOptimStarts; i++)
     {
