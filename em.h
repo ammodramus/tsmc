@@ -25,12 +25,12 @@ typedef struct
     int asexEnabled;
 } Em;
 
-void Em_init(Em * em, Data * dat, double * ts, double initRho, double initTd,
-        int numFreeLambdas, int n, int numEmIterations, int * lambdaCounts,
-        int asexEnabled);
-double Em_get_initial_rho(Data * dat);
+void Em_init(Em * em, Data * dat, double * ts,
+        double initRho, int numFreeLambdas, 
+        int n, int numEmIterations, int * lambdaCounts, int asexEnabled);
 void Em_free(Em * em);
-double Em_get_initial_theta(Em * em);
+double Em_get_initial_rho(Data * dat);
+void Em_get_initial_theta_and_Td(Em * em, double * out);
 void Em_get_forward(Em * em);
 void Em_get_backward(Em * em);
 void Em_get_expectations(Em * em);
