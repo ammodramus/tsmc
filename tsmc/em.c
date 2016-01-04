@@ -625,15 +625,15 @@ void Em_iterate_asex(Em * em)
 
     double ** fargmins = (double **)chmalloc(sizeof(double *) * numOptimStarts);
     double * fmins = (double *)chmalloc(sizeof(double) * numOptimStarts);
-    timestamp("starting optimization...");
     for(i = 0; i < numOptimStarts; i++)
     {
+        timestamp("starting optimization rep...");
         fargmins[i] = (double *)chmalloc(sizeof(double) * numParams);
         nelmin(objective_function_asex, numParams, randstarts[i], fargmins[i],
                 &(fmins[i]), reqmin, steps[i], konvge, maxNumEval, &iterationCount,
                 &numRestarts, &errorNum);
+        timestamp("optimization rep finished...");
     }
-    timestamp("optimization finished...");
 
     for(i = 0; i < numOptimStarts; i++)
     {
