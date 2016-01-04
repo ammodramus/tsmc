@@ -619,7 +619,7 @@ void Em_iterate_asex(Em * em)
         }
     }
 
-    int konvge = 1, maxNumEval = 1000000;
+    int konvge = 1, maxNumEval = 10000;
     int iterationCount = 0, numRestarts, errorNum;
     double reqmin = 1e-16;
 
