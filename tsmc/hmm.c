@@ -52,6 +52,7 @@ void Hmm_init(Hmm * hmm, const int n, const double * ts)
         hmm->lambdas[i] = 1.0;
         hmm->ts[i] = ts[i];
     }
+    hmm->maxT = ts[n];
     for(i = 0; i < n; i++)
     {
         hmm->deltas[i] = hmm->ts[i+1]-hmm->ts[i];

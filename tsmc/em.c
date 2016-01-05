@@ -128,7 +128,7 @@ double Em_get_initial_rho(Data * dat)
 {
     const int n = 8;
     double * ts = chmalloc(sizeof(double) * (n+1));
-    get_ts_msmc(ts, n);
+    get_ts_psmc(ts, 4.0, n);
     int lambdaCounts = 8;
     Em tempEm;
     double initRhos[6] = {5e-3, 1e-3, 5e-3, 1e-2, 5e-2, 1e-1};
@@ -439,6 +439,7 @@ double objective_function_asex(double * par)
     const double rho = par[0]*par[0];
     const double theta = par[1]*par[1];
     const double Td = par[2]*par[2];
+    const double maxT = par[3]*par[3];
 
     const int numParams = em.numFreeLambdas+3;
 
@@ -456,13 +457,14 @@ double objective_function_asex(double * par)
     {
         for(j = 0; j < em.lambdaCounts[i+1]; j++)
         {
-            lambdas[lambdaIdx++] = par[i+3]*par[i+3];
+            lambdas[lambdaIdx++] = par[i+4]*par[i+4];
         }
     }
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
     Hmm_make_hmm(scratchHmm, lambdas, n, theta, rho, Td);
+    get_ts_psmc(scratchHmm->ts, maxT, n);
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
@@ -572,19 +574,21 @@ void Em_iterate_asex(Em * em)
     double fmin;
     int i, j;
 
-    int numParams = em->numFreeLambdas + 3;
+    int numParams = em->numFreeLambdas + 4;
 
     double * start = (double *)chmalloc(sizeof(double) * numParams);
     start[0] = sqrt(em->hmm[em->hmmFlag].rho);
     start[1] = sqrt(em->hmm[em->hmmFlag].theta);
     start[2] = sqrt(em->hmm[em->hmmFlag].Td);
+    start[3] = sqrt(em->hmm[em->hmmFlag].maxT);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
     step[0] = sqrt(0.1);
     step[1] = sqrt(0.1);
     step[2] = sqrt(0.1);
-    for(i = 3; i < numParams; i++)
+    step[3] = sqrt(0.1);
+    for(i = 4; i < numParams; i++)
     {
-        start[i] = sqrt(em->freeLambdas[i-3]);
+        start[i] = sqrt(em->freeLambdas[i-4]);
         step[i] = sqrt(0.5);
     }
 
@@ -615,7 +619,7 @@ void Em_iterate_asex(Em * em)
         randstarts[i] = (double *)chmalloc(sizeof(double) * numParams);
         for(j = 0; j < numParams; j++)
         {
-            randstarts[i][j] = pow(10.0, runifab(-1.0, 1.0)) * start[j];
+            randstarts[i][j] = pow(4.0, runifab(-1.0, 1.0)) * start[j];
         }
     }
 
@@ -652,15 +656,16 @@ void Em_iterate_asex(Em * em)
         }
     }
 
-    double rho, theta, Td;
+    double rho, theta, Td, maxT;
 
     rho = fargmins[minFminIdx][0]*fargmins[minFminIdx][0];
     theta = fargmins[minFminIdx][1]*fargmins[minFminIdx][1];
     Td = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
+    maxT = fargmins[minFminIdx][3]*fargmins[minFminIdx][3];
 
     for(i = 0; i < em->numFreeLambdas; i++)
     {
-        em->freeLambdas[i] = fargmins[minFminIdx][i+3]*fargmins[minFminIdx][i+3];
+        em->freeLambdas[i] = fargmins[minFminIdx][i+4]*fargmins[minFminIdx][i+4];
     }
 
     double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
@@ -681,6 +686,8 @@ void Em_iterate_asex(Em * em)
     assert(lambdaIdx == n+1);
 
     // set the HMM for the next iteration
+    get_ts_psmc(em->hmm[!em->hmmFlag].ts, maxT, n);
+    em->hmm[!em->hmmFlag].maxT = maxT;
     Hmm_make_hmm(&(em->hmm[!em->hmmFlag]), lambdas, n, theta, rho, Td);
 
     // flip the hmm flag
