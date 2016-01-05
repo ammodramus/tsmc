@@ -8,6 +8,7 @@ typedef struct
     int n; // number of changepoints
     int numStates;
     double * ts;
+    double maxT;
     double * lambdas;
     double * deltas;
     double * intervalOmegas;

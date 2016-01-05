@@ -23,14 +23,7 @@ int main(int argc, char ** argv)
 
     int i;
     double * ts = (double *)chmalloc(sizeof(double) * (n+1));
-    if(opt.psmcIntervals)
-    {
-        get_ts_psmc(ts, opt.maxT, n);
-    }
-    else
-    {
-        get_ts_msmc(ts, n);
-    }
+    get_ts_psmc(ts, opt.maxT, n);
 
     Data dat;
     Data_init(&dat, polarized);
@@ -54,8 +47,6 @@ int main(int argc, char ** argv)
     timestamp("getting initial rho...");
     initRho = Em_get_initial_rho(&dat);
     timestamp("finished initial rho...");
-    const double asexInitTd = 0.2;
-    const double initTd = opt.asexEnabled ? asexInitTd : 0.0;
 
     Em_init(&em, &dat, ts, initRho, opt.numFreeLambdas, opt.n,
             opt.numEmIterations, opt.lambdaCounts, opt.asexEnabled);
