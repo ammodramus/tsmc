@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
+#include <float.h>
 #include "definitions.h"
 #include "hmm.h"
 #include "data.h"
@@ -52,9 +53,9 @@ void Em_init(Em * em, Data * dat, double * ts,
         lambdas[i] = 1.0;
     }
 
-    Hmm_init(&(em->hmm[0]), n, ts);
-    Hmm_init(&(em->hmm[1]), n, ts);
-    Hmm_make_hmm(&(em->hmm[0]), lambdas, n, initTheta, initRho, initTd);
+    Hmm_init(&(em->hmm[0]), n);
+    Hmm_init(&(em->hmm[1]), n);
+    Hmm_make_hmm(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd);
     em->hmmFlag = 0;
     em->curIteration = 0;
     em->maxIterations = numEmIterations;
@@ -132,7 +133,7 @@ double Em_get_initial_rho(Data * dat)
     int lambdaCounts = 8;
     Em tempEm;
     double initRhos[6] = {5e-3, 1e-3, 5e-3, 1e-2, 5e-2, 1e-1};
-    double maxloglike = -1.0*INFINITY;
+    double maxloglike = -1.0*DBL_MAX;
     double loglike;
     int maxLLidx = 0;
     const int numInitRhos = 6;
@@ -463,20 +464,22 @@ double objective_function_asex(double * par)
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
-    get_ts_psmc(scratchHmm->ts, maxT, n);
-    scratchHmm->maxT = maxT;
-    Hmm_make_hmm(scratchHmm, lambdas, n, theta, rho, Td);
+    double * ts = (double *)chmalloc(sizeof(double) * (n+1));
+    get_ts_psmc(ts, maxT, n);
+    Hmm_make_hmm(scratchHmm, lambdas, ts, n, theta, rho, Td);
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
 
     free(lambdas);
+    free(ts);
 
     return -loglike;
 }
 
 double objective_function_no_asex(double * par)
 {
+    assert(0 && "this is not currently supported.");
     // (em is a global)
     const int n = em.hmm[0].n;
     assert(em.hmm[0].n == em.hmm[1].n);
@@ -507,7 +510,9 @@ double objective_function_no_asex(double * par)
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
-    Hmm_make_hmm(scratchHmm, lambdas, n, theta, rho, 0.0);
+    // not working...
+    assert (0 && "this is not supported right now.");
+    Hmm_make_hmm(scratchHmm, lambdas, (double *)NULL, n, theta, rho, 0.0);
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
@@ -687,15 +692,16 @@ void Em_iterate_asex(Em * em)
     assert(lambdaIdx == n+1);
 
     // set the HMM for the next iteration
-    get_ts_psmc(em->hmm[!em->hmmFlag].ts, maxT, n);
-    em->hmm[!em->hmmFlag].maxT = maxT;
-    Hmm_make_hmm(&(em->hmm[!em->hmmFlag]), lambdas, n, theta, rho, Td);
+    double * ts = (double *)chmalloc(sizeof(double) * (n+1));
+    get_ts_psmc(ts, maxT, n);
+    Hmm_make_hmm(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td);
 
     // flip the hmm flag
     em->hmmFlag = !em->hmmFlag;
 
     // free things
     free(lambdas);
+    free(ts);
     free(start);
     for(i = 0; i < numOptimStarts; i++)
     {

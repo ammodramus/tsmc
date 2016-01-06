@@ -24,9 +24,10 @@ typedef struct
 } Hmm;
 
 inline int get_index(int i, int j, int n);
-void Hmm_init(Hmm * hmm, const int n, const double * ts);
+void Hmm_init(Hmm * hmm, const int n);
 void Hmm_free(Hmm * hmm);
 void Hmm_set_lambdas(Hmm * hmm, const int n, const double * lambdas);
+void Hmm_set_ts_and_deltas(Hmm * hmm, const double * ts);
 void Hmm_make_omega_intervals(Hmm * hmm);
 double get_omega_interval_interval(Hmm * hmm, int a, int b);
 void Hmm_get_pis(Hmm * hmm);
@@ -46,7 +47,8 @@ void Hmm_get_emissions(Hmm * hmm);
 inline void Hmm_set_theta(Hmm * hmm, double theta);
 inline void Hmm_set_rho(Hmm * hmm, double rho);
 inline void Hmm_set_Td(Hmm * hmm, double Td);
-void Hmm_make_hmm(Hmm * hmm, double * lambdas, int numChangepoints, double theta, double rho, double Td);
+void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
+        int numChangepoints, double theta, double rho, double Td);
 void Hmm_print_pis(Hmm * hmm);
 void Hmm_print_demography(Hmm * hmm);
 void Hmm_print_expectations(Hmm * hmm);
