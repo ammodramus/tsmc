@@ -544,8 +544,10 @@ inline void Hmm_set_Td(Hmm * hmm, double Td)
 }
 
 void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
-        int numChangepoints, double theta, double rho, double Td)
+        int numChangepoints, double theta, double rho, double Td, int * error)
 {
+
+    *error = 0;
 
     // numChangepoints is n in the notation of the paper
     assert(hmm->n == numChangepoints);
@@ -556,6 +558,16 @@ void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
     Hmm_set_Td(hmm, Td);
 
     Hmm_make_omega_intervals(hmm);
+    int i;
+    for(i = 0; i < hmm->n; i++)
+    {
+        if(hmm->intervalOmegas[i] > 30)
+        {
+            *error = 1;
+            return;
+        }
+    }
+
     Hmm_get_pis(hmm);
     Hmm_get_expectations(hmm);
     Hmm_get_qts(hmm);
