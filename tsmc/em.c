@@ -55,7 +55,11 @@ void Em_init(Em * em, Data * dat, double * ts,
 
     Hmm_init(&(em->hmm[0]), n);
     Hmm_init(&(em->hmm[1]), n);
-    Hmm_make_hmm(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd);
+
+    int error;
+    Hmm_make_hmm(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, &error);
+    assert(!error);
+
     em->hmmFlag = 0;
     em->curIteration = 0;
     em->maxIterations = numEmIterations;
@@ -466,7 +470,15 @@ double objective_function_asex(double * par)
 
     double * ts = (double *)chmalloc(sizeof(double) * (n+1));
     get_ts_psmc(ts, maxT, n);
-    Hmm_make_hmm(scratchHmm, lambdas, ts, n, theta, rho, Td);
+
+    int error;
+    Hmm_make_hmm(scratchHmm, lambdas, ts, n, theta, rho, Td, &error);
+    if(error)
+    {
+        free(lambdas);
+        free(ts);
+        return DBL_MAX;
+    }
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
@@ -512,7 +524,8 @@ double objective_function_no_asex(double * par)
 
     // not working...
     assert (0 && "this is not supported right now.");
-    Hmm_make_hmm(scratchHmm, lambdas, (double *)NULL, n, theta, rho, 0.0);
+    int error;
+    Hmm_make_hmm(scratchHmm, lambdas, (double *)NULL, n, theta, rho, 0.0, &error);
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
@@ -694,7 +707,9 @@ void Em_iterate_asex(Em * em)
     // set the HMM for the next iteration
     double * ts = (double *)chmalloc(sizeof(double) * (n+1));
     get_ts_psmc(ts, maxT, n);
-    Hmm_make_hmm(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td);
+
+    int error;
+    Hmm_make_hmm(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td, &error);
 
     // flip the hmm flag
     em->hmmFlag = !em->hmmFlag;

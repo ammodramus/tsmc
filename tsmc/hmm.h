@@ -48,7 +48,7 @@ inline void Hmm_set_theta(Hmm * hmm, double theta);
 inline void Hmm_set_rho(Hmm * hmm, double rho);
 inline void Hmm_set_Td(Hmm * hmm, double Td);
 void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
-        int numChangepoints, double theta, double rho, double Td);
+    int numChangepoints, double theta, double rho, double Td, int * error);
 void Hmm_print_pis(Hmm * hmm);
 void Hmm_print_demography(Hmm * hmm);
 void Hmm_print_expectations(Hmm * hmm);
