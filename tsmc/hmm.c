@@ -561,7 +561,7 @@ void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
     int i;
     for(i = 0; i < hmm->n; i++)
     {
-        if(hmm->intervalOmegas[i] > 30)
+        if(hmm->intervalOmegas[i] > 10)
         {
             *error = 1;
             return;

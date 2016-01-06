@@ -41,7 +41,7 @@ void Options_set_defaults(Options * opt)
     opt->numEmIterations = 20;
     opt->asexEnabled = 1;
     opt->psmcIntervals = 1;
-    opt->maxT = 15.0;
+    opt->maxT = 5.0;
 
     return;
 }
