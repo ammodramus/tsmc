@@ -14,7 +14,7 @@ inline int get_index(const int i, const int j, const int n)
     return idx;
 }
 
-void Hmm_init(Hmm * hmm, const int n, const double * ts)
+void Hmm_init(Hmm * hmm, const int n)
 {
     int i;
     const int numStates = (n+1)*(n+2)/2;
@@ -41,22 +41,11 @@ void Hmm_init(Hmm * hmm, const int n, const double * ts)
         hmm->Eijs2s[i] = -1.0;
         hmm->pis[i] = -1.0;
     }
+    hmm->theta = -1.0;
+    hmm->rho = -1.0;
+    hmm->Td = -1.0;
+    hmm->maxT = -1.0;
 
-    // set default values for rho and theta
-    hmm->theta = -1;
-    hmm->rho = -1;
-    hmm->Td = 0.2;
-    
-    for(i = 0; i < n+1; i++)
-    {
-        hmm->lambdas[i] = 1.0;
-        hmm->ts[i] = ts[i];
-    }
-    hmm->maxT = ts[n];
-    for(i = 0; i < n; i++)
-    {
-        hmm->deltas[i] = hmm->ts[i+1]-hmm->ts[i];
-    }
     return;
 }
 
@@ -89,6 +78,22 @@ void Hmm_set_lambdas(Hmm * hmm, const int n, const double * lambdas)
     {
         hmm->lambdas[i] = lambdas[i];
     }
+    return;
+}
+
+void Hmm_set_ts_and_deltas(Hmm * hmm, const double * ts)
+{
+    const int n = hmm->n;
+    int i;
+    for(i = 0; i < n+1; i++)
+    {
+        hmm->ts[i] = ts[i];
+    }
+    for(i = 0; i < n; i++)
+    {
+        hmm->deltas[i] = hmm->ts[i+1]-hmm->ts[i];
+    }
+    hmm->maxT = ts[n];
     return;
 }
 
@@ -538,11 +543,13 @@ inline void Hmm_set_Td(Hmm * hmm, double Td)
     return;
 }
 
-void Hmm_make_hmm(Hmm * hmm, double * lambdas, int numChangepoints,
-        double theta, double rho, double Td)
+void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
+        int numChangepoints, double theta, double rho, double Td)
 {
 
     // numChangepoints is n in the notation of the paper
+    assert(hmm->n == numChangepoints);
+    Hmm_set_ts_and_deltas(hmm, ts);
     Hmm_set_lambdas(hmm, numChangepoints, lambdas);
     Hmm_set_theta(hmm, theta);
     Hmm_set_rho(hmm, rho);
