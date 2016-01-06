@@ -441,7 +441,7 @@ double objective_function_asex(double * par)
     const double Td = par[2]*par[2];
     const double maxT = par[3]*par[3];
 
-    const int numParams = em.numFreeLambdas+3;
+    const int numParams = em.numFreeLambdas+4;
 
     double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
 
@@ -463,8 +463,9 @@ double objective_function_asex(double * par)
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
-    Hmm_make_hmm(scratchHmm, lambdas, n, theta, rho, Td);
     get_ts_psmc(scratchHmm->ts, maxT, n);
+    scratchHmm->maxT = maxT;
+    Hmm_make_hmm(scratchHmm, lambdas, n, theta, rho, Td);
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
