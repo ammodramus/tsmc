@@ -475,12 +475,10 @@ double objective_function_asex(double * par)
     Hmm_make_hmm(scratchHmm, lambdas, ts, n, theta, rho, Td, &error);
     if(error)
     {
-        printf("ERROR\n");
         free(lambdas);
         free(ts);
         return DBL_MAX;
     }
-    printf("NO ERROR\n");
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
