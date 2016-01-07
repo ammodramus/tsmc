@@ -6,7 +6,7 @@
 #include "definitions.h"
 #include "options.h"
 
-#define DEFAULTPATTERN "5*4"
+#define DEFAULTPATTERN "4+5*3+4"
 
 
 static struct option long_options[] =
