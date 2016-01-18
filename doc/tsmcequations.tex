@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
 
 \DeclareMathOperator{\Pois}{Pois}
 \DeclareMathOperator{\Prob}{P}
@@ -1699,4 +1700,35 @@ and $\xi_{i,j}(t)$ can now be written
     \end{split}
 \end{align}
 Difficult to implement, but efficient and apparently correct!
+
+\section{Inferring diploid-to-triploid transition}
+
+In this section we consider the possibility that the asexual triploids were
+generated first by an asexual diploid line that is subsequently fertilized by a
+a haploid sperm, making a triploid asexual lineage. The goal is to infer the
+time between this diploid asexual phase and the triploid asexual phase, along
+with everything else that was considered for inference previously. In this
+case, the state at each position along the genome is the vector $(t_3, t_2,
+W)$, where $W \in \{0,1\}$ is an indicator for whether the branch introduced by
+the triploidizing sperm subtends one of the diploid sexual branches coalescing
+at $t_3$. See Fig.\ \ref{fig:diptripstate} for an illustration.
+
+\begin{figure}[h!]
+	\centering
+    \includegraphics[width=0.8\textwidth]{figs/diptripstate.pdf}
+	\caption{
+        Figure 1. Two states with the same coalescence times $t_3$ and $t_2$
+        but with the triploidizing sperm's lineage subtending a branch that
+        coalesceces with the others (in the diploid sexual phase) at $t_2$
+        (panel A) and at $t_3$ (panel B). $D_2 = 0$ is the time of transition
+        to diploid asexuality, and $D_3 < 0$ is the time of the transition to
+        triploidy.
+    }
+    \label{fig:diptripstate}
+\end{figure}
+
+Having to 
+
 \end{document}
+
+
