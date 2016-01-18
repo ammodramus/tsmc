@@ -1711,7 +1711,14 @@ with everything else that was considered for inference previously. In this
 case, the state at each position along the genome is the vector $(t_3, t_2,
 W)$, where $W \in \{0,1\}$ is an indicator for whether the branch introduced by
 the triploidizing sperm subtends one of the diploid sexual branches coalescing
-at $t_3$. See Fig.\ \ref{fig:diptripstate} for an illustration.
+at $t_3$ ($W = 1$) or $t_2$ ($W = 0$). The transition to diploid asexuality is
+defined as $D_2 = 0$, and the transition to triploid asexuality is defined as
+$D_3 < 0$. See Fig.\ \ref{fig:diptripstate} for an illustration of these
+states.
+
+Having to keep track of $W$ doubles the number of states, and since the
+complexity of the forward-backward algorithm is squared in the number of
+states, the runtime should increase by $\sim 4$.
 
 \begin{figure}[h!]
 	\centering
@@ -1727,8 +1734,44 @@ at $t_3$. See Fig.\ \ref{fig:diptripstate} for an illustration.
     \label{fig:diptripstate}
 \end{figure}
 
-Having to 
+\subsection{Diploid-to-triploid transition probabilities}
+
+The transition probabilities of the hidden model largely remain the same. A few
+changes occur:
+\begin{enumerate}
+    \item In all previous probabilities, the factor $(2t_2 + t_3)^{-1}$ is
+        replaced by the inverse of the new total (sexual) tree length, $(2t_2 +
+        t_3 - D_3)^{-1}$, recalling that $D_3 < 0$. These factors are included
+        unchanged all the way through the derivations and are still present in
+        the final discrete transition probabilities, so they can just be
+        replaced with the new factor.
+    \item Certain transitions will now change $W$ as well. For example, if
+        $W = 0$, (recall, subtending a branch that coalesces at $t_2$), the
+        transition $(s_3, s_2) \to (t_3 < s_3, t_2 = s_3)$ implies that now
+        $W = 1$.
+    \item Additional transition probability must be included, arising from
+        recombination events that occur on the triploidizing sperm's sexual
+        lineage between $t = D_3$ and $t = 0$.
+\end{enumerate}
+
+To do this properly, it will also now be necessary to model the population size
+changes that occur in the sexual population during the diploid asexual phase,
+since the triploidizing sperm's lineage will experience those demographic
+changes. However, the only probabilities that depend on these population sizes
+are the ``healing'' probabilities specific to the SMC', meaning that only the
+``effective recombination rate'' for this single lineage will depend on this
+part of the demographic history. \textbf{For this reason, we will assume that
+the diploid sexual population containing the triploidizing sperm is constant in
+size.} [This approximation would be unnecessary under the SMC model (vs. the
+SMC'), since healing is impossible under the SMC.] It should be a fine
+approximation and will have to be tested.
+
+In general, we can expect there to be very little information about the length
+of this hypothesized diploid asexual interval in the triploid asexual's
+present-day genome. Including this additional period of diploid asexuality
+doesn't change the emission probabilities at all; it only changes the
+transition probabilities of the hidden model, and these changes seem like they
+will be pretty minor. However, it may be possible to rule out long periods of
+diploid asexuality in the putatively ancient lineages.
 
 \end{document}
-
-
