@@ -1788,15 +1788,27 @@ diploid asexuality in the putatively ancient lineages.
     W &= 1 \textrm{ with prob.\ 1/2}\\
     W &= 0 \textrm{ with prob.\ 1/2}\\
     \intertext{For $t_3<s_3; t_2=s_2$:}
-    x\\
+    W' = W
     \intertext{For $t_3>s_3; t_2=s_2$:}
-    x\\
-    \intertext{For $t_3=s_2; t_2>s_2$:}
-    x\\
+    W' = W
+    \intertext{For $t_3=s_2; t_2>s_2, W = 0$:}
+    W' = 1\\
+    \intertext{For $t_3=s_2; t_2>s_2, W = 1$:}
+    W &= 1 \textrm{ with prob.\ 1/2}\\
+    W &= 0 \textrm{ with prob.\ 1/2}\\
     \intertext{For $t_3=s_3; t_2=s_2$:}
-    x\\
+    W' = W\\
 \end{split}
 \label{eq:qts}
 \end{align}
+
+\subsection{Deriving the new probabilities}
+
+The following are the ``supplemental'' probabilities of transition at the site
+of a recombination event, due to recombination events happening along the
+lineage of the triploidizing sperm in the time interval $(D_3, D_2)$.
+
+%TODO here
+
 
 \end{document}
