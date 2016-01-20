@@ -7,6 +7,10 @@ typedef struct
 {
     int n; // number of changepoints
     int numStates;
+    int flagDt; // flag for diploid-triploid inference
+    double D3;
+    int numStatesDt;
+    double lambdaDt;
     double * ts;
     double maxT;
     double * lambdas;
@@ -16,6 +20,7 @@ typedef struct
     double * Eijs3s;
     double * Eijs2s;
     double ** qts;
+    double ** qtsDt;
     double ** pts;
     double rho;
     double theta;
@@ -23,8 +28,10 @@ typedef struct
     fourd * emissions;
 } Hmm;
 
-inline int get_index(int i, int j, int n);
+inline int get_index(const int i, const int j, const int n);
+inline int get_index_dt(const int i, const int j, const int n, const int W);
 void Hmm_init(Hmm * hmm, const int n);
+void Hmm_init_Dt(Hmm * hmm, const int n);
 void Hmm_free(Hmm * hmm);
 void Hmm_set_lambdas(Hmm * hmm, const int n, const double * lambdas);
 void Hmm_set_ts_and_deltas(Hmm * hmm, const double * ts);

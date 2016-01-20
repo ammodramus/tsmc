@@ -5,12 +5,21 @@
 #include "definitions.h"
 #include "hmm.h"
 #include "qtscases.h"
+#include "qtssuppdt.h"
 
 inline int get_index(const int i, const int j, const int n)
 {
     assert(i>=0 && j>=0 && n>=0 && i<=n && j<=n && i<=j);
     const int idx = i*n-i*(i-1)/2+j;
     assert(idx < (n+1)*(n+2)/2);
+    return idx;
+}
+
+inline int get_index_dt(const int i, const int j, const int n, const int W)
+{
+    assert(i>=0 && j>=0 && n>=0 && i<=n && j<=n && i<=j && (W == 0 || W == 1));
+    const int idx = i*n-i*(i-1)/2+j + W*(n+1)*(n+2)/2;
+    assert(idx < (n+1)*(n+2));
     return idx;
 }
 
@@ -46,6 +55,12 @@ void Hmm_init(Hmm * hmm, const int n)
     hmm->Td = -1.0;
     hmm->maxT = -1.0;
 
+    hmm->flagDt = 0;    // set flag
+    hmm->numStatesDt = -1;
+    hmm->lambdaDt = -1.0;
+
+    hmm->qtsDt = NULL;
+
     return;
 }
 
@@ -67,6 +82,50 @@ void Hmm_free(Hmm * hmm)
     free(hmm->qts);
     free(hmm->pts);
     free(hmm->emissions);
+    return;
+}
+
+void Hmm_init_Dt(Hmm * hmm, const int n)
+{
+    int i;
+    const int numStates = (n+1)*(n+2)/2;
+    const int numStatesDt = 2*numStates;
+
+    assert(n > 0);
+
+    hmm->n = n;
+    hmm->lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+    hmm->deltas = (double *)chmalloc(sizeof(double) * n);
+    hmm->intervalOmegas = (double *)chmalloc(sizeof(double) * n);
+    hmm->ts = (double *)chmalloc(sizeof(double) * (n+1));
+    hmm->Eijs2s = (double *)chmalloc(sizeof(double)*numStates);
+    hmm->Eijs3s = (double *)chmalloc(sizeof(double)*numStates);
+    hmm->pis = (double *)chmalloc(sizeof(double)*numStates);
+    hmm->qts = (double **)chmalloc(sizeof(double *)*numStates);
+    hmm->qtsDt = (double **)chmalloc(sizeof(double *)*numStatesDt);
+    hmm->pts = (double **)chmalloc(sizeof(double *)*numStatesDt);
+    hmm->emissions = (fourd *)chmalloc(sizeof(fourd)*numStatesDt); 
+    hmm->numStates = numStates;
+    for(i = 0; i < numStatesDt; i++)
+    {
+        hmm->qtsDt[i] = (double *)chmalloc(sizeof(double)*numStatesDt);
+        hmm->pts[i] = (double *)chmalloc(sizeof(double)*numStatesDt);
+    }
+    for(i = 0; i < numStates; i++)
+    {
+        hmm->qts[i] = (double *)chmalloc(sizeof(double)*numStates);
+        hmm->Eijs3s[i] = -1.0;
+        hmm->Eijs2s[i] = -1.0;
+        hmm->pis[i] = -1.0;
+    }
+    hmm->theta = -1.0;
+    hmm->rho = -1.0;
+    hmm->Td = -1.0;
+    hmm->maxT = -1.0;
+    hmm->lambdaDt = -1.0;
+
+    hmm->flagDt = 1;    // set flag
+
     return;
 }
 
@@ -380,6 +439,8 @@ void Hmm_get_qts(Hmm * hmm)
 
     double ** const qts = hmm->qts;
 
+    assert(!hmm->flagDt);
+
     for(i=0; i<n+1; i++)
     {
         for(j=i; j<n+1; j++)
@@ -434,6 +495,202 @@ void Hmm_get_qts(Hmm * hmm)
                     {
                         qts[rowIdx][colIdx] = qts_case_J(hmm, i, j, k, l);
                         qts[rowIdx][colIdx] += qts_case_J2(hmm, i, j, k, l);
+                    }
+                }
+            }
+        }
+    }
+    return;
+}
+
+void Hmm_get_qts_dt(Hmm * hmm)
+{
+    int W, i, j, k, l, rowIdx, colIdx, expIdx;
+    const int n = hmm->n;
+    const int numStates = hmm->numStates;
+
+    double ** const qts = hmm->qts;
+
+    double Es3, Es2;
+
+    double ratio;
+
+    assert(hmm->flagDt);
+
+    Hmm_get_qts(Hmm * hmm);
+    
+    for(W = 0; W <= 1; W++)
+    {
+        for(Wp = 0; Wp <= 1; Wp++)
+        {
+            for(i=0; i<n+1; i++)
+            {
+                for(j=i; j<n+1; j++)
+                {
+                    rowIdx = get_index_dt(i,j,n,W);
+                    expIdx = get_index(i,j,n);
+                    Es3 = hmm->Eijs3s[expIdx];
+                    Es2 = hmm->Eijs2s[expIdx];
+                    ratio = (2*Es2+Es3)/(2*Es2+Es3 - hmm->D3);
+                    for(k=0; k<n+1; k++)
+                    {
+                        for(l=k; l<n+1; l++)
+                        {
+                            colIdx = get_index_dt(k,l,n,Wp);
+                            qts[rowIdx][colIdx] = 0.0; // as a default
+                            if(i == k && k < j && j < l && W == Wp)
+                            {
+                                qts[rowIdx][colIdx] = ratio * qts_case_A(hmm, i, j, k, l);
+                                if(W == 0)
+                                {
+                                    assert(Wp == 0);
+                                    qts[rowIdx][colIdx] += qts_case_A_supp(hmm, i, j, k, l);
+                                }
+                            }
+                            else if(i == k && k < l && l < j && W == Wp)
+                            {
+                                qts[rowIdx][colIdx] = ratio * qts_case_B(hmm, i, j, k, l);
+                                if(W == 0)
+                                {
+                                    assert(Wp == 0);
+                                    qts[rowIdx][colIdx] += qts_case_B_supp(hmm, i, j, k, l);
+                                }
+                            }
+                            else if(k < i && i == l && l < j && W == 0 && Wp == 1)
+                            {
+                                qts[rowIdx][colIdx] = ratio * qts_case_C(hmm, i, j, k, l) +
+                                    qts_case_C_supp(hmm, i, j, k, l);
+                            }
+                            else if(k < i && i == l && l < j && W == 1)
+                            {
+                                qts[rowIdx][colIdx] = 1.0/2.0 * ratio * qts_case_C(hmm, i, j, k, l);
+                            }
+                            else if(k < i && i < j && j == l && W == Wp)
+                            {
+                                qts[rowIdx][colIdx] = ratio * qts_case_D(hmm, i, j, k, l);
+                                if(W == 1)
+                                {
+                                    assert(Wp == 1);
+                                    qts[rowIdx][colIdx] += qts_case_D_supp(hmm, i, j, k, l);
+                                }
+                            }
+                            else if(i < k && k < j && j == l && W == Wp)
+                            {
+                                qts[rowIdx][colIdx] = ratio * qts_case_E(hmm, i, j, k, l);
+                                if(W == 1)
+                                {
+                                    assert(Wp == 1);
+                                    qts[rowIdx][colIdx] += qts_case_E_supp(hmm, i, j, k, l);
+                                }
+                            }
+                            else if(i < j && j == k && k < l && W == 1) // case F 1
+                            {
+                                qts[rowIdx][colIdx] = 1.0/2.0 * ratio * qts_case_F(hmm, i, j, k, l);
+                                if(Wp == 0)
+                                {
+                                    qts[rowIdx][colIdx] += qts_case_F_supp(hmm, i, j, k, l);
+                                }
+                            }
+                            else if(i < j && j == k && k < l && W == 0 && Wp == 1) // case F 2
+                            {
+                                qts[rowIdx][colIdx] = ratio * qts_case_F(i, j, k, l);
+                            }
+                            else if(i == k && k == l && l < j) // case G and G2
+                            {
+                                qts[rowIdx][colIdx] = 0.0;
+                                if(W == Wp) // case G
+                                {
+                                    qts[rowIdx][colIdx] += ratio * qts_case_G(hmm, i, j, k, l);
+                                    if(W == 0)
+                                    {
+                                        assert(Wp == 0);
+                                        qts[rowIdx][colIdx] += qts_case_G_supp(hmm, i, j, k, l);
+                                    }
+                                }
+                                if(W == 0 && Wp == 1) // case G2
+                                {
+                                    qts[rowIdx][colIdx] += ratio * qts_case_G2(hmm,i,j,k,l) +
+                                        qts_case_G2_supp(i,j,k,l);
+                                }
+                                if(W == 1) // also case G2
+                                {
+                                    qts[rowIdx][colIdx] += 0.5 * ratio * qts_case_G2(hmm, i,j,k,l);
+                                }
+                            }
+                            else if(i < k && k == l && l == j) // case H and H2
+                            {
+                                qts[rowIdx][colIdx] = 0.0;
+                                if(W == Wp) // case H
+                                {
+                                    qts[rowIdx][colIdx] += ratio * qts_case_H(hmm,i,j,k,l);
+                                    if(W == 1)
+                                    {
+                                        assert(Wp == 1);
+                                        qts[rowIdx][colIdx] += qts_case_H_supp(hmm,i,j,k,l);
+                                    }
+
+                                }
+                                if(W == 0 && Wp == 1) // case H2
+                                {
+                                    qts[rowIdx][colIdx] += ratio * qts_case_H2(hmm,i,j,k,l);
+                                }
+                                if(W == 1) // also case H2
+                                {
+                                    qts[rowIdx][colIdx] += 0.5 * ratio * qts_case_H2(hmm,i,j,k,l);
+                                    if(Wp == 0)
+                                    {
+                                        qts[rowIdx][colIdx] += qts_case_H2_supp(hmm,i,j,k,l);
+                                    }
+                                }
+                            }
+                            else if(i == j && j == k && k < l) // case I and I2
+                            {
+                                qts[rowIdx][colIdx] = 0.0;
+                                if(W == Wp) // case I
+                                {
+                                    qts[rowIdx][colIdx] += ratio * qts_case_I(hmm,i,j,k,l);
+                                    if(W == 0)
+                                    {
+                                        qts[rowIdx][colIdx] += qts_case_I_supp(hmm,i,j,k,l);
+                                    }
+                                }
+                                if(W == 0 && Wp == 1) // case I2
+                                {
+                                    qts[rowIdx][colIdx] += ratio * qts_case_I2(hmm,i,j,k,l);
+                                }
+                                if(W == 1) // also case I2
+                                {
+                                    qts[rowIdx][colIdx] += 0.5*ratio*qts_case_I2(hmm,i,j,k,l);
+                                    if(Wp == 0)
+                                    {
+                                        qts[rowIdx][colIdx] += qts_case_I2_supp(hmm,i,j,k,l);
+                                    }
+                                }
+                            }
+
+                            else if(k < i && i == j && j == l) // cases J and J2
+                            {
+                                qts[rowIdx][colIdx] = 0.0;
+                                if(W == Wp) // case J
+                                {
+                                    qts[rowIdx][colIdx] += ratio * qts_case_J(hmm,i,j,k,l);
+                                    if(W == 1)
+                                    {
+                                        assert(Wp ==1);
+                                        qts[rowIdx][colIdx] += qts_case_J_supp(hmm, i,j,k,l);
+                                    }
+                                }
+                                if(W == 0 && Wp == 1)
+                                {
+                                    qts[rowIdx][colIdx] += ratio * qts_case_J2(hmm,i,j,k,l) +
+                                        qts_case_J2_supp(hmm,i,j,k,l);
+                                }
+                                if(W == 1)
+                                {
+                                    qts[rowIdx][colIdx] += 0.5 * ratio * qts_case_J2(hmm,i,j,k,l);
+                                }
+                            }
+                        }
                     }
                 }
             }
