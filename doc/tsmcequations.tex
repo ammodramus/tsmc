@@ -2016,11 +2016,11 @@ For $i=k=l<j$ and $t_3=s_3; t_2<s_2$ and $W = W'$:
         &= \frac{2s_2+s_3}{2s_2+s_3-D_3}\,q^{G}(i,j,k,l)+\\
         &\qquad
         \delta(W)
-        \frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}e^{-3\Omega(0,s_3)}\frac{1}{\lambda_l}\frac{\lambda_l}{2}\left(1-e^{-\frac{T_l-s_3}{\lambda_l}}\right)\\
+        \frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}e^{-3\Omega(0,s_3)}\frac{1}{\lambda_l}\frac{\lambda_l}{2}\left(1-e^{-\frac{2(T_l-s_3)}{\lambda_l}}\right)\\
         &= \frac{2s_2+s_3}{2s_2+s_3-D_3}\,q^{G}(i,j,k,l)+\\
         &\qquad
         \delta(W)
-        \frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}e^{-3\Omega(0,s_3)}\frac{1}{2}\left(1-e^{-\frac{T_l-s_3}{\lambda_l}}\right)\\
+        \frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}e^{-3\Omega(0,s_3)}\frac{1}{2}\left(1-e^{-\frac{2(T_l-s_3)}{\lambda_l}}\right)\\
     \end{split}
 \end{align}
 Here, $q^G(i,j,k,l)$ is case G without the diploid-to-triploid variables.
@@ -2163,10 +2163,10 @@ For $k<i=j=l$ and $t_3<s_3;t_2=s_2$, $W' = W$:
         \int_{D_3}^{0}\frac{du}{2s_3+s_2-D_3}e^{-\Omega(u,0)}\frac{2}{\lambda_k}e^{-3\Omega(0,T_k)}\int_{T_k}^{T_{k+1}}e^{-3\Omega(T_k,t_3)}dt_3\\
         &=\frac{2s_2+s_3}{2s_2+s_3-D_3}q^{J}(i,j,k,l)+
         \delta(W-1)
-        \frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{\lambda_k}e^{-3\Omega(0,T_k)}\frac{\lambda_k}{3}\left(1-e^{-\frac{\Delta_k}{\lambda_k}}\right)\\
+        \frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{\lambda_k}e^{-3\Omega(0,T_k)}\frac{\lambda_k}{3}\left(1-e^{-\frac{3\Delta_k}{\lambda_k}}\right)\\
         &=\frac{2s_2+s_3}{2s_2+s_3-D_3}q^{J}(i,j,k,l)+
         \delta(W-1)
-        \frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{3}e^{-3\Omega(0,T_k)}\left(1-e^{-\frac{\Delta_k}{\lambda_k}}\right)\\
+        \frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{3}e^{-3\Omega(0,T_k)}\left(1-e^{-\frac{3\Delta_k}{\lambda_k}}\right)\\
     \end{split}
 \end{align}
 
@@ -2176,8 +2176,8 @@ For $k<i=j=l$ and $t_3<s_3;t_2=s_3$, $W = 0$, $W' = 1$:
     \begin{split}
         &=\frac{2s_2+s_3}{2s_2+s_3-D_3}q^{J2}(i,j,k,l)+\int_{D_3}^{0}\frac{du}{2s_3+s_2-D_3}e^{-\Omega(u,0)}\int_{T_k}^{T_{k+1}}\frac{2}{\lambda(t_3)}e^{-3\Omega(0,t_3)}dt_3\\
         &=\frac{2s_2+s_3}{2s_2+s_3-D_3}q^{J2}(i,j,k,l)+\frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{\lambda_k}e^{-3\Omega(0,T_k)}\int_{T_k}^{T_{k+1}}e^{-3\Omega(T_k,t_3)}dt_3\\
-        &=\frac{2s_2+s_3}{2s_2+s_3-D_3}q^{J2}(i,j,k,l)+\frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{\lambda_k}e^{-3\Omega(0,T_k)}\frac{\lambda_k}{3}\left(1-e^{-\frac{\Delta_k}{\lambda_k}}\right)\\
-        &=\frac{2s_2+s_3}{2s_2+s_3-D_3}q^{J2}(i,j,k,l)+\frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{3}e^{-3\Omega(0,T_k)}\left(1-e^{-\frac{\Delta_k}{\lambda_k}}\right)\\
+        &=\frac{2s_2+s_3}{2s_2+s_3-D_3}q^{J2}(i,j,k,l)+\frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{\lambda_k}e^{-3\Omega(0,T_k)}\frac{\lambda_k}{3}\left(1-e^{-\frac{3\Delta_k}{\lambda_k}}\right)\\
+        &=\frac{2s_2+s_3}{2s_2+s_3-D_3}q^{J2}(i,j,k,l)+\frac{\lambda_d\left(e^{-\frac{D_3}{\lambda_d}}-1\right)}{2s_2+s_3-D_3}\frac{2}{3}e^{-3\Omega(0,T_k)}\left(1-e^{-\frac{3\Delta_k}{\lambda_k}}\right)\\
     \end{split}
 \end{align}
 
