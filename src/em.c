@@ -1150,12 +1150,22 @@ void Em_iterate_no_asex(Em * em)
 void Em_print_forward(Em * em)
 {
     const int numSeqs = em->numSeqs;
-    const int numHmmStates = em->hmm[0].numStates;
     assert(em->hmm[0].numStates == em->hmm[1].numStates);
     int i, j, k, seqLen;
     double ** seqFor;
     Hmm * hmm = &(em->hmm[em->hmmFlag]);
     Data * dat = em->dat;
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[hmmIdx].numStates;
+        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[hmmIdx].numStatesDt;
+        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+    }
 
     for(i = 0; i < numSeqs; i++)
     {
@@ -1176,12 +1186,22 @@ void Em_print_forward(Em * em)
 void Em_print_backward(Em * em)
 {
     const int numSeqs = em->numSeqs;
-    const int numHmmStates = em->hmm[0].numStates;
     assert(em->hmm[0].numStates == em->hmm[1].numStates);
     int i, j, k, seqLen;
     double ** seqBack;
     Hmm * hmm = &(em->hmm[em->hmmFlag]);
     Data * dat = em->dat;
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[hmmIdx].numStates;
+        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[hmmIdx].numStatesDt;
+        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+    }
 
     for(i = 0; i < numSeqs; i++)
     {
@@ -1202,7 +1222,6 @@ void Em_print_backward(Em * em)
 void Em_print_norm_const(Em * em)
 {
     const int numSeqs = em->numSeqs;
-    const int numHmmStates = em->hmm[0].numStates;
     assert(em->hmm[0].numStates == em->hmm[1].numStates);
     int i, j, k, seqLen;
     double * seqNorm;
@@ -1225,12 +1244,22 @@ void Em_print_norm_const(Em * em)
 void Em_print_gamma(Em * em)
 {
     const int numSeqs = em->numSeqs;
-    const int numHmmStates = em->hmm[0].numStates;
     assert(em->hmm[0].numStates == em->hmm[1].numStates);
     int i, j, k, seqLen;
     double ** seqGamma;
     Hmm * hmm = &(em->hmm[em->hmmFlag]);
     Data * dat = em->dat;
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[hmmIdx].numStates;
+        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[hmmIdx].numStatesDt;
+        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+    }
 
     for(i = 0; i < numSeqs; i++)
     {
@@ -1251,12 +1280,22 @@ void Em_print_gamma(Em * em)
 void Em_print_expect(Em * em)
 {
     const int numSeqs = em->numSeqs;
-    const int numHmmStates = em->hmm[0].numStates;
     assert(em->hmm[0].numStates == em->hmm[1].numStates);
     int i, j, k, seqLen;
     double ** seqGamma;
     Hmm * hmm = &(em->hmm[em->hmmFlag]);
     Data * dat = em->dat;
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[hmmIdx].numStates;
+        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[hmmIdx].numStatesDt;
+        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+    }
 
     for(i = 0; i < numHmmStates; i++)
     {
@@ -1277,6 +1316,10 @@ void Em_print_parameters(Em * em)
     if(em->asexEnabled)
     {
         printf("PA\tTd\t%g\n", hmm->Td);
+    }
+    if(hmm->flagDt)
+    {
+        printf("PA\tD3\t%g\n", hmm->D3);
     }
     int i;
     for(i = 0; i < hmm->n+1; i++)
