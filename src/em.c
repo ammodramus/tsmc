@@ -238,8 +238,17 @@ void Em_get_forward(Em * em)
     double ** const pts = em->hmm[hmmIdx].pts;
     double *** const forward = em->forward;
     const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
-    const int numHmmStates = em->hmm[hmmIdx].numStates;
-    assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[hmmIdx].numStates;
+        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[hmmIdx].numStatesDt;
+        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+    }
     const int numSeqs = em->numSeqs;
     fourd * const emissions = em->hmm[hmmIdx].emissions;
 
@@ -303,9 +312,20 @@ void Em_get_backward(Em * em)
     double ** const pts = em->hmm[hmmIdx].pts;
     double *** const backward = em->backward;
     const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
-    const int numHmmStates = em->hmm[hmmIdx].numStates;
     const int numSeqs = em->numSeqs;
     fourd * const emissions = em->hmm[hmmIdx].emissions;
+
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[hmmIdx].numStates;
+        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[hmmIdx].numStatesDt;
+        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+    }
 
     int i, j, k, l;
     int seqLen;
@@ -354,8 +374,19 @@ void Em_get_expectations(Em * em)
     double ** const expectTransitions = em->expectTransitions;
     double ** const pts = em->hmm[hmmIdx].pts;
     fourd * const emissions = em->hmm[hmmIdx].emissions;
-    const int numHmmStates = em->hmm[hmmIdx].numStates;
     const int numSeqs = em->numSeqs;
+
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[hmmIdx].numStates;
+        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[hmmIdx].numStatesDt;
+        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+    }
 
     char * seqData;
 
@@ -435,8 +466,19 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
     double ** const pts = hmm->pts;
     double * const pis = hmm->pis;
     fourd * const emissions = hmm->emissions;
-    const int numHmmStates = hmm->numStates;
     const int numSeqs = em->numSeqs;
+
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[hmmIdx].numStates;
+        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[hmmIdx].numStatesDt;
+        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+    }
 
     int i,j,k,l, seqLen;
 
