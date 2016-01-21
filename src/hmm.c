@@ -466,8 +466,6 @@ void Hmm_get_qts(Hmm * hmm)
 
     double ** const qts = hmm->qts;
 
-    assert(!hmm->flagDt);
-
     for(i=0; i<n+1; i++)
     {
         for(j=i; j<n+1; j++)
@@ -584,7 +582,7 @@ void Hmm_get_qts_dt(Hmm * hmm)
     const int n = hmm->n;
     const int numStates = hmm->numStates;
 
-    double ** const qts = hmm->qts;
+    double ** const qts = hmm->qtsDt;
 
     double Es3, Es2;
 
@@ -592,7 +590,7 @@ void Hmm_get_qts_dt(Hmm * hmm)
 
     assert(hmm->flagDt);
 
-    Hmm_get_qts(hmm);
+    //Hmm_get_qts(hmm);
     
     for(W = 0; W <= 1; W++)
     {
@@ -779,7 +777,7 @@ void Hmm_get_pts_dt(Hmm * hmm)
     const int n = hmm->n;
     const double rho = hmm->rho;
     const double theta = hmm->theta;
-    double ** const qts = hmm->qts;
+    double ** const qts = hmm->qtsDt;
     double ** const pts = hmm->pts;
     double * const Es3s = hmm->Eijs3s;
     double * const Es2s = hmm->Eijs2s;
@@ -888,8 +886,8 @@ void Hmm_get_emissions_dt(Hmm * hmm)
             {
                 ijidx = get_index_dt(i,j,n,W);
                 expIdx = get_index(i,j,n);
-                Es3 = Es3s[ijidx];
-                Es2 = Es2s[ijidx];
+                Es3 = Es3s[expIdx];
+                Es2 = Es2s[expIdx];
 
                 treeSize = 2.0*Es2 + Es3;
 
