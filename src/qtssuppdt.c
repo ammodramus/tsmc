@@ -341,9 +341,6 @@ double qts_case_I_supp(Hmm * hmm, int i, int j, int k, int l)
     double prob;
 
     assert(l <= n);
-    DEBUGREPORTI(l);
-    DEBUGREPORTI(n);
-    DEBUGREPORTI(l == n);
 
     prob = (lamd * (exp(-D3/lamd)-1.0)) / (2.0*Es2+Es3-D3) * 
         exp(-3.0*get_omega_interval_Es3(hmm, 0, i, j)) *
