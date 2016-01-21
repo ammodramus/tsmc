@@ -9,6 +9,7 @@ typedef struct
     int numStates;
     int flagDt; // flag for diploid-triploid inference
     double D3;
+    double lamd;
     int numStatesDt;
     double lambdaDt;
     double * ts;
