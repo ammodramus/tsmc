@@ -18,6 +18,7 @@ static struct option long_options[] =
     {"no-asex", no_argument, 0, 1},
     {"psmc-intervals", no_argument, 0, 2},
     {"psmc-max-time", required_argument, 0, 3},
+    {"dip-trip", no_argument, 0, 4},
 	{0, 0, 0, 0}
 };
 
@@ -42,6 +43,7 @@ void Options_set_defaults(Options * opt)
     opt->asexEnabled = 1;
     opt->psmcIntervals = 1;
     opt->maxT = 5.0;
+    opt->flagDt = 0;
 
     return;
 }
@@ -222,6 +224,9 @@ void Options_parse_options(Options * opt, int argc, char ** argv)
                     perror("--psmc-max-time must be > 0");
                 }
                 break;
+            case 4: // --dip-trip
+                opt->flagDt = 1;
+                break;
 			default:
 				Options_print_help_statement();
 				exit(1);
@@ -254,6 +259,7 @@ void Options_print_options(Options * opt)
     {
         printf("lambda count %i = %i\n", i, opt->lambdaCounts[i]);
     }
-    printf("options enabled: %i\n", opt->asexEnabled);
+    printf("asex enabled: %i\n", opt->asexEnabled);
+    printf("dip-trip enabled: %i\n", opt->flagDt);
     return;
 }
