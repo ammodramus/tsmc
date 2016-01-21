@@ -9,7 +9,6 @@ typedef struct
     int numStates;
     int flagDt; // flag for diploid-triploid inference
     double D3;
-    double lamd;
     int numStatesDt;
     double lambdaDt;
     double * ts;
@@ -62,7 +61,7 @@ void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
     int numChangepoints, double theta, double rho, double Td, int * error);
 void Hmm_make_hmm_dt(Hmm * hmm, double * lambdas, double * ts,
         int numChangepoints, double theta, double rho, double Td, double D3,
-        int * error);
+        double lamd, int * error);
 void Hmm_print_pis(Hmm * hmm);
 void Hmm_print_demography(Hmm * hmm);
 void Hmm_print_expectations(Hmm * hmm);

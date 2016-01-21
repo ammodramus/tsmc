@@ -929,6 +929,13 @@ inline void Hmm_set_D3(Hmm * hmm, double D3)
     hmm->D3 = D3;
 }
 
+inline void Hmm_set_lambdaD(Hmm * hmm, double lamd)
+{
+    assert(hmm->flagDt);
+    hmm->lambdaDt = lamd;
+    return;
+}
+
 void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
         int numChangepoints, double theta, double rho, double Td, int * error)
 {
@@ -965,7 +972,7 @@ void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
 
 void Hmm_make_hmm_dt(Hmm * hmm, double * lambdas, double * ts,
         int numChangepoints, double theta, double rho, double Td, double D3,
-        int * error)
+        double lamd, int * error)
 {
 
     *error = 0;
@@ -978,6 +985,7 @@ void Hmm_make_hmm_dt(Hmm * hmm, double * lambdas, double * ts,
     Hmm_set_rho(hmm, rho);
     Hmm_set_Td(hmm, Td);
     Hmm_set_D3(hmm, D3);
+    Hmm_set_lambdaD(hmm, lamd);
 
     Hmm_make_omega_intervals(hmm);
     int i;
