@@ -9,7 +9,7 @@ typedef struct
     Hmm hmm[2];
     int hmmFlag;
     int numSeqs;
-    int flagDtj
+    int flagDt;
     int numHmmStates;
     int curIteration;
     int maxIterations;
