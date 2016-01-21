@@ -13,6 +13,28 @@
 
 Em em;
 
+inline void copy_pis(double * pis, const double * emPis, int numHmmStates, int flagDt)
+{
+    int i;
+    if(flagDt)
+    {
+        const int numHmmStatesNoDt = numHmmStates / 2;
+        for(i = 0; i < numHmmStates; i++)
+        {
+            pis[i] = emPis[i % numHmmStatesNoDt];
+        }
+    }
+    else
+    {
+        for(i = 0; i < numHmmStates; i++)
+        {
+            pis[i] = emPis[i];
+        }
+    }
+    return;
+}
+
+
 void Em_init(Em * em, Data * dat, double * ts,
         double initRho, int numFreeLambdas, 
         int n, int numEmIterations, int * lambdaCounts, int asexEnabled, int diptripflag)
@@ -75,8 +97,9 @@ void Em_init(Em * em, Data * dat, double * ts,
     else
     {
         const double initD3 = 0;
+        const double initLambdaD = 1.0;
         assert(diptripflag);
-        Hmm_make_hmm_dt(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, initD3, &error);
+        Hmm_make_hmm_dt(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, initD3, initLambdaD, &error);
     }
     assert(!error);
 
@@ -260,15 +283,9 @@ void Em_get_forward(Em * em)
 
     double sum1, sum2;
 
-    double * emPis = em->hmm[hmmIdx].pis;
-    double * pis;
-
-    pis = (double *)chmalloc(sizeof(double) * numHmmStates);
-    const int numHmmStatesNoDt = ((em->hmm[hmmIdx].flagDt) ? numHmmStates/2 : numHmmStates);
-    for(i = 0; i < numHmmStates; i++)
-    {
-        pis[i] = emPis[i % numHmmStatesNoDt];
-    }
+    const double * emPis = em->hmm[hmmIdx].pis;
+    double * pis = (double *)chmalloc(sizeof(double) * numHmmStates);
+    copy_pis(pis, emPis, numHmmStates, em->flagDt);
 
     for(i = 0; i < numSeqs; i++)
     {
@@ -476,7 +493,7 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
     double ** const expectTransitions = em->expectTransitions;
     fourd * expectEmissions = em->expectEmissions;
     double ** const pts = hmm->pts;
-    double * const pis = hmm->pis;
+    double * const emPis = hmm->pis;
     fourd * const emissions = hmm->emissions;
     const int numSeqs = em->numSeqs;
 
@@ -491,6 +508,10 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
         numHmmStates = em->hmm[hmmIdx].numStatesDt;
         assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
     }
+
+    double * pis = (double *)chmalloc(sizeof(double) * numHmmStates);
+    copy_pis(pis, emPis, numHmmStates, hmm->flagDt);
+
 
     int i,j,k,l, seqLen;
 
@@ -520,6 +541,7 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
             }
         }
     }
+    free(pis);
     return loglike;
 }
 
@@ -619,7 +641,7 @@ double objective_function_dt(double * par)
     get_ts_psmc(ts, maxT, n);
 
     int error;
-    Hmm_make_hmm_dt(scratchHmm, lambdas, ts, n, theta, rho, Td, D3, &error);
+    Hmm_make_hmm_dt(scratchHmm, lambdas, ts, n, theta, rho, Td, D3, lamd, &error);
     if(error)
     {
         free(lambdas);
@@ -924,7 +946,7 @@ void Em_iterate_dt(Em * em)
     start[2] = sqrt(em->hmm[em->hmmFlag].Td);
     start[3] = sqrt(em->hmm[em->hmmFlag].maxT);
     start[4] = sqrt(-1.0*em->hmm[em->hmmFlag].D3);
-    start[5] = sqrt(em->hmm[em->hmmFlag].lamd);
+    start[5] = sqrt(em->hmm[em->hmmFlag].lambdaDt);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
     step[0] = sqrt(0.1);
     step[1] = sqrt(0.1);
@@ -1038,7 +1060,7 @@ void Em_iterate_dt(Em * em)
     get_ts_psmc(ts, maxT, n);
 
     int error;
-    Hmm_make_hmm_dt(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td, D3, &error);
+    Hmm_make_hmm_dt(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td, D3, lamd, &error);
 
     // flip the hmm flag
     em->hmmFlag = !em->hmmFlag;
