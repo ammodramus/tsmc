@@ -1158,13 +1158,13 @@ void Em_print_forward(Em * em)
     int numHmmStates;
     if(!em->flagDt)
     {
-        numHmmStates = em->hmm[hmmIdx].numStates;
-        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+        numHmmStates = em->hmm[0].numStates;
+        assert(em->hmm[0].numStates == em->hmm[1].numStates);
     }
     else
     {
-        numHmmStates = em->hmm[hmmIdx].numStatesDt;
-        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+        numHmmStates = em->hmm[0].numStatesDt;
+        assert(em->hmm[0].numStatesDt == em->hmm[1].numStatesDt);
     }
 
     for(i = 0; i < numSeqs; i++)
@@ -1194,13 +1194,13 @@ void Em_print_backward(Em * em)
     int numHmmStates;
     if(!em->flagDt)
     {
-        numHmmStates = em->hmm[hmmIdx].numStates;
-        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+        numHmmStates = em->hmm[0].numStates;
+        assert(em->hmm[0].numStates == em->hmm[1].numStates);
     }
     else
     {
-        numHmmStates = em->hmm[hmmIdx].numStatesDt;
-        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+        numHmmStates = em->hmm[0].numStatesDt;
+        assert(em->hmm[0].numStatesDt == em->hmm[1].numStatesDt);
     }
 
     for(i = 0; i < numSeqs; i++)
@@ -1252,13 +1252,13 @@ void Em_print_gamma(Em * em)
     int numHmmStates;
     if(!em->flagDt)
     {
-        numHmmStates = em->hmm[hmmIdx].numStates;
-        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+        numHmmStates = em->hmm[0].numStates;
+        assert(em->hmm[0].numStates == em->hmm[1].numStates);
     }
     else
     {
-        numHmmStates = em->hmm[hmmIdx].numStatesDt;
-        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+        numHmmStates = em->hmm[0].numStatesDt;
+        assert(em->hmm[0].numStatesDt == em->hmm[1].numStatesDt);
     }
 
     for(i = 0; i < numSeqs; i++)
@@ -1288,13 +1288,13 @@ void Em_print_expect(Em * em)
     int numHmmStates;
     if(!em->flagDt)
     {
-        numHmmStates = em->hmm[hmmIdx].numStates;
-        assert(em->hmm[hmmIdx].numStates == em->hmm[!hmmIdx].numStates);
+        numHmmStates = em->hmm[0].numStates;
+        assert(em->hmm[0].numStates == em->hmm[1].numStates);
     }
     else
     {
-        numHmmStates = em->hmm[hmmIdx].numStatesDt;
-        assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
+        numHmmStates = em->hmm[0].numStatesDt;
+        assert(em->hmm[0].numStatesDt == em->hmm[1].numStatesDt);
     }
 
     for(i = 0; i < numHmmStates; i++)
