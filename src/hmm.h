@@ -49,13 +49,19 @@ double get_omega_interval_Es2(Hmm * hmm, const int a, const int Es2_i,
         const int Es2_j);
 double get_omega_Es3_Es2(Hmm * hmm, const int Es3_i, const int Es3_j);
 void Hmm_get_qts(Hmm * hmm);
+void Hmm_get_qts_dt(Hmm * hmm);
 void Hmm_get_pts(Hmm * hmm);
+void Hmm_get_pts_dt(Hmm * hmm);
 void Hmm_get_emissions(Hmm * hmm);
+void Hmm_get_emissions_dt(Hmm * hmm);
 inline void Hmm_set_theta(Hmm * hmm, double theta);
 inline void Hmm_set_rho(Hmm * hmm, double rho);
 inline void Hmm_set_Td(Hmm * hmm, double Td);
 void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
     int numChangepoints, double theta, double rho, double Td, int * error);
+void Hmm_make_hmm_dt(Hmm * hmm, double * lambdas, double * ts,
+        int numChangepoints, double theta, double rho, double Td, double D3,
+        int * error);
 void Hmm_print_pis(Hmm * hmm);
 void Hmm_print_demography(Hmm * hmm);
 void Hmm_print_expectations(Hmm * hmm);

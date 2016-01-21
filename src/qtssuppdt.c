@@ -59,7 +59,7 @@ double qts_case_B_supp(Hmm * hmm, int i, int j, int k, int l)
 
     double prob;
 
-    prob = 1.0/(2.0*Es2+Es3-D3) * lamd * (exp(-D3/lambd)-1.0) * 
+    prob = 1.0/(2.0*Es2+Es3-D3) * lamd * (exp(-D3/lamd)-1.0) * 
         exp(-3*get_omega_interval_Es3(hmm, 0, i, j)) * 
         exp(-2*get_omega_Es3_interval(hmm, l, i, j)) * 
         1.0/2.0 * (1.0 - exp(-2.0*io[l]));

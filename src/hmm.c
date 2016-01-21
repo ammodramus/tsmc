@@ -503,9 +503,57 @@ void Hmm_get_qts(Hmm * hmm)
     return;
 }
 
+void Hmm_get_pts(Hmm * hmm)
+{
+    const int numStates = hmm->numStates;
+    const int n = hmm->n;
+    const double rho = hmm->rho;
+    const double theta = hmm->theta;
+    double ** const qts = hmm->qts;
+    double ** const pts = hmm->pts;
+    double * const Es3s = hmm->Eijs3s;
+    double * const Es2s = hmm->Eijs2s;
+
+    assert(!hmm->flagDt);
+
+    int i, j, k, l, ijidx, klidx;
+    double Es3, Es2, treeSize, probRecomb, sum;
+
+    for(i = 0; i <= n; i++)
+    {
+        for(j = i; j <= n; j++)
+        {
+            ijidx = get_index(i, j, n);
+            Es3 = Es3s[ijidx];
+            Es2 = Es2s[ijidx];
+            treeSize = 3.0*Es3 + 2.0*(Es2-Es3);
+            probRecomb = 1.0-exp(-treeSize * rho/2.0);
+
+            sum = 0.0;
+            
+            for(k = 0; k <= n; k++)
+            {
+                for(l = k; l <=n; l++)
+                {
+                    klidx = get_index(k, l, n);
+                    if(klidx == ijidx)
+                    {
+                        continue;
+                    }
+                    pts[ijidx][klidx] = qts[ijidx][klidx] * probRecomb;
+                    sum += pts[ijidx][klidx];
+                }
+            }
+            pts[ijidx][ijidx] = 1.0 - sum;
+        }
+    }
+
+    return;
+}
+
 void Hmm_get_qts_dt(Hmm * hmm)
 {
-    int W, i, j, k, l, rowIdx, colIdx, expIdx;
+    int W, Wp, i, j, k, l, rowIdx, colIdx, expIdx;
     const int n = hmm->n;
     const int numStates = hmm->numStates;
 
@@ -517,7 +565,7 @@ void Hmm_get_qts_dt(Hmm * hmm)
 
     assert(hmm->flagDt);
 
-    Hmm_get_qts(Hmm * hmm);
+    Hmm_get_qts(hmm);
     
     for(W = 0; W <= 1; W++)
     {
@@ -593,7 +641,7 @@ void Hmm_get_qts_dt(Hmm * hmm)
                             }
                             else if(i < j && j == k && k < l && W == 0 && Wp == 1) // case F 2
                             {
-                                qts[rowIdx][colIdx] = ratio * qts_case_F(i, j, k, l);
+                                qts[rowIdx][colIdx] = ratio * qts_case_F(hmm, i, j, k, l);
                             }
                             else if(i == k && k == l && l < j) // case G and G2
                             {
@@ -610,7 +658,7 @@ void Hmm_get_qts_dt(Hmm * hmm)
                                 if(W == 0 && Wp == 1) // case G2
                                 {
                                     qts[rowIdx][colIdx] += ratio * qts_case_G2(hmm,i,j,k,l) +
-                                        qts_case_G2_supp(i,j,k,l);
+                                        qts_case_G2_supp(hmm,i,j,k,l);
                                 }
                                 if(W == 1) // also case G2
                                 {
@@ -699,9 +747,8 @@ void Hmm_get_qts_dt(Hmm * hmm)
     return;
 }
 
-void Hmm_get_pts(Hmm * hmm)
+void Hmm_get_pts_dt(Hmm * hmm)
 {
-    const int numStates = hmm->numStates;
     const int n = hmm->n;
     const double rho = hmm->rho;
     const double theta = hmm->theta;
@@ -710,38 +757,46 @@ void Hmm_get_pts(Hmm * hmm)
     double * const Es3s = hmm->Eijs3s;
     double * const Es2s = hmm->Eijs2s;
 
-    int i, j, k, l, ijidx, klidx;
+    assert(hmm->flagDt);
+
+    int W, Wp, i, j, k, l, ijidx, klidx, expIdx;
     double Es3, Es2, treeSize, probRecomb, sum;
 
-    for(i = 0; i <= n; i++)
+    for(W = 0; W <= 1; W++)
     {
-        for(j = i; j <= n; j++)
+        for(Wp = 0; Wp <= 1; Wp++)
         {
-            ijidx = get_index(i, j, n);
-            Es3 = Es3s[ijidx];
-            Es2 = Es2s[ijidx];
-            treeSize = 3.0*Es3 + 2.0*(Es2-Es3);
-            probRecomb = 1.0-exp(-treeSize * rho/2.0);
-
-            sum = 0.0;
-            
-            for(k = 0; k <= n; k++)
+            for(i = 0; i <= n; i++)
             {
-                for(l = k; l <=n; l++)
+                for(j = i; j <= n; j++)
                 {
-                    klidx = get_index(k, l, n);
-                    if(klidx == ijidx)
+                    ijidx = get_index_dt(i, j, n, W);
+                    expIdx = get_index(i, j, n);
+                    Es3 = Es3s[expIdx];
+                    Es2 = Es2s[expIdx];
+                    treeSize = 3.0*Es3 + 2.0*(Es2-Es3);
+                    probRecomb = 1.0-exp(-treeSize * rho/2.0);
+
+                    sum = 0.0;
+                    
+                    for(k = 0; k <= n; k++)
                     {
-                        continue;
+                        for(l = k; l <=n; l++)
+                        {
+                            klidx = get_index_dt(k, l, n, Wp);
+                            if(klidx == ijidx)
+                            {
+                                continue;
+                            }
+                            pts[ijidx][klidx] = qts[ijidx][klidx] * probRecomb;
+                            sum += pts[ijidx][klidx];
+                        }
                     }
-                    pts[ijidx][klidx] = qts[ijidx][klidx] * probRecomb;
-                    sum += pts[ijidx][klidx];
+                    pts[ijidx][ijidx] = 1.0 - sum;
                 }
             }
-            pts[ijidx][ijidx] = 1.0 - sum;
         }
     }
-
     return;
 }
 
@@ -755,6 +810,7 @@ void Hmm_get_emissions(Hmm * hmm)
     double * const Es2s = hmm->Eijs2s;
     fourd * const emissions = hmm->emissions;
 
+    assert(!hmm->flagDt);
 
     int i, j, ijidx;
     double Es3, Es2, treeSize;
@@ -782,6 +838,48 @@ void Hmm_get_emissions(Hmm * hmm)
     return;
 }
 
+void Hmm_get_emissions_dt(Hmm * hmm)
+{
+    const double numStates = hmm->numStates;
+    const double n = hmm->n;
+    const double theta = hmm->theta;
+    const double Td = hmm->Td;
+    double * const Es3s = hmm->Eijs3s;
+    double * const Es2s = hmm->Eijs2s;
+    fourd * const emissions = hmm->emissions;
+
+    assert(hmm->flagDt);
+
+    int W, i, j, ijidx, expIdx;
+    double Es3, Es2, treeSize;
+
+    for(W = 0; W <= 1; W++)
+    {
+        for(i = 0; i <= n; i++)
+        {
+            for(j = i; j <= n; j++)
+            {
+                ijidx = get_index_dt(i,j,n,W);
+                expIdx = get_index(i,j,n);
+                Es3 = Es3s[ijidx];
+                Es2 = Es2s[ijidx];
+
+                treeSize = 2.0*Es2 + Es3;
+
+                emissions[ijidx][0] = exp(-(treeSize + 3.0*Td)*theta/2.0);
+                emissions[ijidx][1] = exp(-(Es2-Es3)*theta/2.0) *
+                    (1 - exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0));
+                emissions[ijidx][2] = (1.0 - exp(-(Es2-Es3)*theta/2.0)) * 
+                    exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0);
+                emissions[ijidx][3] = (1.0 - exp(-(Es2-Es3)*theta/2.0)) * 
+                    (1 - exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0));
+            }
+        }
+    }
+
+    return;
+}
+
 inline void Hmm_set_theta(Hmm * hmm, double theta)
 {
     hmm->theta = theta;
@@ -798,6 +896,12 @@ inline void Hmm_set_Td(Hmm * hmm, double Td)
 {
     hmm->Td = Td;
     return;
+}
+
+inline void Hmm_set_D3(Hmm * hmm, double D3)
+{
+    assert(hmm->flagDt);
+    hmm->D3 = D3;
 }
 
 void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
@@ -834,6 +938,41 @@ void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
     return;
 }
 
+void Hmm_make_hmm_dt(Hmm * hmm, double * lambdas, double * ts,
+        int numChangepoints, double theta, double rho, double Td, double D3,
+        int * error)
+{
+
+    *error = 0;
+
+    // numChangepoints is n in the notation of the paper
+    assert(hmm->n == numChangepoints);
+    Hmm_set_ts_and_deltas(hmm, ts);
+    Hmm_set_lambdas(hmm, numChangepoints, lambdas);
+    Hmm_set_theta(hmm, theta);
+    Hmm_set_rho(hmm, rho);
+    Hmm_set_Td(hmm, Td);
+    Hmm_set_D3(hmm, D3);
+
+    Hmm_make_omega_intervals(hmm);
+    int i;
+    for(i = 0; i < hmm->n; i++)
+    {
+        if(hmm->intervalOmegas[i] > 10)
+        {
+            *error = 1;
+            return;
+        }
+    }
+
+    Hmm_get_pis(hmm);
+    Hmm_get_expectations(hmm);
+    Hmm_get_qts_dt(hmm);
+    Hmm_get_pts_dt(hmm);
+    Hmm_get_emissions_dt(hmm);
+
+    return;
+}
 
 void Hmm_print_demography(Hmm * hmm)
 {
