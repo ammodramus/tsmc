@@ -567,6 +567,63 @@ double objective_function_asex(double * par)
     return -loglike;
 }
 
+double objective_function_dt(double * par)
+{
+    // (em is a global)
+    const int n = em.hmm[0].n;
+    assert(em.hmm[0].n == em.hmm[1].n);
+
+    const double rho = par[0]*par[0];
+    const double theta = par[1]*par[1];
+    const double Td = par[2]*par[2];
+    const double maxT = par[3]*par[3];
+    const double D3 = -1.0*par[4]*par[4];
+    const double lamd = par[5]*par[5];
+
+    const int numNonLamParams = 6;
+    const int numParams = em.numFreeLambdas + numNonLamParams;
+
+    double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+
+    int i, j;
+
+    for(i = 0; i < em.lambdaCounts[0]; i++)
+    {
+        // set the first, fixed lambdas at 1
+        lambdas[i] = 1.0;
+    }
+    int lambdaIdx = em.lambdaCounts[0];
+    for(i = 0; i < em.numFreeLambdas; i++)
+    {
+        for(j = 0; j < em.lambdaCounts[i+1]; j++)
+        {
+            lambdas[lambdaIdx++] = par[i+numNonLamParams]*par[i+numNonLamParams];
+        }
+    }
+
+    Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
+
+    double * ts = (double *)chmalloc(sizeof(double) * (n+1));
+    get_ts_psmc(ts, maxT, n);
+
+    int error;
+    Hmm_make_hmm_dt(scratchHmm, lambdas, ts, n, theta, rho, Td, D3, &error);
+    if(error)
+    {
+        free(lambdas);
+        free(ts);
+        return DBL_MAX;
+    }
+
+    double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
+    assert(loglike < 0);
+
+    free(lambdas);
+    free(ts);
+
+    return -loglike;
+}
+
 double objective_function_no_asex(double * par)
 {
     assert(0 && "this is not currently supported.");
@@ -617,10 +674,22 @@ double Em_get_loglikelihood(Em * em)
 {
     double loglike = 0.0;
     const int numSeqs = em->numSeqs;
-    const int numHmmStates = em->numHmmStates;
     int i, j, seqLen;
     double ** seqFor;
     double sum;
+
+    int numHmmStates;
+    if(!em->flagDt)
+    {
+        numHmmStates = em->hmm[0].numStates;
+        assert(em->hmm[0].numStates == em->hmm[1].numStates);
+    }
+    else
+    {
+        numHmmStates = em->hmm[0].numStatesDt;
+        assert(em->hmm[0].numStatesDt == em->hmm[1].numStatesDt);
+    }
+
     for(i = 0; i < numSeqs; i++)
     {
         seqLen = em->dat->seqs[i].len;
@@ -788,6 +857,169 @@ void Em_iterate_asex(Em * em)
 
     int error;
     Hmm_make_hmm(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td, &error);
+
+    // flip the hmm flag
+    em->hmmFlag = !em->hmmFlag;
+
+    // free things
+    free(lambdas);
+    free(ts);
+    free(start);
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        free(fargmins[i]);
+        free(randstarts[i]);
+    }
+    free(fargmins);
+    free(randstarts);
+    free(step);
+    free(fmins);
+
+    return;
+}
+
+void Em_iterate_dt(Em * em)
+{
+    em->curIteration++;
+
+    timestamp("starting forward-backward...");
+    Em_get_forward(em);
+    Em_get_backward(em);
+    Em_get_expectations(em);
+    timestamp("finished forward-backward...");
+
+    assert(em->hmm[0].n == em->hmm[1].n);
+    const int n = em->hmm[0].n;
+
+    const int numOptimStarts = 20;
+
+    double fmin;
+    int i, j;
+
+    const int numNonLamParams = 6;
+    int numParams = em->numFreeLambdas + numNonLamParams;
+
+    double * start = (double *)chmalloc(sizeof(double) * numParams);
+    start[0] = sqrt(em->hmm[em->hmmFlag].rho);
+    start[1] = sqrt(em->hmm[em->hmmFlag].theta);
+    start[2] = sqrt(em->hmm[em->hmmFlag].Td);
+    start[3] = sqrt(em->hmm[em->hmmFlag].maxT);
+    start[4] = sqrt(-1.0*em->hmm[em->hmmFlag].D3);
+    start[5] = sqrt(em->hmm[em->hmmFlag].lamd);
+    double * step = (double *)chmalloc(sizeof(double) * numParams);
+    step[0] = sqrt(0.1);
+    step[1] = sqrt(0.1);
+    step[2] = sqrt(0.1);
+    step[3] = sqrt(0.1);
+    step[4] = sqrt(0.1);
+    step[5] = sqrt(0.1);
+    for(i = numNonLamParams; i < numParams; i++)
+    {
+        start[i] = sqrt(em->freeLambdas[i-numNonLamParams]);
+        step[i] = sqrt(0.5);
+    }
+
+    double ** randstarts = (double **)chmalloc(sizeof(double *) * numOptimStarts);
+    randstarts[0] = (double *)chmalloc(sizeof(double) * numParams);
+    for(j = 0; j < numParams; j++)
+    {
+        randstarts[0][j] = start[j];
+    }
+    double ** steps = (double **)chmalloc(sizeof(double *) * numOptimStarts);
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        steps[i] = (double *)chmalloc(sizeof(double) * numParams);
+    }
+    for(i = 0; i < numParams; i++)
+    {
+        steps[0][i] = step[i];
+    }
+    for(i = 1; i < numOptimStarts; i++)
+    {
+        for(j = 0; j < numParams; j++)
+        {
+            steps[i][j] = pow(2, runifab(-2, 2)) * steps[0][j];
+        }
+    }
+    for(i = 1; i < numOptimStarts; i++)
+    {
+        randstarts[i] = (double *)chmalloc(sizeof(double) * numParams);
+        for(j = 0; j < numParams; j++)
+        {
+            randstarts[i][j] = pow(4.0, runifab(-1.0, 1.0)) * start[j];
+        }
+    }
+
+    int konvge = 1, maxNumEval = 10000;
+    int iterationCount = 0, numRestarts, errorNum;
+    double reqmin = 1e-16;
+
+    double ** fargmins = (double **)chmalloc(sizeof(double *) * numOptimStarts);
+    double * fmins = (double *)chmalloc(sizeof(double) * numOptimStarts);
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        timestamp("starting optimization rep...");
+        fargmins[i] = (double *)chmalloc(sizeof(double) * numParams);
+        nelmin(objective_function_dt, numParams, randstarts[i], fargmins[i],
+                &(fmins[i]), reqmin, steps[i], konvge, maxNumEval, &iterationCount,
+                &numRestarts, &errorNum);
+        timestamp("optimization rep finished...");
+    }
+
+    for(i = 0; i < numOptimStarts; i++)
+    {
+        free(steps[i]);
+    }
+    free(steps);
+
+    int minFminIdx = 0;
+    double minfmin = fmins[0];
+    for(i = 1; i < numOptimStarts; i++)
+    {
+        if(fmins[i] < minfmin)
+        {
+            minFminIdx = i;
+            minfmin = fmins[i];
+        }
+    }
+
+    double rho, theta, Td, maxT, D3, lamd;
+
+    rho = fargmins[minFminIdx][0]*fargmins[minFminIdx][0];
+    theta = fargmins[minFminIdx][1]*fargmins[minFminIdx][1];
+    Td = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
+    maxT = fargmins[minFminIdx][3]*fargmins[minFminIdx][3];
+    D3 = fargmins[minFminIdx][4]*fargmins[minFminIdx][4];
+    lamd = fargmins[minFminIdx][5]*fargmins[minFminIdx][5];
+
+    for(i = 0; i < em->numFreeLambdas; i++)
+    {
+        em->freeLambdas[i] = fargmins[minFminIdx][i+numNonLamParams]*fargmins[minFminIdx][i+numNonLamParams];
+    }
+
+    double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+
+    for(i = 0; i < em->lambdaCounts[0]; i++)
+    {
+        // set the first, fixed lambdas at 1
+        lambdas[i] = 1.0;
+    }
+    int lambdaIdx = em->lambdaCounts[0];
+    for(i = 0; i < em->numFreeLambdas; i++)
+    {
+        for(j = 0; j < em->lambdaCounts[i+1]; j++)
+        {
+            lambdas[lambdaIdx++] = em->freeLambdas[i];
+        }
+    }
+    assert(lambdaIdx == n+1);
+
+    // set the HMM for the next iteration
+    double * ts = (double *)chmalloc(sizeof(double) * (n+1));
+    get_ts_psmc(ts, maxT, n);
+
+    int error;
+    Hmm_make_hmm_dt(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td, D3, &error);
 
     // flip the hmm flag
     em->hmmFlag = !em->hmmFlag;
