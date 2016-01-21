@@ -713,7 +713,14 @@ void Em_iterate(Em * em)
 {
     if(em->asexEnabled)
     {
-        Em_iterate_asex(em);
+        if(!em->flagDt)
+        {
+            Em_iterate_asex(em);
+        }
+        else
+        {
+            Em_iterate_dt(em);
+        }
     }
     else
     {

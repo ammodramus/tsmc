@@ -37,6 +37,7 @@ void Em_get_backward(Em * em);
 void Em_get_expectations(Em * em);
 void Em_iterate(Em * em);
 void Em_iterate_asex(Em * em);
+void Em_iterate_dt(Em * em);
 void Em_iterate_no_asex(Em * em);
 double Em_get_expected_log_likelihood(Em * em, const int hmmIdx);
 double objective_function_asex(double * par);
