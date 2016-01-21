@@ -9,6 +9,7 @@ typedef struct
     Hmm hmm[2];
     int hmmFlag;
     int numSeqs;
+    int flagDtj
     int numHmmStates;
     int curIteration;
     int maxIterations;
@@ -27,7 +28,7 @@ typedef struct
 
 void Em_init(Em * em, Data * dat, double * ts,
         double initRho, int numFreeLambdas, 
-        int n, int numEmIterations, int * lambdaCounts, int asexEnabled);
+        int n, int numEmIterations, int * lambdaCounts, int asexEnabled, int diptripflag);
 void Em_free(Em * em);
 double Em_get_initial_rho(Data * dat);
 void Em_get_initial_theta_and_Td(Em * em, double * out);

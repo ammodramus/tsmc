@@ -106,6 +106,7 @@ void Hmm_init_Dt(Hmm * hmm, const int n)
     hmm->pts = (double **)chmalloc(sizeof(double *)*numStatesDt);
     hmm->emissions = (fourd *)chmalloc(sizeof(fourd)*numStatesDt); 
     hmm->numStates = numStates;
+    hmm->numStatesDt = numStatesDt;
     for(i = 0; i < numStatesDt; i++)
     {
         hmm->qtsDt[i] = (double *)chmalloc(sizeof(double)*numStatesDt);
@@ -126,6 +127,32 @@ void Hmm_init_Dt(Hmm * hmm, const int n)
 
     hmm->flagDt = 1;    // set flag
 
+    return;
+}
+
+void Hmm_free_dt(Hmm * hmm)
+{
+    int i;
+    free(hmm->lambdas);
+    free(hmm->deltas);
+    free(hmm->ts);
+    free(hmm->Eijs3s);
+    free(hmm->Eijs2s);
+    free(hmm->intervalOmegas);
+    free(hmm->pis);
+    for(i = 0; i < hmm->numStatesDt; i++)
+    {
+        free(hmm->qtsDt[i]);
+        free(hmm->pts[i]);
+    }
+    for(i = 0; i < hmm->numStates; i++)
+    {
+        free(hmm->qts[i]);
+    }
+    free(hmm->qts);
+    free(hmm->qtsDt);
+    free(hmm->pts);
+    free(hmm->emissions);
     return;
 }
 

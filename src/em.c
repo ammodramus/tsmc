@@ -15,7 +15,7 @@ Em em;
 
 void Em_init(Em * em, Data * dat, double * ts,
         double initRho, int numFreeLambdas, 
-        int n, int numEmIterations, int * lambdaCounts, int asexEnabled)
+        int n, int numEmIterations, int * lambdaCounts, int asexEnabled, int diptripflag)
 {
     assert(em && dat && ts);
     assert(dat->numSeqs > 0);
@@ -31,6 +31,8 @@ void Em_init(Em * em, Data * dat, double * ts,
     em->gamma = (double ***)chmalloc(sizeof(double **) * em->numSeqs);
     em->freeLambdas = (double *)chmalloc(sizeof(double) * numFreeLambdas);
     em->numFreeLambdas = numFreeLambdas;
+
+    em->flagDt = diptripflag;
 
     double thetaAndTd[2];
     Em_get_initial_theta_and_Td(em, &(thetaAndTd[0]));
@@ -53,18 +55,44 @@ void Em_init(Em * em, Data * dat, double * ts,
         lambdas[i] = 1.0;
     }
 
-    Hmm_init(&(em->hmm[0]), n);
-    Hmm_init(&(em->hmm[1]), n);
+    if(!diptripflag)
+    {
+        Hmm_init(&(em->hmm[0]), n);
+        Hmm_init(&(em->hmm[1]), n);
+    }
+    else
+    {
+        assert(diptripflag == 1);
+        Hmm_init_Dt(&(em->hmm[0]), n);
+        Hmm_init_Dt(&(em->hmm[1]), n);
+    }
 
     int error;
-    Hmm_make_hmm(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, &error);
+    if(!diptripflag)
+    {
+        Hmm_make_hmm(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, &error);
+    }
+    else
+    {
+        const double initD3 = 0;
+        assert(diptripflag);
+        Hmm_make_hmm_dt(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, initD3, &error);
+    }
     assert(!error);
 
     em->hmmFlag = 0;
     em->curIteration = 0;
     em->maxIterations = numEmIterations;
 
-    const int numHmmStates = (n+1)*(n+2)/2;
+    int numHmmStates;
+    if(!diptripflag)
+    {
+        numHmmStates = (n+1)*(n+2)/2;
+    }
+    else
+    {
+        numHmmStates = (n+1)*(n+2);
+    }
     em->numHmmStates = numHmmStates;
 
     for(i = 0; i < em->numSeqs; i++)
@@ -124,8 +152,16 @@ void Em_free(Em * em)
     free(em->gamma);
     free(em->freeLambdas);
     free(em->expectEmissions);
-    Hmm_free(&(em->hmm[0]));
-    Hmm_free(&(em->hmm[1]));
+    if(!em->flagDt)
+    {
+        Hmm_free(&(em->hmm[0]));
+        Hmm_free(&(em->hmm[1]));
+    }
+    else
+    {
+        Hmm_free_dt(&(em->hmm[0]));
+        Hmm_free_dt(&(em->hmm[1]));
+    }
     return;
 }
 
@@ -144,7 +180,7 @@ double Em_get_initial_rho(Data * dat)
     int i;
     for(i = 0; i < numInitRhos; i++)
     {
-        Em_init(&tempEm, dat, ts, initRhos[i], 0, n, 2, &lambdaCounts, 1);
+        Em_init(&tempEm, dat, ts, initRhos[i], 0, n, 2, &lambdaCounts, 1, 0);
         Em_get_forward(&tempEm);
         Em_get_backward(&tempEm);
         Em_get_expectations(&tempEm);
