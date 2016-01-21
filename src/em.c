@@ -234,7 +234,6 @@ void Em_get_initial_theta_and_Td(Em * em, double * out)
 void Em_get_forward(Em * em)
 {
     const int hmmIdx = em->hmmFlag;
-    double * const pis = em->hmm[hmmIdx].pis;
     double ** const pts = em->hmm[hmmIdx].pts;
     double *** const forward = em->forward;
     const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
@@ -249,6 +248,8 @@ void Em_get_forward(Em * em)
         numHmmStates = em->hmm[hmmIdx].numStatesDt;
         assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
     }
+
+
     const int numSeqs = em->numSeqs;
     fourd * const emissions = em->hmm[hmmIdx].emissions;
 
@@ -258,6 +259,16 @@ void Em_get_forward(Em * em)
     double ** seqFor;
 
     double sum1, sum2;
+
+    double * emPis = em->hmm[hmmIdx].pis;
+    double * pis;
+
+    pis = (double *)chmalloc(sizeof(double) * numHmmStates);
+    const int numHmmStatesNoDt = ((em->hmm[hmmIdx].flagDt) ? numHmmStates/2 : numHmmStates);
+    for(i = 0; i < numHmmStates; i++)
+    {
+        pis[i] = emPis[i % numHmmStatesNoDt];
+    }
 
     for(i = 0; i < numSeqs; i++)
     {
@@ -302,6 +313,7 @@ void Em_get_forward(Em * em)
             }
         }
     }
+    free(pis);
     return;
 }
 
