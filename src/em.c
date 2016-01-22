@@ -666,52 +666,6 @@ double objective_function_dt(double * par)
     return -loglike;
 }
 
-double objective_function_no_asex(double * par)
-{
-    assert(0 && "this is not currently supported.");
-    // (em is a global)
-    const int n = em.hmm[0].n;
-    assert(em.hmm[0].n == em.hmm[1].n);
-    const int numHmmStates = em.numHmmStates;
-
-    const double rho = par[0]*par[0];
-    const double theta = par[1]*par[1];
-
-    const int numParams = em.numFreeLambdas+2;
-
-    double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
-
-    int i, j;
-
-    for(i = 0; i < em.lambdaCounts[0]; i++)
-    {
-        // set the first, fixed lambdas at 1
-        lambdas[i] = 1.0;
-    }
-    int lambdaIdx = em.lambdaCounts[0];
-    for(i = 0; i < em.numFreeLambdas; i++)
-    {
-        for(j = 0; j < em.lambdaCounts[i+1]; j++)
-        {
-            lambdas[lambdaIdx++] = par[i+2]*par[i+2];
-        }
-    }
-
-    Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
-
-    // not working...
-    assert (0 && "this is not supported right now.");
-    int error;
-    Hmm_make_hmm(scratchHmm, lambdas, (double *)NULL, n, theta, rho, 0.0, &error);
-
-    double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
-    assert(loglike < 0);
-
-    free(lambdas);
-
-    return -loglike;
-}
-
 double Em_get_loglikelihood(Em * em)
 {
     double loglike = 0.0;
@@ -753,8 +707,6 @@ double Em_get_loglikelihood(Em * em)
 
 void Em_iterate(Em * em)
 {
-    if(em->asexEnabled)
-    {
         if(!em->flagDt)
         {
             Em_iterate_asex(em);
@@ -763,11 +715,6 @@ void Em_iterate(Em * em)
         {
             Em_iterate_dt(em);
         }
-    }
-    else
-    {
-        Em_iterate_no_asex(em);
-    }
     return;
 }
 
@@ -1077,112 +1024,6 @@ void Em_iterate_dt(Em * em)
     // free things
     free(lambdas);
     free(ts);
-    free(start);
-    for(i = 0; i < numOptimStarts; i++)
-    {
-        free(fargmins[i]);
-        free(randstarts[i]);
-    }
-    free(fargmins);
-    free(randstarts);
-    free(step);
-    free(fmins);
-
-    return;
-}
-
-void Em_iterate_no_asex(Em * em)
-{
-    em->curIteration++;
-
-    //timestamp("making forward");
-    Em_get_forward(em);
-    //timestamp("making backward");
-    Em_get_backward(em);
-    //timestamp("making gamma and xi");
-    Em_get_expectations(em);
-
-    assert(em->hmm[0].n == em->hmm[1].n);
-    const int n = em->hmm[0].n;
-
-    const int numOptimStarts = 500;
-
-    double fmin;
-    int i, j;
-
-    int numParams = em->numFreeLambdas + 2;
-
-    double * start = (double *)chmalloc(sizeof(double) * numParams);
-    start[0] = sqrt(em->hmm[em->hmmFlag].rho);
-    start[1] = sqrt(em->hmm[em->hmmFlag].theta);
-    double * step = (double *)chmalloc(sizeof(double) * numParams);
-    step[0] = sqrt(0.1);
-    step[1] = sqrt(0.1);
-    for(i = 2; i < numParams; i++)
-    {
-        start[i] = sqrt(em->freeLambdas[i-2]);
-        step[i] = sqrt(0.5);
-    }
-
-    double ** randstarts = (double **)chmalloc(sizeof(double *) * numOptimStarts);
-    for(i = 0; i < numOptimStarts; i++)
-    {
-        randstarts[i] = (double *)chmalloc(sizeof(double) * numParams);
-        for(j = 0; j < numParams; j++)
-        {
-            randstarts[i][j] = runifab(0.1, 2.0) * start[j];
-        }
-    }
-
-    int konvge = 1, maxNumEval = 1000000;
-    int iterationCount = 0, numRestarts, errorNum;
-    double reqmin = 1e-10;
-
-    double ** fargmins = (double **)chmalloc(sizeof(double *) * numOptimStarts);
-    double * fmins = (double *)chmalloc(sizeof(double) * numOptimStarts);
-    for(i = 0; i < numOptimStarts; i++)
-    {
-        fargmins[i] = (double *)chmalloc(sizeof(double) * numParams);
-        nelmin(objective_function_no_asex, numParams, randstarts[i], fargmins[i],
-                &(fmins[i]), reqmin, step, konvge, maxNumEval, &iterationCount,
-                &numRestarts, &errorNum);
-    }
-
-    int minFminIdx = 0;
-    double minfmin = fmins[0];
-    for(i = 1; i < numOptimStarts; i++)
-    {
-        if(fmins[i] < minfmin)
-        {
-            minFminIdx = i;
-            minfmin = fmins[i];
-        }
-    }
-
-    em->hmm[!em->hmmFlag].rho = fargmins[minFminIdx][0]*fargmins[minFminIdx][0];
-    em->hmm[!em->hmmFlag].theta = fargmins[minFminIdx][1]*fargmins[minFminIdx][1];
-
-    for(i = 0; i < em->numFreeLambdas; i++)
-    {
-        em->freeLambdas[i] = fargmins[minFminIdx][i+2]*fargmins[minFminIdx][i+2];
-    }
-
-    for(i = 0; i < em->lambdaCounts[0]; i++)
-    {
-        // set the first, fixed lambdas at 1
-        em->hmm[!em->hmmFlag].lambdas[i] = 1.0;
-    }
-    int lambdaIdx = em->lambdaCounts[0];
-    for(i = 0; i < em->numFreeLambdas; i++)
-    {
-        for(j = 0; j < em->lambdaCounts[i+1]; j++)
-        {
-            em->hmm[!em->hmmFlag].lambdas[lambdaIdx++] = em->freeLambdas[i];
-        }
-    }
-
-    em->hmmFlag = !em->hmmFlag;
-
     free(start);
     for(i = 0; i < numOptimStarts; i++)
     {
