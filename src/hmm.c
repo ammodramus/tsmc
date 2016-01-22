@@ -9,7 +9,7 @@
 
 inline int get_index(const int i, const int j, const int n)
 {
-    assert(i>=0 && j>=0 && n>=0 && i<=n && j<=n && i<=j);
+    assert(0 <= i && i <= j && j <= n);
     const int idx = i*n-i*(i-1)/2+j;
     assert(idx < (n+1)*(n+2)/2);
     return idx;
@@ -17,7 +17,7 @@ inline int get_index(const int i, const int j, const int n)
 
 inline int get_index_dt(const int i, const int j, const int n, const int W)
 {
-    assert(i>=0 && j>=0 && n>=0 && i<=n && j<=n && i<=j && (W == 0 || W == 1));
+    assert(0 <= i && i <= j && j <= n && (W == 0 || W == 1));
     const int idx = i*n-i*(i-1)/2+j + W*(n+1)*(n+2)/2;
     assert(idx < (n+1)*(n+2));
     return idx;
