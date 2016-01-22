@@ -1030,7 +1030,7 @@ void Em_iterate_dt(Em * em)
     theta = fargmins[minFminIdx][1]*fargmins[minFminIdx][1];
     Td = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
     maxT = fargmins[minFminIdx][3]*fargmins[minFminIdx][3];
-    D3 = fargmins[minFminIdx][4]*fargmins[minFminIdx][4];
+    D3 = -1.0*fargmins[minFminIdx][4]*fargmins[minFminIdx][4]; // D3 is negative
     lamd = fargmins[minFminIdx][5]*fargmins[minFminIdx][5];
 
     for(i = 0; i < em->numFreeLambdas; i++)
