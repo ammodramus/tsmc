@@ -13,8 +13,6 @@ static struct option long_options[] =
 {
 	{"help", no_argument, 0, 'h'},
     {"iterations", required_argument, 0, 'i'},
-    {"filename", required_argument, 0, 'f'},
-    {"popsizes", required_argument, 0, 'p'},
     {"no-asex", no_argument, 0, 1},
     {"psmc-intervals", no_argument, 0, 2},
     {"psmc-max-time", required_argument, 0, 3},
@@ -22,8 +20,13 @@ static struct option long_options[] =
 	{0, 0, 0, 0}
 };
 
-char usage[] = "\ntsmc [OPTIONS]\n\
-    \n\
+char usage[] = "\nUsage: tsmc [OPTIONS] FILE\n\
+Performs SMC inference on unphased triploid genome represented in FILE\n\
+\n\
+    -h, --help             Display this help message.\n\
+    -p=PATT                Set free population parameter pattern to patt (like PSMC) [4+5*3+4]\n\
+    -i, --iterations=ITER  Set number of EM iterations to iter [20]\n\
+    --dip-trip             Enable inference of diploidy-to-triploidy transition phase [disabled]\n\
 	\n";
 
 void Options_print_help_statement()
