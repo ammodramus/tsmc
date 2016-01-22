@@ -606,69 +606,87 @@ void Hmm_get_qts_dt(Hmm * hmm)
                     expIdx = get_index(i,j,n);
                     Es3 = hmm->Eijs3s[expIdx];
                     Es2 = hmm->Eijs2s[expIdx];
-                    ratio = (2*Es2+Es3)/(2*Es2+Es3 - hmm->D3);
+                    ratio = (2*Es2 + Es3)/(2*Es2+Es3 - hmm->D3);
                     for(k=0; k<n+1; k++)
                     {
                         for(l=k; l<n+1; l++)
                         {
                             colIdx = get_index_dt(k,l,n,Wp);
                             qts[rowIdx][colIdx] = 0.0; // as a default
-                            if(i == k && k < j && j < l && W == Wp)
+                            if(i == k && k < j && j < l) // case A
                             {
-                                qts[rowIdx][colIdx] = ratio * qts_case_A(hmm, i, j, k, l);
-                                if(W == 0)
+                                if(W == Wp)
                                 {
-                                    assert(Wp == 0);
-                                    qts[rowIdx][colIdx] += qts_case_A_supp(hmm, i, j, k, l);
+                                    qts[rowIdx][colIdx] = ratio * qts_case_A(hmm, i, j, k, l);
+                                    if(W == 0)
+                                    {
+                                        assert(Wp == 0);
+                                        qts[rowIdx][colIdx] += qts_case_A_supp(hmm, i, j, k, l);
+                                    }
                                 }
                             }
-                            else if(i == k && k < l && l < j && W == Wp)
+                            else if(i == k && k < l && l < j) // case B
                             {
-                                qts[rowIdx][colIdx] = ratio * qts_case_B(hmm, i, j, k, l);
-                                if(W == 0)
+                                if(W == Wp)
                                 {
-                                    assert(Wp == 0);
-                                    qts[rowIdx][colIdx] += qts_case_B_supp(hmm, i, j, k, l);
+                                    qts[rowIdx][colIdx] = ratio * qts_case_B(hmm, i, j, k, l);
+                                    if(W == 0)
+                                    {
+                                        assert(Wp == 0);
+                                        qts[rowIdx][colIdx] += qts_case_B_supp(hmm, i, j, k, l);
+                                    }
                                 }
                             }
-                            else if(k < i && i == l && l < j && W == 0 && Wp == 1)
+                            else if(k < i && i == l && l < j) // case C
                             {
-                                qts[rowIdx][colIdx] = ratio * qts_case_C(hmm, i, j, k, l) +
-                                    qts_case_C_supp(hmm, i, j, k, l);
-                            }
-                            else if(k < i && i == l && l < j && W == 1)
-                            {
-                                qts[rowIdx][colIdx] = 1.0/2.0 * ratio * qts_case_C(hmm, i, j, k, l);
-                            }
-                            else if(k < i && i < j && j == l && W == Wp)
-                            {
-                                qts[rowIdx][colIdx] = ratio * qts_case_D(hmm, i, j, k, l);
+                                if(W == 0 && Wp == 1)
+                                {
+                                    qts[rowIdx][colIdx] = ratio * qts_case_C(hmm, i, j, k, l) +
+                                        qts_case_C_supp(hmm, i, j, k, l);
+                                }
                                 if(W == 1)
                                 {
-                                    assert(Wp == 1);
-                                    qts[rowIdx][colIdx] += qts_case_D_supp(hmm, i, j, k, l);
+                                    qts[rowIdx][colIdx] = 1.0/2.0 * ratio * qts_case_C(hmm, i, j, k, l);
                                 }
                             }
-                            else if(i < k && k < j && j == l && W == Wp)
+                            else if(k < i && i < j && j == l) // case D
                             {
-                                qts[rowIdx][colIdx] = ratio * qts_case_E(hmm, i, j, k, l);
+                                if(W == Wp)
+                                {
+                                    qts[rowIdx][colIdx] = ratio * qts_case_D(hmm, i, j, k, l);
+                                    if(W == 1)
+                                    {
+                                        assert(Wp == 1);
+                                        qts[rowIdx][colIdx] += qts_case_D_supp(hmm, i, j, k, l);
+                                    }
+                                }
+                            }
+                            else if(i < k && k < j && j == l) // case E
+                            {
+                                if(W == Wp)
+                                {
+                                    qts[rowIdx][colIdx] = ratio * qts_case_E(hmm, i, j, k, l);
+                                    if(W == 1)
+                                    {
+                                        assert(Wp == 1);
+                                        qts[rowIdx][colIdx] += qts_case_E_supp(hmm, i, j, k, l);
+                                    }
+                                }
+                            }
+                            else if(i < j && j == k && k < l) // case F
+                            {
                                 if(W == 1)
                                 {
-                                    assert(Wp == 1);
-                                    qts[rowIdx][colIdx] += qts_case_E_supp(hmm, i, j, k, l);
+                                    qts[rowIdx][colIdx] = 1.0/2.0 * ratio * qts_case_F(hmm, i, j, k, l);
+                                    if(Wp == 0)
+                                    {
+                                        qts[rowIdx][colIdx] += qts_case_F_supp(hmm, i, j, k, l);
+                                    }
                                 }
-                            }
-                            else if(i < j && j == k && k < l && W == 1) // case F 1
-                            {
-                                qts[rowIdx][colIdx] = 1.0/2.0 * ratio * qts_case_F(hmm, i, j, k, l);
-                                if(Wp == 0)
+                                if(W == 0 && Wp == 1)
                                 {
-                                    qts[rowIdx][colIdx] += qts_case_F_supp(hmm, i, j, k, l);
+                                    qts[rowIdx][colIdx] = ratio * qts_case_F(hmm, i, j, k, l);
                                 }
-                            }
-                            else if(i < j && j == k && k < l && W == 0 && Wp == 1) // case F 2
-                            {
-                                qts[rowIdx][colIdx] = ratio * qts_case_F(hmm, i, j, k, l);
                             }
                             else if(i == k && k == l && l < j) // case G and G2
                             {
@@ -726,6 +744,7 @@ void Hmm_get_qts_dt(Hmm * hmm)
                                     qts[rowIdx][colIdx] += ratio * qts_case_I(hmm,i,j,k,l);
                                     if(W == 0)
                                     {
+                                        assert(Wp == 0);
                                         qts[rowIdx][colIdx] += qts_case_I_supp(hmm,i,j,k,l);
                                     }
                                 }
@@ -751,8 +770,8 @@ void Hmm_get_qts_dt(Hmm * hmm)
                                     qts[rowIdx][colIdx] += ratio * qts_case_J(hmm,i,j,k,l);
                                     if(W == 1)
                                     {
-                                        assert(Wp ==1);
-                                        qts[rowIdx][colIdx] += qts_case_J_supp(hmm, i,j,k,l);
+                                        assert(Wp == 1);
+                                        qts[rowIdx][colIdx] += qts_case_J_supp(hmm,i,j,k,l);
                                     }
                                 }
                                 if(W == 0 && Wp == 1)
