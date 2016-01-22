@@ -838,6 +838,7 @@ void Hmm_get_pts_dt(Hmm * hmm)
                             sum += pts[ijidx][klidx];
                         }
                     }
+                    assert(0.0 <= sum && sum <= 1.0);
                     pts[ijidx][ijidx] = 1.0 - sum;
                 }
             }
