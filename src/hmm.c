@@ -58,6 +58,7 @@ void Hmm_init(Hmm * hmm, const int n)
     hmm->flagDt = 0;    // set flag
     hmm->numStatesDt = -1;
     hmm->lambdaDt = -1.0;
+    hmm->D3 = -1.0;
 
     hmm->qtsDt = NULL;
 
@@ -124,6 +125,7 @@ void Hmm_init_Dt(Hmm * hmm, const int n)
     hmm->Td = -1.0;
     hmm->maxT = -1.0;
     hmm->lambdaDt = -1.0;
+    hmm->D3 = -1.0;
 
     hmm->flagDt = 1;    // set flag
 
