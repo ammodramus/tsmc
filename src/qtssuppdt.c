@@ -61,7 +61,7 @@ double qts_case_B_supp(Hmm * hmm, int i, int j, int k, int l)
     prob = 1.0/(2.0*Es2+Es3-D3) * lamd * (1.0 - exp(D3/lamd)) * 
         exp(-3*get_omega_interval_Es3(hmm, 0, i, j)) * 
         exp(-2*get_omega_Es3_interval(hmm, l, i, j)) * 
-        1.0/2.0 * ((l == n) ? 1.0 : (1.0 - exp(-2.0*io[l])));
+        1.0/2.0 * (1.0 - exp(-2.0*io[l]));
 
     assert(0 <= prob && prob <= 1);
     return prob;
@@ -72,7 +72,7 @@ double qts_case_C_supp(Hmm * hmm, int i, int j, int k, int l)
     assert(hmm);
     // two cases for cases C and D
     assert( (0 <= k && k < i && i == l && l < j && j <= hmm->n) ||
-            (0 <= k && k < i && i < j && j == l) );
+            (0 <= k && k < i && i < j && j == l && l <= hmm->n) );
     assert(hmm->flagDt);
 
     int a;
@@ -92,7 +92,7 @@ double qts_case_C_supp(Hmm * hmm, int i, int j, int k, int l)
 
     prob = (lamd * (1.0 - exp(D3/lamd))) / (2.0*Es2+Es3-D3) * 2.0/3.0 *
         exp(-3.0*get_omega_interval_interval(hmm, 0, k)) *
-        ((k == n) ? 1.0 : (1.0 - exp(-3.0*io[k])));
+        (1.0 - exp(-3.0*io[k]));
 
     assert(0 <= prob && prob <= 1);
     return prob;
@@ -122,7 +122,7 @@ double qts_case_D_supp(Hmm * hmm, int i, int j, int k, int l)
 
     prob = (lamd * (1.0-exp(D3/lamd))) / (2.0*Es2+Es3-D3) * 2.0/3.0 *
         exp(-3.0*get_omega_interval_interval(hmm, 0, k)) *
-        ((k == n) ? 1.0 : (1.0 - exp(-3.0*io[k])));
+        (1.0 - exp(-3.0*io[k]));
 
     assert(0 <= prob && prob <= 1);
     return prob;
@@ -153,7 +153,7 @@ double qts_case_E_supp(Hmm * hmm, int i, int j, int k, int l)
     prob = (lamd * (1.0-exp(D3/lamd))) / (2.0*Es2+Es3-D3) *
         exp(-3.0*get_omega_interval_Es3(hmm, 0, i, j)) * 
         exp(-2.0*get_omega_Es3_interval(hmm, k, i, j)) *
-        ((k == n) ? 1.0 : (1.0 - exp(-2.0*io[k])));
+        (1.0 - exp(-2.0*io[k]));
 
     assert(0 <= prob && prob <= 1);
     return prob;
@@ -363,7 +363,7 @@ double qts_case_I2_supp(Hmm * hmm, int i, int j, int k, int l)
     double prob;
 
     prob = (lamd * (1.0-exp(D3/lamd))) / (2.0*Es2+Es3-D3) *
-        exp(-3.0*get_omega_interval_Es3(hmm, 0, i , j)) *
+        exp(-3.0*get_omega_interval_Es3(hmm, 0, i ,j)) *
         exp(-2.0*get_omega_Es3_Es2(hmm, i, j)) *
         exp(-get_omega_Es2_interval(hmm, l, i, j)) *
         ((l == n) ? 1.0 : (1.0 - exp(-io[l])));
@@ -395,7 +395,7 @@ double qts_case_J_supp(Hmm * hmm, int i, int j, int k, int l)
 
     prob = (lamd * (1.0-exp(D3/lamd))) / (2.0*Es2+Es3-D3) * 2.0/3.0 *
         exp(-3.0*get_omega_interval_interval(hmm, 0, k)) *
-        ((k == n) ? 1.0 : (1.0 - exp(-3.0*io[k])));
+        (1.0 - exp(-3.0*io[k]));
 
     assert(0 <= prob && prob <= 1);
     return prob;
@@ -424,7 +424,7 @@ double qts_case_J2_supp(Hmm * hmm, int i, int j, int k, int l)
 
     prob = (lamd * (1.0-exp(D3/lamd))) / (2.0*Es2+Es3-D3) * 2.0/3.0 *
         exp(-3.0*get_omega_interval_interval(hmm, 0, k)) *
-        ((k == n) ? 1.0 : (1.0 - exp(-3.0*io[k])));
+        (1.0 - exp(-3.0*io[k]));
 
     assert(0 <= prob && prob <= 1);
     return prob;
