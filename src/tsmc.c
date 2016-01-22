@@ -49,7 +49,8 @@ int main(int argc, char ** argv)
     timestamp("finished initial rho...");
 
     Em_init(&em, &dat, ts, initRho, opt.numFreeLambdas, opt.n,
-            opt.numEmIterations, opt.lambdaCounts, opt.asexEnabled, opt.flagDt);
+            opt.numEmIterations, opt.numOptimizations, opt.lambdaCounts,
+            opt.asexEnabled, opt.flagDt);
 
     for(i = 0; i < opt.numEmIterations; i++)
     {
