@@ -37,7 +37,8 @@ inline void copy_pis(double * pis, const double * emPis, int numHmmStates, int f
 
 void Em_init(Em * em, Data * dat, double * ts,
         double initRho, int numFreeLambdas, 
-        int n, int numEmIterations, int * lambdaCounts, int asexEnabled, int diptripflag)
+        int n, int numEmIterations, int numOptimizations, int * lambdaCounts,
+        int asexEnabled, int diptripflag)
 {
     assert(em && dat && ts);
     assert(dat->numSeqs > 0);
@@ -58,6 +59,8 @@ void Em_init(Em * em, Data * dat, double * ts,
 
     double thetaAndTd[2];
     Em_get_initial_theta_and_Td(em, &(thetaAndTd[0]));
+
+    em->numOptimizations = numOptimizations;
 
     const double initTheta = thetaAndTd[0];
     const double initTd = thetaAndTd[1];
@@ -96,7 +99,7 @@ void Em_init(Em * em, Data * dat, double * ts,
     }
     else
     {
-        const double initD3 = 0;
+        const double initD3 = -0.1;
         const double initLambdaD = 1.0;
         assert(diptripflag);
         Hmm_make_hmm_dt(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, initD3, initLambdaD, &error);
@@ -203,7 +206,7 @@ double Em_get_initial_rho(Data * dat)
     int i;
     for(i = 0; i < numInitRhos; i++)
     {
-        Em_init(&tempEm, dat, ts, initRhos[i], 0, n, 2, &lambdaCounts, 1, 0);
+        Em_init(&tempEm, dat, ts, initRhos[i], 0, n, 2, 2, &lambdaCounts, 1, 0);
         Em_get_forward(&tempEm);
         Em_get_backward(&tempEm);
         Em_get_expectations(&tempEm);
@@ -781,7 +784,7 @@ void Em_iterate_asex(Em * em)
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
-    const int numOptimStarts = 20;
+    const int numOptimStarts = em->numOptimizations;
 
     double fmin;
     int i, j;
@@ -926,6 +929,7 @@ void Em_iterate_asex(Em * em)
 
 void Em_iterate_dt(Em * em)
 {
+    assert(em->flagDt);
     em->curIteration++;
 
     timestamp("starting forward-backward...");
@@ -937,7 +941,7 @@ void Em_iterate_dt(Em * em)
     assert(em->hmm[0].n == em->hmm[1].n);
     const int n = em->hmm[0].n;
 
-    const int numOptimStarts = 20;
+    const int numOptimStarts = em->numOptimizations;
 
     double fmin;
     int i, j;

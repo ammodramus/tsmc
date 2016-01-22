@@ -13,6 +13,7 @@ typedef struct
     int numHmmStates;
     int curIteration;
     int maxIterations;
+    int numOptimizations;
     int numFreeLambdas;
     SeqType seqtype;
     double *** forward;
@@ -28,7 +29,8 @@ typedef struct
 
 void Em_init(Em * em, Data * dat, double * ts,
         double initRho, int numFreeLambdas, 
-        int n, int numEmIterations, int * lambdaCounts, int asexEnabled, int diptripflag);
+        int n, int numEmIterations, int numOptimizations, int * lambdaCounts,
+        int asexEnabled, int diptripflag);
 void Em_free(Em * em);
 double Em_get_initial_rho(Data * dat);
 void Em_get_initial_theta_and_Td(Em * em, double * out);

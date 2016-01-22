@@ -13,6 +13,7 @@ static struct option long_options[] =
 {
 	{"help", no_argument, 0, 'h'},
     {"iterations", required_argument, 0, 'i'},
+    {"num-optimizations", required_argument, 0, 'o'},
     {"no-asex", no_argument, 0, 1},
     {"psmc-intervals", no_argument, 0, 2},
     {"psmc-max-time", required_argument, 0, 3},
@@ -23,10 +24,11 @@ static struct option long_options[] =
 char usage[] = "\nUsage: tsmc [OPTIONS] FILE\n\
 Performs SMC inference on unphased triploid genome represented in FILE\n\
 \n\
-    -h, --help             Display this help message.\n\
-    -p=PATT                Set free population parameter pattern to patt (like PSMC) [4+5*3+4]\n\
-    -i, --iterations=ITER  Set number of EM iterations to iter [20]\n\
-    --dip-trip             Enable inference of diploidy-to-triploidy transition phase [disabled]\n\
+    -h, --help                   Display this help message.\n\
+    -p=PATT                      Set free population parameter pattern to patt (like PSMC) [4+5*3+4]\n\
+    -i, --iterations=ITER        Set number of EM iterations to iter [20]\n\
+    -o, --num-optimizations=NUM  Set number of optimizations in maximization step to num [20]\n\
+    --dip-trip                   Enable inference of diploidy-to-triploidy transition phase [disabled]\n\
 	\n";
 
 void Options_print_help_statement()
@@ -43,6 +45,7 @@ void Options_set_defaults(Options * opt)
     strcpy(&(opt->paramString[0]), DEFAULTPATTERN); 
 
     opt->numEmIterations = 20;
+    opt->numOptimizations = 20;
     opt->asexEnabled = 1;
     opt->psmcIntervals = 1;
     opt->maxT = 5.0;
@@ -199,7 +202,7 @@ void Options_parse_options(Options * opt, int argc, char ** argv)
 
 	while(1)
 	{
-		c = getopt_long(argc, argv, "hi:p:", long_options, &optionIndex);
+		c = getopt_long(argc, argv, "hi:p:o:", long_options, &optionIndex);
 		if(c == -1)
 			break;
 		switch(c)
@@ -210,6 +213,9 @@ void Options_parse_options(Options * opt, int argc, char ** argv)
 				break;
             case 'i':
                 success = sscanf(optarg, "%i", &(opt->numEmIterations));
+                break;
+            case 'o':
+                success = sscanf(optarg, "%i", &(opt->numOptimizations));
                 break;
             case 'p':
                 success = sscanf(optarg, "%s", &(opt->paramString[0]));

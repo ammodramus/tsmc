@@ -11,6 +11,7 @@ typedef struct
     int numFreeLambdas;
     int lambdaCounts[MAXNUMFREELAMBDAS];
     int numEmIterations;
+    int numOptimizations;
     int asexEnabled;
     int flagDt;
     int psmcIntervals;
