@@ -614,6 +614,11 @@ double objective_function_dt(double * par)
     const double D3 = -1.0*par[4]*par[4];
     const double lamd = par[5]*par[5];
 
+    if(-D3 > Td)
+    {
+        return DBL_MAX;
+    }
+
     const int numNonLamParams = 6;
     const int numParams = em.numFreeLambdas + numNonLamParams;
 
