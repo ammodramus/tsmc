@@ -798,10 +798,12 @@ void Hmm_get_pts_dt(Hmm * hmm)
     const int n = hmm->n;
     const double rho = hmm->rho;
     const double theta = hmm->theta;
+    const double D3 = hmm->D3;
     double ** const qts = hmm->qtsDt;
     double ** const pts = hmm->pts;
     double * const Es3s = hmm->Eijs3s;
     double * const Es2s = hmm->Eijs2s;
+
 
     assert(hmm->flagDt);
 
@@ -820,7 +822,7 @@ void Hmm_get_pts_dt(Hmm * hmm)
                     expIdx = get_index(i, j, n);
                     Es3 = Es3s[expIdx];
                     Es2 = Es2s[expIdx];
-                    treeSize = 3.0*Es3 + 2.0*(Es2-Es3);
+                    treeSize = 3.0*Es3 + 2.0*(Es2-Es3) - D3;
                     probRecomb = 1.0-exp(-treeSize * rho/2.0);
 
                     sum = 0.0;
