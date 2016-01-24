@@ -31,7 +31,7 @@ typedef struct
 inline int get_index(const int i, const int j, const int n);
 inline int get_index_dt(const int i, const int j, const int n, const int W);
 void Hmm_init(Hmm * hmm, const int n);
-void Hmm_init_Dt(Hmm * hmm, const int n);
+void Hmm_init_dt(Hmm * hmm, const int n);
 void Hmm_free(Hmm * hmm);
 void Hmm_set_lambdas(Hmm * hmm, const int n, const double * lambdas);
 void Hmm_set_ts_and_deltas(Hmm * hmm, const double * ts);

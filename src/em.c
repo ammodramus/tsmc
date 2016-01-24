@@ -88,8 +88,8 @@ void Em_init(Em * em, Data * dat, double * ts,
     else
     {
         assert(diptripflag == 1);
-        Hmm_init_Dt(&(em->hmm[0]), n);
-        Hmm_init_Dt(&(em->hmm[1]), n);
+        Hmm_init_dt(&(em->hmm[0]), n);
+        Hmm_init_dt(&(em->hmm[1]), n);
     }
 
     int error;
@@ -944,6 +944,10 @@ void Em_iterate_dt(Em * em)
         for(j = 0; j < numParams; j++)
         {
             randstarts[i][j] = pow(4.0, runifab(-1.0, 1.0)) * start[j];
+        }
+        if(-1.0*randstarts[i][4] > randstarts[i][2]) // if -D3 > Td...
+        {
+            randstarts[i][4] = -1.0/2.0 * randstarts[i][2];
         }
     }
 

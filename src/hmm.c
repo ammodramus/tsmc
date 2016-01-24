@@ -19,7 +19,7 @@ inline int get_index_dt(const int i, const int j, const int n, const int W)
 {
     assert(0 <= i && i <= j && j <= n && (W == 0 || W == 1));
     const int idx = i*n-i*(i-1)/2+j + W*(n+1)*(n+2)/2;
-    assert(idx < (n+1)*(n+2));
+    assert(0 <= idx && idx < (n+1)*(n+2));
     return idx;
 }
 
@@ -86,7 +86,7 @@ void Hmm_free(Hmm * hmm)
     return;
 }
 
-void Hmm_init_Dt(Hmm * hmm, const int n)
+void Hmm_init_dt(Hmm * hmm, const int n)
 {
     int i;
     const int numStates = (n+1)*(n+2)/2;
