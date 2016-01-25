@@ -24,7 +24,7 @@ static struct option long_options[] =
 char usage[] = "\nUsage: tsmc [OPTIONS] FILE\n\
 Performs SMC inference on unphased triploid genome represented in FILE\n\
 \n\
-    -h, --help                   Display this help message.\n\
+    -h, --help                   Display this help message\n\
     -p=PATT                      Set free population parameter pattern to patt (like PSMC) [4+5*3+4]\n\
     -i, --iterations=ITER        Set number of EM iterations to iter [20]\n\
     -o, --num-optimizations=NUM  Set number of optimizations in maximization step to num [20]\n\
