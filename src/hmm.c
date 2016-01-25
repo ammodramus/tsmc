@@ -812,21 +812,21 @@ void Hmm_get_pts_dt(Hmm * hmm)
 
     for(W = 0; W <= 1; W++)
     {
-        for(Wp = 0; Wp <= 1; Wp++)
+        for(i = 0; i <= n; i++)
         {
-            for(i = 0; i <= n; i++)
+            for(j = i; j <= n; j++)
             {
-                for(j = i; j <= n; j++)
-                {
-                    ijidx = get_index_dt(i, j, n, W);
-                    expIdx = get_index(i, j, n);
-                    Es3 = Es3s[expIdx];
-                    Es2 = Es2s[expIdx];
-                    treeSize = 3.0*Es3 + 2.0*(Es2-Es3) - D3;
-                    probRecomb = 1.0-exp(-treeSize * rho/2.0);
+                ijidx = get_index_dt(i, j, n, W);
+                expIdx = get_index(i, j, n);
+                Es3 = Es3s[expIdx];
+                Es2 = Es2s[expIdx];
+                treeSize = 3.0*Es3 + 2.0*(Es2-Es3) - D3;
+                probRecomb = 1.0-exp(-treeSize * rho/2.0);
 
-                    sum = 0.0;
-                    
+                sum = 0.0;
+                
+                for(Wp = 0; Wp <= 1; Wp++)
+                {
                     for(k = 0; k <= n; k++)
                     {
                         for(l = k; l <=n; l++)
@@ -1097,7 +1097,15 @@ void Hmm_print_pts(Hmm * hmm)
 {
     assert(hmm);
     int row, col;
-    const int numStates = hmm->numStates;
+    int numStates;
+    if(!hmm->flagDt)
+    {
+        numStates = hmm->numStates;
+    }
+    else
+    {
+        numStates = hmm->numStatesDt;
+    }
     for(row = 0; row < numStates; row++)
     {
         for(col = 0; col < numStates-1; col++)
