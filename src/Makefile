@@ -45,3 +45,6 @@ optionstest: *.[ch]
 optimtest: *.[ch]
 	gcc optimtest.c definitions.c asa047.c -lm -o optimtest -g
 
+diptriptest: *.[ch]
+	gcc diptriptest.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o diptriptest -g
+
