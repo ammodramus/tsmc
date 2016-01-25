@@ -1019,6 +1019,7 @@ void Em_iterate_dt(Em * em)
 
     int error;
     Hmm_make_hmm_dt(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td, D3, lamd, &error);
+    assert(!error); // should be checked before...
 
     // flip the hmm flag
     em->hmmFlag = !em->hmmFlag;
