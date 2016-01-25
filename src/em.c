@@ -340,7 +340,6 @@ void Em_get_forward(Em * em)
 void Em_get_backward(Em * em)
 {
     const int hmmIdx = em->hmmFlag;
-    double * const pis = em->hmm[hmmIdx].pis;
     double ** const pts = em->hmm[hmmIdx].pts;
     double *** const backward = em->backward;
     const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
@@ -514,7 +513,6 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
 
     double * pis = (double *)chmalloc(sizeof(double) * numHmmStates);
     copy_pis(pis, emPis, numHmmStates, hmm->flagDt);
-
 
     int i,j,k,l, seqLen;
 
