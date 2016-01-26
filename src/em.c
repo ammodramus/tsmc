@@ -1214,6 +1214,7 @@ void Em_print_parameters(Em * em)
     if(hmm->flagDt)
     {
         printf("PA\tD3\t%g\n", hmm->D3);
+        printf("PA\tlamd\t%g\n", hmm->lambdaDt);
     }
     int i;
     for(i = 0; i < hmm->n+1; i++)
