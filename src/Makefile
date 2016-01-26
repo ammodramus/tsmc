@@ -25,7 +25,7 @@ normtest: *.[ch]
 	gcc normtest.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c -lm -o normtest -g
 
 pitest: *.[ch]
-	gcc pitest.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c -lm -o pitest -g
+	gcc pitest.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o pitest -g
 
 gammatest: *.[ch]
 	gcc gammatest.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c -lm -o gammatest -g
