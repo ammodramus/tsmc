@@ -3,8 +3,13 @@
 
 #include <stdlib.h>
 
+#ifndef NDEBUG
 #define DEBUGREPORTI(x) do {fprintf(stderr, #x " = %i\n", x);} while(0)
 #define DEBUGREPORTF(x) do {fprintf(stderr, #x " = %.15f\n", x);} while(0)
+#else
+#define DEBUGREPORTI(x)
+#define DEBUGREPORTF(x)
+#endif
 #define PERROR(msg,...) do {fprintf(stderr,"\n\nProgram error:\n%s\n\n",msg); exit(-1);} while(0)
 
 typedef double fourd[4];
