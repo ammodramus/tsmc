@@ -55,6 +55,7 @@ inline void perror(const char * msg)
     exit(1);
 }
 
+#ifndef NDEBUG
 void timestamp(const char * msg)
 {
     char timestmp[100];
@@ -66,6 +67,12 @@ void timestamp(const char * msg)
     fprintf(stderr, "%s -- %s\n", timestmp, msg);
     return;
 }
+#else
+inline void timestamp(const char * msg)
+{
+    return;
+}
+#endif
 
 void get_ts_msmc(double * ts, const int n)
 {
