@@ -35,8 +35,9 @@ int main(int argc, char ** argv)
     const int maxIterations = 20;
 
     Hmm hmm;
-    Hmm_init(&hmm, n, ts);
-    Hmm_make_hmm(&hmm, lambdas, n, initTheta, initRho, initTd);
+    Hmm_init(&hmm, n);
+    int error;
+    Hmm_make_hmm(&hmm, lambdas, ts, n, initTheta, initRho, initTd, &error);
 
     Hmm_print_emissions(&hmm);
 
