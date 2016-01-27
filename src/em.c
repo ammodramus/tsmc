@@ -897,7 +897,7 @@ void Em_iterate_dt(Em * em)
     start[1] = sqrt(em->hmm[em->hmmFlag].theta);
     start[2] = sqrt(em->hmm[em->hmmFlag].maxT);
     start[3] = sqrt(-1.0*em->hmm[em->hmmFlag].D3);
-    start[4] = sqrt(em->hmm[em->hmmFlag].Td - em->hmm[em->hmmFlag].D3);
+    start[4] = sqrt(em->hmm[em->hmmFlag].Td + em->hmm[em->hmmFlag].D3);
     start[5] = sqrt(em->hmm[em->hmmFlag].lambdaDt);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
     step[0] = sqrt(0.1);
