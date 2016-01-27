@@ -263,6 +263,7 @@ void Em_get_forward(Em * em)
     double ** const pts = em->hmm[hmmIdx].pts;
     double *** const forward = em->forward;
     const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
+    assert(numEmissionStates == 4); // only 4 (polarized) is supported
     int numHmmStates;
     if(!em->flagDt)
     {
@@ -274,7 +275,6 @@ void Em_get_forward(Em * em)
         numHmmStates = em->hmm[hmmIdx].numStatesDt;
         assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
     }
-
 
     const int numSeqs = em->numSeqs;
     fourd * const emissions = em->hmm[hmmIdx].emissions;
@@ -311,14 +311,14 @@ void Em_get_forward(Em * em)
 
         for(j = 1; j < seqLen; j++)
         {
-            assert(seqData[j] < numEmissionStates);
+            assert(0 <= seqData[j] && seqData[j] < numEmissionStates);
             sum2 = 0.0;
             for(k = 0; k < numHmmStates; k++)
             {
                 sum1 = 0.0;
                 for(l = 0; l < numHmmStates; l++)
                 {
-                    if(pts[l][k])
+                    if(pts[l][k] > 0.0)
                     {
                         sum1 += seqFor[j-1][l] * pts[l][k];
                     }
