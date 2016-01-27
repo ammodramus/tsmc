@@ -610,15 +610,13 @@ double objective_function_dt(double * par)
 
     const double rho = par[0]*par[0];
     const double theta = par[1]*par[1];
-    const double Td = par[2]*par[2];
-    const double maxT = par[3]*par[3];
-    const double D3 = -1.0*par[4]*par[4];
+    const double maxT = par[2]*par[2];
+    const double dipTime = par[3]*par[3]; // *amount* of time in diploid asex state
+    const double tripTime = par[4]*par[4]; // *amount* of time in triploid asex state
     const double lamd = par[5]*par[5];
 
-    if(-D3 > Td)
-    {
-        return DBL_MAX;
-    }
+    const double D3 = -1.0 * dipTime;
+    const double Td = dipTime + tripTime;
 
     const int numNonLamParams = 6;
     const int numParams = em.numFreeLambdas + numNonLamParams;
@@ -897,9 +895,9 @@ void Em_iterate_dt(Em * em)
     double * start = (double *)chmalloc(sizeof(double) * numParams);
     start[0] = sqrt(em->hmm[em->hmmFlag].rho);
     start[1] = sqrt(em->hmm[em->hmmFlag].theta);
-    start[2] = sqrt(em->hmm[em->hmmFlag].Td);
-    start[3] = sqrt(em->hmm[em->hmmFlag].maxT);
-    start[4] = sqrt(-1.0*em->hmm[em->hmmFlag].D3);
+    start[2] = sqrt(em->hmm[em->hmmFlag].maxT);
+    start[3] = sqrt(-1.0*em->hmm[em->hmmFlag].D3);
+    start[4] = sqrt(em->hmm[em->hmmFlag].Td - em->hmm[em->hmmFlag].D3);
     start[5] = sqrt(em->hmm[em->hmmFlag].lambdaDt);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
     step[0] = sqrt(0.1);
@@ -908,6 +906,7 @@ void Em_iterate_dt(Em * em)
     step[3] = sqrt(0.1);
     step[4] = sqrt(0.1);
     step[5] = sqrt(0.1);
+
     for(i = numNonLamParams; i < numParams; i++)
     {
         start[i] = sqrt(em->freeLambdas[i-numNonLamParams]);
@@ -982,14 +981,17 @@ void Em_iterate_dt(Em * em)
         }
     }
 
-    double rho, theta, Td, maxT, D3, lamd;
+    double rho, theta, Td, maxT, D3, lamd, dipTime, tripTime;
 
     rho = fargmins[minFminIdx][0]*fargmins[minFminIdx][0];
     theta = fargmins[minFminIdx][1]*fargmins[minFminIdx][1];
-    Td = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
-    maxT = fargmins[minFminIdx][3]*fargmins[minFminIdx][3];
-    D3 = -1.0*fargmins[minFminIdx][4]*fargmins[minFminIdx][4]; // D3 is negative
+    maxT = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
+    dipTime = fargmins[minFminIdx][3]*fargmins[minFminIdx][3];
+    tripTime = fargmins[minFminIdx][4]*fargmins[minFminIdx][4];
     lamd = fargmins[minFminIdx][5]*fargmins[minFminIdx][5];
+
+    D3 = -dipTime;
+    Td = dipTime + tripTime;
 
     for(i = 0; i < em->numFreeLambdas; i++)
     {
