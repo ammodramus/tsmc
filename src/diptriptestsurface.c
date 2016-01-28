@@ -69,6 +69,8 @@ int main(int argc, char ** argv)
     //const double dipTime = par[3]*par[3]; // *amount* of time in diploid asex state
     //const double tripTime = par[4]*par[4]; // *amount* of time in triploid asex state
     //const double lamd = par[5]*par[5];
+    //
+    em.hmmFlag = !em.hmmFlag;
 
     const int numNonLamParams = 6;
     const int numParams = em.numFreeLambdas + numNonLamParams;
