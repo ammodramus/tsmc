@@ -71,7 +71,7 @@ int main(int argc, char ** argv)
             par[4] = sqrt(em.hmm[em.hmmFlag].Td + D3);
             par[5] = sqrt(lamd);
             expect = objective_function_dt(par);
-            printf("%g\t%g\t%g\n", D3, lamd, expect);
+            printf("%.15g\t%.15g\t%.15g\n", D3, lamd, expect);
         }
     }
 
