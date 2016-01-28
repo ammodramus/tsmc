@@ -942,10 +942,6 @@ void Em_iterate_dt(Em * em)
         {
             randstarts[i][j] = pow(4.0, runifab(-1.0, 1.0)) * start[j];
         }
-        if(-1.0*randstarts[i][4] > randstarts[i][2]) // if -D3 > Td...
-        {
-            randstarts[i][4] = -1.0/2.0 * randstarts[i][2];
-        }
     }
 
     int konvge = 1, maxNumEval = 10000;
