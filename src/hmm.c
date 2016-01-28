@@ -996,7 +996,7 @@ void Hmm_make_hmm(Hmm * hmm, double * lambdas, double * ts,
 
 void Hmm_make_hmm_dt(Hmm * hmm, double * lambdas, double * ts,
         int numChangepoints, double theta, double rho, double Td, double D3,
-        double lamd, int * error)
+        int * error)
 {
 
     *error = 0;
@@ -1009,7 +1009,7 @@ void Hmm_make_hmm_dt(Hmm * hmm, double * lambdas, double * ts,
     Hmm_set_rho(hmm, rho);
     Hmm_set_Td(hmm, Td);
     Hmm_set_D3(hmm, D3);
-    Hmm_set_lambdaD(hmm, lamd);
+    Hmm_set_lambdaD(hmm, 1.0);
 
     Hmm_make_omega_intervals(hmm);
     int i;

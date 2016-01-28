@@ -102,7 +102,7 @@ void Em_init(Em * em, Data * dat, double * ts,
         const double initD3 = -0.1;
         const double initLambdaD = 1.0;
         assert(diptripflag);
-        Hmm_make_hmm_dt(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, initD3, initLambdaD, &error);
+        Hmm_make_hmm_dt(&(em->hmm[0]), lambdas, ts, n, initTheta, initRho, initTd, initD3, &error);
     }
     assert(!error);
 
@@ -613,12 +613,11 @@ double objective_function_dt(double * par)
     const double maxT = par[2]*par[2];
     const double dipTime = par[3]*par[3]; // *amount* of time in diploid asex state
     const double tripTime = par[4]*par[4]; // *amount* of time in triploid asex state
-    const double lamd = par[5]*par[5];
 
     const double D3 = -1.0 * dipTime;
     const double Td = dipTime + tripTime;
 
-    const int numNonLamParams = 6;
+    const int numNonLamParams = 5;
     const int numParams = em.numFreeLambdas + numNonLamParams;
 
     double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
@@ -645,7 +644,7 @@ double objective_function_dt(double * par)
     get_ts_psmc(ts, maxT, n);
 
     int error;
-    Hmm_make_hmm_dt(scratchHmm, lambdas, ts, n, theta, rho, Td, D3, lamd, &error);
+    Hmm_make_hmm_dt(scratchHmm, lambdas, ts, n, theta, rho, Td, D3, &error);
     if(error)
     {
         free(lambdas);
@@ -889,7 +888,7 @@ void Em_iterate_dt(Em * em)
     double fmin;
     int i, j;
 
-    const int numNonLamParams = 6;
+    const int numNonLamParams = 5;
     int numParams = em->numFreeLambdas + numNonLamParams;
 
     double * start = (double *)chmalloc(sizeof(double) * numParams);
@@ -898,14 +897,12 @@ void Em_iterate_dt(Em * em)
     start[2] = sqrt(em->hmm[em->hmmFlag].maxT);
     start[3] = sqrt(-1.0*em->hmm[em->hmmFlag].D3);
     start[4] = sqrt(em->hmm[em->hmmFlag].Td + em->hmm[em->hmmFlag].D3);
-    start[5] = sqrt(em->hmm[em->hmmFlag].lambdaDt);
     double * step = (double *)chmalloc(sizeof(double) * numParams);
     step[0] = sqrt(0.1);
     step[1] = sqrt(0.1);
     step[2] = sqrt(0.1);
     step[3] = sqrt(0.1);
     step[4] = sqrt(0.1);
-    step[5] = sqrt(0.1);
 
     for(i = numNonLamParams; i < numParams; i++)
     {
@@ -984,7 +981,6 @@ void Em_iterate_dt(Em * em)
     maxT = fargmins[minFminIdx][2]*fargmins[minFminIdx][2];
     dipTime = fargmins[minFminIdx][3]*fargmins[minFminIdx][3];
     tripTime = fargmins[minFminIdx][4]*fargmins[minFminIdx][4];
-    lamd = fargmins[minFminIdx][5]*fargmins[minFminIdx][5];
 
     D3 = -dipTime;
     Td = dipTime + tripTime;
@@ -1016,7 +1012,7 @@ void Em_iterate_dt(Em * em)
     get_ts_psmc(ts, maxT, n);
 
     int error;
-    Hmm_make_hmm_dt(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td, D3, lamd, &error);
+    Hmm_make_hmm_dt(&(em->hmm[!em->hmmFlag]), lambdas, ts, n, theta, rho, Td, D3, &error);
     assert(!error); // should be checked before...
 
     // flip the hmm flag
