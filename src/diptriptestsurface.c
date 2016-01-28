@@ -63,6 +63,20 @@ int main(int argc, char ** argv)
     par[1] = sqrt(em.hmm[em.hmmFlag].theta);
     par[2] = sqrt(em.hmm[em.hmmFlag].maxT);
 
+    //const double rho = par[0]*par[0];
+    //const double theta = par[1]*par[1];
+    //const double maxT = par[2]*par[2];
+    //const double dipTime = par[3]*par[3]; // *amount* of time in diploid asex state
+    //const double tripTime = par[4]*par[4]; // *amount* of time in triploid asex state
+    //const double lamd = par[5]*par[5];
+
+    const int numNonLamParams = 6;
+    const int numParams = em.numFreeLambdas + numNonLamParams;
+    for(i = numNonLamParams; i < numParams; i++)
+    {
+        par[i] = sqrt(em.freeLambdas[i-numNonLamParams]);
+    }
+
     for(D3 = D3min; D3 <= D3max; D3 += D3step)
     {
         for(lamd = lamdMin; lamd <= lamdMax; lamd *= 10.0)
