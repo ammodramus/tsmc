@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="618.49023"
+   height="301.72571"
+   id="svg3933"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="New document 9">
+  <defs
+     id="defs3935" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="360.18686"
+     inkscape:cy="255.77098"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="956"
+     inkscape:window-height="1024"
+     inkscape:window-x="960"
+     inkscape:window-y="26"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3938">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(169.70452,-300.3142)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 124.28571,410.93361 251.42857,0"
+       id="path3941"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 211.42857,459.50504 100,0"
+       id="path3943"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <g
+       transform="translate(-102.16754,-94.345216)"
+       id="g3783">
+      <path
+         inkscape:connector-curvature="0"
+         id="path2985"
+         d="m 175.38183,630.06454 373.57143,0"
+         style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path2985-9"
+         d="m 175.38183,606.2074 373.57143,0"
+         style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3775"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(-77.096959,-96.555223)"><flowRegion
+         id="flowRegion3777"><rect
+           id="rect3779"
+           width="312.67377"
+           height="98.332039"
+           x="213.23689"
+           y="674.50201" /></flowRegion><flowPara
+         id="flowPara3781"
+         style="font-size:20px;text-align:center;text-anchor:middle">position along genome</flowPara></flowRoot>    <path
+       style="fill:none;stroke:#bfbfbf;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 58.563522,300.8142 0,202.8932"
+       id="path3773"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3775-9-0"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(-431.81194,-321.26243)"><flowRegion
+         id="flowRegion3777-3-2"><rect
+           id="rect3779-1-0"
+           width="312.67377"
+           height="98.332039"
+           x="213.23689"
+           y="674.50201" /></flowRegion><flowPara
+         id="flowPara3781-0-7"
+         style="font-size:20px;text-align:center;text-anchor:middle">most recent</flowPara><flowPara
+         style="font-size:20px;text-align:center;text-anchor:middle"
+         id="flowPara3814-0">gene conversion time</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3816"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#909090;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(136.81461,-7.27615)"><flowRegion
+         id="flowRegion3818"><rect
+           id="rect3820"
+           width="274.00388"
+           height="107.17088"
+           x="-154.67961"
+           y="496.62045"
+           style="fill:#909090;fill-opacity:1;stroke:none" /></flowRegion><flowPara
+         id="flowPara3822"
+         style="font-size:16px;fill:#909090;fill-opacity:1;stroke:none">present</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3816-2"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#909090;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(163.09586,-176.96683)"><flowRegion
+         id="flowRegion3818-2"><rect
+           id="rect3820-1"
+           width="274.00388"
+           height="107.17088"
+           x="-154.67961"
+           y="496.62045"
+           style="fill:#909090;fill-opacity:1;stroke:none" /></flowRegion><flowPara
+         id="flowPara3822-2"
+         style="font-size:16px;fill:#909090;fill-opacity:1;stroke:none">past</flowPara></flowRoot>  </g>
+</svg>
