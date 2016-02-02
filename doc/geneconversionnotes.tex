@@ -66,61 +66,64 @@ consideration.
     \centering
     \includegraphics[width=0.7\textwidth]{figs/geneconversion.pdf}
     \caption{
-        Schematic of the gene conversion process. Gene conversion events occur
-        as a Poisson process in time and along the genome, and each gene
-        conversion tract has an exponential length distribution. At each point
-        along the two aligned chromosomes, the time of the most recent gene
-        conversion event is marked with a dashed red line. We are interested in
-        modeling the distribution of this dashed red line across a genome,
-        since it determines patterns of genetic variation.}
+        Schematic of the gene conversion ancestral process. Gene conversion
+        events occur as a Poisson process in time and along the genome, and
+        each gene conversion tract has an exponential length distribution. At
+        each point along the two aligned chromosomes, the time of the most
+        recent gene conversion event is marked with a dashed red line. We are
+        interested in modeling the distribution of this dashed red line across a
+        genome, since it determines patterns of genetic variation.}
     \label{fig:geneconversiondiagram}
 \end{figure}
 
 With our assumption of a two-dimensional Poisson process, the probability that
 a gene conversion event is initiated in the intervals $(x, x+dx)$ along the
-genome and $(t,t+dt)$ back in time is $\lambda_c dxdt$ for some rate of gene
-conversion $\lambda_c$. The length of a particular gene conversion tract has
-the distribution $\lambda_Le^{-\lambda_Lx}$ so that the mean gene conversion
-tract length is $1/\lambda_L$.
+genome and $(t,t+dt)$ back in time is $2\lambda_c dxdt$ for some rate of gene
+conversion $\lambda_c$. The factor of two is due to the fact that a gene
+conversion event can occur on either chromosome. The length of a particular
+gene conversion tract has the density $\lambda_Le^{-\lambda_Lx}dx$ so that
+the mean gene conversion tract length is $1/\lambda_L$.
 
 Going back in time at a particular locus, the probability that that particular
 locus is affected by a gene conversion event in the time interval $(t, t+dt)$
 is 
 
 \begin{align*}
-    &= \lambda_c dt \int_0^{\infty} dx \Prob(L>x)\\
-    &= \lambda_c dt \E[L]\\
-    &= \frac{\lambda_c}{\lambda_L}dt,
+    &= 2\lambda_c dt \int_0^{\infty} dx \Prob(L>x)\\
+    &= 2\lambda_c dt \E[L]\\
+    &= 2\frac{\lambda_c}{\lambda_L}dt,
 \end{align*}
-where $L$ is the random length of a gene conversion tract. In the second
-equality we use the fact that $\int_0^\infty \Prob(L>x)dx = \E[L]$ for any
-non-negative random variable $L$. (Thus, this holds for all gene conversion
-tract length distributions.) In other words, the rate of
-encountering a gene conversion tract that causes shared ancestry between the
-two chromosomes at a particular location in the genome is the rate of
-initiation of these events in time multiplied by the mean length of a tract.
+where $L$ is the random length of a gene conversion tract. The factor of 2 is
+due to the fact that a gene conversion event can occur on either ancestral
+chromosome. In the second equality we use the fact that $\int_0^\infty
+\Prob(L>x)dx = \E[L]$ for any non-negative random variable $L$. (Thus, this
+holds for all gene conversion tract length distributions.) In other words, the
+rate of encountering a gene conversion tract that causes shared ancestry
+between the two chromosomes at a particular location in the genome is the rate
+of initiation of these events in time multiplied by the mean length of a tract.
 
 Under the assumption of an exponential tract length distribution, the end of
-the current tract is encountered with rate $\lambda_Ldx$. It is also possible
-that we encounter a more recent gene conversion event that causes a more recent
-common ancestor event between the two chromosomes. Given the current gene
-conversion time $s$, this happens at rate $\lambda_c s dx$. Thus the total rate of
-encountering the a change in gene conversion time is
-$(\lambda_L+\lambda_cs)dx$.
+the current tract is encountered with probability $\lambda_Ldx$. It is also
+possible that we encounter a more recent gene conversion event that causes a
+more recent common ancestor event between the two chromosomes. Given the
+current gene conversion time $s$, this happens at rate $2\lambda_c s dx$. Thus
+the total rate of encountering the a change in gene conversion time is
+$(\lambda_L+2\lambda_cs)dx$.
 
 Given that a more recent gene conversion time is encountered, the age of this
 gene conversion time is uniformly distributed in $[0,s)$. Given that the end of
 the tract is encountered, the next gene conversion event is encountered (going
-back in time from $s$) at rate $\lambda_c/\lambda_L dt$, as before.
-\textbf{Crucially, this assumes that gene conversion events do not overlap.} In
-reality, gene conversion events will overlap, and the full process cannot be
-described by a Markov jump process. We will make the assumption that gene
-conversion tracts do not overlap completely (example shown in
-Fig.~\ref{fig:overlap}), and thus our model can be described by a first-order
-Markov chain. It is possible to make the model a second-order Markov chain and
-allow pairwise overlap, as in Yin et al.\ 2009 (\textit{Bioinformatics},
-25:231-239), but this nearly squares the number of states to consider, so the
-viability of this will have to be considered later.
+back in time from $s$) at rate $2\lambda_c/\lambda_L dt$, as before.
+\textbf{Crucially, this assumes that gene conversion events do not fully
+overlap.} In reality, gene conversion events will fully overlap, and the full
+process cannot be described by a Markov jump process. We will make the
+assumption that gene conversion tracts do not overlap completely (example shown
+in Fig.~\ref{fig:overlap}), and thus our model can be described by a
+first-order Markov chain. It is possible to make the model a second-order
+Markov chain and allow \emph{pairwise} overlap, similar to the approach in Yin
+et al.\ 2009 (\textit{Bioinformatics}, 25:231-239), but this nearly squares the
+number of states to consider, so the viability of this will have to be
+considered later.
 
 \begin{figure}
     \centering
@@ -133,16 +136,50 @@ viability of this will have to be considered later.
 \end{figure}
 
 Considering the above, the local gene conversion time changes along the genome
-at rate $(\lambda_L + s\lambda_c)dx$, and at a transition site, the density of
+at rate $(\lambda_L + 2s\lambda_c)dx$, and at a transition site, the density of
 next gene conversion time is
 
 \begin{equation}
     r(t|s)dt = 
     \begin{cases}
-        \frac{\lambda_c}{s\lambda_c+\lambda_L}dt & 0<t<s\\
-        \frac{\lambda_c}{s\lambda_c+\lambda_L}e^{-\frac{\lambda_c(t-s)}{\lambda_L}}dt &  t>s.\\
+        \frac{2\lambda_c}{2s\lambda_c+\lambda_L}dt & 0<t<s\\
+        \frac{2\lambda_c}{2s\lambda_c+\lambda_L}e^{-\frac{2\lambda_c(t-s)}{\lambda_L}}dt &  t>s.\\
     \end{cases}
 \end{equation}
 
+\subsection{Gene conversion in triploids}
+
+To extend this picture to triploids, we assume that each genome consists of
+three homologous chromosomes and that gene conversion occurs between each
+potential pair of source and target chromosomes with equal probability. To
+describe this gene-conversion ancestral process, two gene conversion times are
+required. Again using $\lambda_c$ as the rate of gene conversion initiation
+sites across the genome, and $\lambda_L$ as the rate of termination of a given
+tract, joint distribution of ``coalescence'' times is
+
+\begin{align}
+    \begin{split}
+        f_{S_3,S_2}(s_3,s_2)ds_3ds_2 &=
+            \frac{6\lambda_c}{\lambda_L}e^{-\frac{6\lambda_cs_3}{\lambda_L}}
+            \frac{2\lambda_c}{\lambda_L}e^{-\frac{2\lambda_c(s_2-s_3)}{\lambda_L}}ds_3ds_2\\
+            &=
+            \frac{12\lambda_c^2}{\lambda_L^2}e^{-\frac{2\lambda_c(s_2+2s_3)}{\lambda_L}}ds_3ds_2.
+    \end{split}
+\end{align}
+
+Given a current configuration $(s_3, s_2)$, the rate of leaving that state is
+$2\lambda_L + 6\lambda_cs_3 + 2\lambda_c(s_2-s_3)$. The transition kernel at a
+point of change is
+
+\begin{equation}
+    q(t_3,t_2|s_3,s_2) =
+    \begin{cases}
+        \frac{6\lambda_cs_3}{\lambda_T}\frac{1}{s_3}\delta(t_2-s_2), & 0<t_3<s_3, t_2=s_2\\[0.75em]
+        \frac{2\lambda_c(s_2-s_3)}{\lambda_T}\frac{1}{s_2-s_3}\delta(t_3-s_3), & t_3=s_3, s_3 < t_2 < s_2\\[0.75em]
+        \frac{\lambda_L}{\lambda_T}\frac{2\lambda_c}{\lambda_L}e^{-\frac{2\lambda_c(t_2-s_2)}{\lambda_L}}\delta(t_3-s_3),&t_3=s_3,t_2>s_2\\[0.75em]
+        \frac{\lambda_L}{\lambda_T}\frac{6\lambda_c}{\lambda_L}e^{-\frac{6\lambda_c(t_3-s_3)}{\lambda_L}}\delta(t_2-s_2),&t_3>s_3,t_2=s_2\\[0.75em]
+        \frac{\lambda_L}{\lambda_T}e^{-\frac{6\lambda_c(s_2-s_3)}{\lambda_L}}\frac{2\lambda_c}{\lambda_L}e^{-\frac{2\lambda_c(t_2-s_2)}{\lambda_L}},&t_3=s_2,t_2>s_2.\\[0.75em]
+    \end{cases}
+\end{equation}
 
 \end{document}
