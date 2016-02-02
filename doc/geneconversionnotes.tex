@@ -168,7 +168,7 @@ tract, joint distribution of ``coalescence'' times is
 \end{align}
 
 Given a current configuration $(s_3, s_2)$, the rate of leaving that state is
-$2\lambda_L + 6\lambda_cs_3 + 2\lambda_c(s_2-s_3)$. The transition kernel at a
+$\lambda_T = 2\lambda_L + 6\lambda_cs_3 + 2\lambda_c(s_2-s_3)$. The transition kernel at a
 point of change is
 
 \begin{equation}
@@ -177,9 +177,12 @@ point of change is
         \frac{6\lambda_cs_3}{\lambda_T}\frac{1}{s_3}\delta(t_2-s_2), & 0<t_3<s_3, t_2=s_2\\[0.75em]
         \frac{2\lambda_c(s_2-s_3)}{\lambda_T}\frac{1}{s_2-s_3}\delta(t_3-s_3), & t_3=s_3, s_3 < t_2 < s_2\\[0.75em]
         \frac{\lambda_L}{\lambda_T}\frac{2\lambda_c}{\lambda_L}e^{-\frac{2\lambda_c(t_2-s_2)}{\lambda_L}}\delta(t_3-s_3),&t_3=s_3,t_2>s_2\\[0.75em]
-        \frac{\lambda_L}{\lambda_T}\frac{6\lambda_c}{\lambda_L}e^{-\frac{6\lambda_c(t_3-s_3)}{\lambda_L}}\delta(t_2-s_2),&t_3>s_3,t_2=s_2\\[0.75em]
+        \frac{\lambda_L}{\lambda_T}\frac{6\lambda_c}{\lambda_L}e^{-\frac{6\lambda_c(t_3-s_3)}{\lambda_L}}\delta(t_2-s_2),&s_3<t_3<s_2,t_2=s_2\\[0.75em]
         \frac{\lambda_L}{\lambda_T}e^{-\frac{6\lambda_c(s_2-s_3)}{\lambda_L}}\frac{2\lambda_c}{\lambda_L}e^{-\frac{2\lambda_c(t_2-s_2)}{\lambda_L}},&t_3=s_2,t_2>s_2.\\[0.75em]
     \end{cases}
 \end{equation}
+
+There is some additional transition density not accounted for here. The
+transition rate is higher, with additional probs. It's more complicated.
 
 \end{document}
