@@ -20,7 +20,7 @@ typedef struct
     double *** backward;
     double *** gamma;
     double ** expectTransitions;
-    fourd * expectEmissions;
+    sixd * expectEmissions;
     double ** normConst;
     double * freeLambdas;
     int * lambdaCounts;

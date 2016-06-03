@@ -25,7 +25,7 @@ typedef struct
     double rho;
     double theta;
     double Td;
-    fourd * emissions;
+    sixd * emissions;
 } Hmm;
 
 inline int get_index(const int i, const int j, const int n);

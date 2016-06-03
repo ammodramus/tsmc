@@ -146,7 +146,7 @@ void Em_init(Em * em, Data * dat, double * ts,
     {
         em->expectTransitions[i] = (double *)chmalloc(sizeof(double) * numHmmStates);
     }
-    em->expectEmissions = (fourd *)chmalloc(sizeof(fourd) * numHmmStates);
+    em->expectEmissions = (sixd *)chmalloc(sizeof(sixd) * numHmmStates);
     free(lambdas);
     return;
 }
@@ -198,11 +198,11 @@ double Em_get_initial_rho(Data * dat)
     get_ts_psmc(ts, 4.0, n);
     int lambdaCounts = 8;
     Em tempEm;
-    double initRhos[6] = {5e-3, 1e-3, 5e-3, 1e-2, 5e-2, 1e-1};
+    double initRhos[6] = {5e-4, 1e-3, 5e-3, 1e-2, 5e-2, 1e-1};
+    const int numInitRhos = 6;
     double maxloglike = -1.0*DBL_MAX;
     double loglike;
     int maxLLidx = 0;
-    const int numInitRhos = 6;
     int i;
     for(i = 0; i < numInitRhos; i++)
     {
@@ -227,7 +227,7 @@ void Em_get_initial_theta_and_Td(Em * em, double * out)
 {
     assert(em && em->dat);
     int i, j, seqLen, totalLen = 0;
-    int sfs[] = {0,0,0};
+    double sfs[] = {0,0,0};
     char * seqData;
     for(i = 0; i < em->numSeqs; i++)
     {
@@ -235,7 +235,16 @@ void Em_get_initial_theta_and_Td(Em * em, double * out)
         seqData = em->dat->seqs[i].data;
         for(j = 0; j < seqLen; j++)
         {
+            if(seqData[j] == 5)
+            {
+                continue;
+            }
             totalLen++;
+            if(seqData[j] == 4)
+            {
+                sfs[1] += 2.0/3.0;
+                sfs[2] += 1.0/3.0;
+            }
             if(seqData[j] > 0)
             {
                 sfs[seqData[j]-1] += 1;
@@ -262,8 +271,7 @@ void Em_get_forward(Em * em)
     const int hmmIdx = em->hmmFlag;
     double ** const pts = em->hmm[hmmIdx].pts;
     double *** const forward = em->forward;
-    const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
-    assert(numEmissionStates == 4); // only 4 (polarized) is supported
+    const int numEmissionStates = 6;
     int numHmmStates;
     if(!em->flagDt)
     {
@@ -277,7 +285,7 @@ void Em_get_forward(Em * em)
     }
 
     const int numSeqs = em->numSeqs;
-    fourd * const emissions = em->hmm[hmmIdx].emissions;
+    sixd * const emissions = em->hmm[hmmIdx].emissions;
 
     int i, j, k, l;
     int seqLen;
@@ -308,7 +316,6 @@ void Em_get_forward(Em * em)
         {
             seqFor[0][k] /= em->normConst[i][0];
         }
-
         for(j = 1; j < seqLen; j++)
         {
             assert(0 <= seqData[j] && seqData[j] < numEmissionStates);
@@ -342,9 +349,9 @@ void Em_get_backward(Em * em)
     const int hmmIdx = em->hmmFlag;
     double ** const pts = em->hmm[hmmIdx].pts;
     double *** const backward = em->backward;
-    const int numEmissionStates = (em->seqtype == polarized) ? 4 : 2;
+    const int numEmissionStates = 6;
     const int numSeqs = em->numSeqs;
-    fourd * const emissions = em->hmm[hmmIdx].emissions;
+    sixd * const emissions = em->hmm[hmmIdx].emissions;
 
     int numHmmStates;
     if(!em->flagDt)
@@ -401,10 +408,10 @@ void Em_get_expectations(Em * em)
     double *** const forward = em->forward;
     double *** const backward = em->backward;
     double *** const gamma = em->gamma;
-    fourd * const expectEmissions = em->expectEmissions;
+    sixd * const expectEmissions = em->expectEmissions;
     double ** const expectTransitions = em->expectTransitions;
     double ** const pts = em->hmm[hmmIdx].pts;
-    fourd * const emissions = em->hmm[hmmIdx].emissions;
+    sixd * const emissions = em->hmm[hmmIdx].emissions;
     const int numSeqs = em->numSeqs;
 
     int numHmmStates;
@@ -434,7 +441,7 @@ void Em_get_expectations(Em * em)
         {
             expectTransitions[j][k] = 0.0;
         }
-        for(k = 0; k < 4; k++)
+        for(k = 0; k < 6; k++)
         {
             expectEmissions[j][k] = 0.0;
         }
@@ -493,10 +500,10 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
     Hmm * const hmm = &(em->hmm[hmmIdx]);
     double *** const gamma = em->gamma;
     double ** const expectTransitions = em->expectTransitions;
-    fourd * expectEmissions = em->expectEmissions;
+    sixd * expectEmissions = em->expectEmissions;
     double ** const pts = hmm->pts;
     double * const emPis = hmm->pis;
-    fourd * const emissions = hmm->emissions;
+    sixd * const emissions = hmm->emissions;
     const int numSeqs = em->numSeqs;
 
     int numHmmStates;
@@ -530,7 +537,7 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
     }
     for(i = 0; i < numHmmStates; i++)
     {
-        for(j = 0; j < 4; j++)
+        for(j = 0; j < 6; j++)
         {
             loglike += log(emissions[i][j]) * expectEmissions[i][j];
         }

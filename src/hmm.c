@@ -40,7 +40,7 @@ void Hmm_init(Hmm * hmm, const int n)
     hmm->pis = (double *)chmalloc(sizeof(double)*numStates);
     hmm->qts = (double **)chmalloc(sizeof(double *)*numStates);
     hmm->pts = (double **)chmalloc(sizeof(double *)*numStates);
-    hmm->emissions = (fourd *)chmalloc(sizeof(fourd)*numStates); 
+    hmm->emissions = (sixd *)chmalloc(sizeof(sixd)*numStates); 
     hmm->numStates = numStates;
     for(i = 0; i < numStates; i++)
     {
@@ -105,7 +105,7 @@ void Hmm_init_dt(Hmm * hmm, const int n)
     hmm->qts = (double **)chmalloc(sizeof(double *)*numStates);
     hmm->qtsDt = (double **)chmalloc(sizeof(double *)*numStatesDt);
     hmm->pts = (double **)chmalloc(sizeof(double *)*numStatesDt);
-    hmm->emissions = (fourd *)chmalloc(sizeof(fourd)*numStatesDt); 
+    hmm->emissions = (sixd *)chmalloc(sizeof(sixd)*numStatesDt); 
     hmm->numStates = numStates;
     hmm->numStatesDt = numStatesDt;
     for(i = 0; i < numStatesDt; i++)
@@ -857,7 +857,7 @@ void Hmm_get_emissions(Hmm * hmm)
     const double Td = hmm->Td;
     double * const Es3s = hmm->Eijs3s;
     double * const Es2s = hmm->Eijs2s;
-    fourd * const emissions = hmm->emissions;
+    sixd * const emissions = hmm->emissions;
 
     assert(!hmm->flagDt);
 
@@ -874,13 +874,21 @@ void Hmm_get_emissions(Hmm * hmm)
 
             treeSize = 2.0*Es2 + Es3;
 
+            /* homozygous */
             emissions[ijidx][0] = exp(-(treeSize + 3.0*Td)*theta/2.0);
+            /* 1-mut */
             emissions[ijidx][1] = exp(-(Es2-Es3)*theta/2.0) *
                 (1 - exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0));
+            /* 2-mut */
             emissions[ijidx][2] = (1.0 - exp(-(Es2-Es3)*theta/2.0)) * 
                 exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0);
+            /* 1-mut and 2-mut */
             emissions[ijidx][3] = (1.0 - exp(-(Es2-Es3)*theta/2.0)) * 
                 (1 - exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0));
+            /* heterozygous, no polarization */
+            emissions[ijidx][4] = 1.0 - emissions[ijidx][0];
+            /* missing */
+            emissions[ijidx][5] = 1.0;
         }
     }
 
@@ -895,7 +903,7 @@ void Hmm_get_emissions_dt(Hmm * hmm)
     const double Td = hmm->Td;
     double * const Es3s = hmm->Eijs3s;
     double * const Es2s = hmm->Eijs2s;
-    fourd * const emissions = hmm->emissions;
+    sixd * const emissions = hmm->emissions;
 
     assert(hmm->flagDt);
 
@@ -922,6 +930,8 @@ void Hmm_get_emissions_dt(Hmm * hmm)
                     exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0);
                 emissions[ijidx][3] = (1.0 - exp(-(Es2-Es3)*theta/2.0)) * 
                     (1 - exp(-(2*Es3 + Es2 + 3*Td)*theta/2.0));
+                emissions[ijidx][4] = 1.0 - emissions[ijidx][0];
+                emissions[ijidx][5] = 1.0;
             }
         }
     }

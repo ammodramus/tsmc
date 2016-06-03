@@ -12,7 +12,7 @@
 #endif
 #define PERROR(msg,...) do {fprintf(stderr,"\n\nProgram error:\n%s\n\n",msg); exit(-1);} while(0)
 
-typedef double fourd[4];
+typedef double sixd[6];
 
 void * chmalloc(size_t size);
 inline void * chrealloc(void * oldptr, size_t size);

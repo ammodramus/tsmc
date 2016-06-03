@@ -84,9 +84,10 @@ void Seq_read_seq(Seq * seq, FILE * fin, SeqType type)
 
     assert(seq->len < seq->maxLen);
 
-    const int maxValue = ((type == polarized) ? 3 : 1);
+    /* allowed inputs are 0-4, and N */
+    const int maxValue = 4;
 
-    int ch;
+    char ch;
     while((ch = fgetc(fin)) != EOF)
     {
         if(ch == '\n')
@@ -99,15 +100,20 @@ void Seq_read_seq(Seq * seq, FILE * fin, SeqType type)
             fseek(fin, -1, SEEK_CUR);
             return;
         }
+        if(ch == 'N')
+        {
+            /* N encodes for missing data in input, 5 in data */
+            seq->data[seq->len] = 5;
+            Seq_increment_length(seq);
+        }
         else
         {
             ch -= '0';
-            assert(!(ch < 0 || ch > maxValue));
             if(ch < 0 || ch > maxValue)
             {
-                PERROR("Invalid character in input");
+                PERROR("Invalid character in input. Allowed characters are [01234N]");
             }
-            seq->data[seq->len] = ch; // store the data
+            seq->data[seq->len] = (int)ch; // store the data
             // increment length of Seq
             Seq_increment_length(seq);
         }
