@@ -18,7 +18,7 @@
  *   
  */
 
-const int DEFAULTINCREMENT = 1000;
+const int DEFAULTINCREMENT = 10000;
 const int NUMSEQINCREMENT = 100;
 
 int finish_line(FILE * fin)
@@ -77,7 +77,7 @@ void Seq_init(Seq * seq, int initSize, int index)
  * type   type of sequence, must be polarized or nonpolarized
  *
  */
-void Seq_read_seq(Seq * seq, FILE * fin, SeqType type)
+int Seq_read_seq(Seq * seq, FILE * fin, SeqType type)
 {
     assert(seq && fin);
     assert(seq->len == 0);
@@ -85,9 +85,11 @@ void Seq_read_seq(Seq * seq, FILE * fin, SeqType type)
     assert(seq->len < seq->maxLen);
 
     /* allowed inputs are 0-4, and N */
+    int foundHet;
     const int maxValue = 4;
-
     char ch;
+
+    foundHet = 0;
     while((ch = fgetc(fin)) != EOF)
     {
         if(ch == '\n')
@@ -113,12 +115,16 @@ void Seq_read_seq(Seq * seq, FILE * fin, SeqType type)
             {
                 PERROR("Invalid character in input. Allowed characters are [01234N]");
             }
-            seq->data[seq->len] = (int)ch; // store the data
+            seq->data[seq->len] = (char)ch; // store the data
             // increment length of Seq
             Seq_increment_length(seq);
+            if(ch > 0)
+            {
+                foundHet = 1;
+            }
         }
     }
-    return;
+    return foundHet;
 }
 
 void Seq_print_seq(Seq * seq, int idx)
@@ -194,12 +200,14 @@ Seq * Data_get_seq(Data * dat)
     return seq;
 }
 
-void Data_read_seq(Data * dat, FILE * fin)
+int Data_read_seq(Data * dat, FILE * fin)
 {
+    int foundHet;
     assert(dat && fin);
     Seq * seq = Data_get_seq(dat);
     Seq_init(seq, DEFAULTINCREMENT, dat->numSeqs);
-    Seq_read_seq(seq, fin, dat->seqtype);
+    foundHet = Seq_read_seq(seq, fin, dat->seqtype);
+    return foundHet;
 }
 
 
@@ -213,11 +221,12 @@ void Data_read_seq(Data * dat, FILE * fin)
  */
 void Data_read_data(Data * dat, FILE * fin)
 {
-    int ch, i, description;
-    int chromLen, curChrom, status;
+    int ch, i, description, chromLen, curChrom, status, foundHet, seqFoundHet;
     long curPos;
 
     curChrom = -1;
+
+    foundHet = 0;
 
     while((ch = getc(fin)) != EOF)
     {
@@ -226,9 +235,17 @@ void Data_read_data(Data * dat, FILE * fin)
             // advance to end of line, loop will change to first character of
             // data in next iteration
             ch = finish_line(fin);
-            Data_read_seq(dat, fin);
+            seqFoundHet = Data_read_seq(dat, fin);
+            if(seqFoundHet)
+            {
+                foundHet = 1;
+            }
             continue;
         }
+    }
+    if(!foundHet)
+    {
+        PERROR("No heterozygous sites found in input data. At least one heterozygous site is required.");
     }
     return;
 }

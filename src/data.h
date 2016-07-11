@@ -79,14 +79,14 @@ typedef struct
 inline void Seq_add_buffer_size(Seq * seq, int increment);
 inline void Seq_increment_length(Seq * seq);
 void Seq_init(Seq * seq, int initSize, int index);
-void Seq_read_seq(Seq * seq, FILE * fin, SeqType type);
+int Seq_read_seq(Seq * seq, FILE * fin, SeqType type);
 void Seq_print_seq(Seq * seq, int idx);
 void Seq_free(Seq * seq);
 void Data_init(Data * dat, SeqType seqtype);
 void Data_add_seq_buffer(Data * dat, int increment);
 void Data_add_seq_buffer(Data * dat, int increment);
 Seq * Data_get_seq(Data * dat);
-void Data_read_seq(Data * dat, FILE * fin);
+int Data_read_seq(Data * dat, FILE * fin);
 void Data_read_data(Data * dat, FILE * fin);
 void Data_print_seqs(Data * dat);
 
