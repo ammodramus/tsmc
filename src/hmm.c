@@ -310,7 +310,7 @@ void Hmm_get_expectations(Hmm * hmm)
                            + 6*hmm->ts[i] + 8*hmm->lambdas[i]
                            - 9*exp(-hmm->intervalOmegas[i]) *
                            (hmm->ts[i+1]+hmm->lambdas[i]));
-                    assert(0 < hmm->Eijs2s[idx] && hmm->Eijs3s[idx] < INFINITY);
+                    assert(0 < hmm->Eijs2s[idx] && hmm->Eijs2s[idx] < INFINITY);
                 }
             }
             else
