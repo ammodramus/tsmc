@@ -4,7 +4,7 @@ optimize: *.[ch]
 	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc -O3 -DNDEBUG -march=native
 
 debug: *.[ch]
-	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc -g
+	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc_debug -g
 
 profile: *.[ch]
 	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c -lm -o tsmcprofile -pg
