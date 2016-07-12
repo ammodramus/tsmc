@@ -18,7 +18,7 @@
  *   
  */
 
-const int DEFAULTINCREMENT = 10000;
+const int DEFAULTINCREMENT = 1000;
 const int NUMSEQINCREMENT = 100;
 
 int finish_line(FILE * fin)
