@@ -20,6 +20,8 @@
 
 const int DEFAULTINCREMENT = 1000;
 const int NUMSEQINCREMENT = 100;
+const int INITIALSIZE = 1000;
+const double DEFAULTINCREMENTFACTOR = 1.4;
 
 int finish_line(FILE * fin)
 {
@@ -39,10 +41,18 @@ int finish_line(FILE * fin)
 inline void Seq_add_buffer_size(Seq * seq, int increment)
 {
     assert(seq);
-    seq->data = (char *)chrealloc((void *)seq->data, sizeof(char) * (seq->maxLen + increment));
+    seq->data = (char *)chrealloc((void *)seq->data, sizeof(char) * (size_t)(seq->maxLen + increment));
     seq->maxLen += increment;
 }
 
+inline void Seq_multiply_buffer_size(Seq * seq, double factor)
+{
+    assert(seq);
+    assert(factor > 1.0); // should be checked and not asserted...
+    size_t nextLen = (size_t)((double)(seq->maxLen) * factor);
+    seq->data = (char *)chrealloc((void *)seq->data, sizeof(char) * nextLen);
+    seq->maxLen = nextLen;
+}
 inline void Seq_increment_length(Seq * seq)
 {
     assert(seq);
@@ -51,7 +61,8 @@ inline void Seq_increment_length(Seq * seq)
     seq->len++;
     if(seq->len == seq->maxLen)
     {
-        Seq_add_buffer_size(seq, DEFAULTINCREMENT);
+        //Seq_add_buffer_size(seq, DEFAULTINCREMENT);
+        Seq_multiply_buffer_size(seq, DEFAULTINCREMENTFACTOR);
     }
     return;
 }
