@@ -14,9 +14,19 @@
 
 typedef double sixd[6];
 
+#ifndef DEBUGMEMORY
 void * chmalloc(size_t size);
 inline void * chrealloc(void * oldptr, size_t size);
 inline void * chcalloc(size_t nmemb, size_t size);
+#endif
+#ifdef DEBUGMEMORY
+inline void * chmalloc_memdebug(size_t size, char * filename, int lineNumber);
+inline void * chrealloc_memdebug(void * oldptr, size_t size, char * filename, int lineNumber);
+inline void * chcalloc_memdebug(size_t nmemb, size_t size, char * filename, int lineNumber);
+#define chmalloc(size) chmalloc_memdebug(size, __FILE__, __LINE__)
+#define chrealloc(oldptr, size) chrealloc_memdebug(oldptr, size, __FILE__, __LINE__)
+#define chcalloc(nmemb, size) chcalloc_memdebug(nmemb, size, __FILE__, __LINE__)
+#endif
 inline FILE * chfopen(const char * path, const char * mode);
 void timestamp(const char * msg);
 void get_ts_msmc(double * ts, const int n);

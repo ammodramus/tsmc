@@ -4,7 +4,7 @@
 #include <math.h>
 #include "definitions.h"
 
-
+#ifndef DEBUGMEMORY
 inline void * chmalloc(size_t size)
 {
     void * ptr = malloc(size);
@@ -37,6 +37,46 @@ inline void * chcalloc(size_t nmemb, size_t size)
     }
     return ptr;
 }
+#endif
+
+#ifdef DEBUGMEMORY
+inline void * chmalloc_memdebug(size_t size, char * filename, int lineNumber)
+{
+    void * ptr = malloc(size);
+    fprintf(stderr, "all %i %s %i\n", (int)size, filename, lineNumber);
+    if(!ptr)
+    {
+        fprintf(stderr, "Out of memory.\n");
+        exit(1);
+    }
+    return ptr;
+}
+
+inline void * chrealloc_memdebug(void * oldptr, size_t size, char * filename, int lineNumber)
+{
+    void * ptr = realloc(oldptr, size);
+    fprintf(stderr, "reall %i %s %i\n", (int)size, filename, lineNumber);
+    if(!ptr)
+    {
+        fprintf(stderr, "Out of memory.\n");
+        exit(1);
+    }
+    return ptr;
+}
+
+inline void * chcalloc_memdebug(size_t nmemb, size_t size, char * filename, int lineNumber)
+{
+    void * ptr = calloc(nmemb, size);
+    fprintf(stderr, "call %i %s %i\n", (int)size, filename, lineNumber);
+    if(!ptr)
+    {
+        fprintf(stderr, "Out of memory.\n");
+        exit(1);
+    }
+    return ptr;
+}
+#endif
+
 
 inline FILE * chfopen(const char * path, const char * mode)
 {

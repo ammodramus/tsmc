@@ -50,3 +50,6 @@ diptriptestpts: *.[ch]
 
 diptriptestsurface: *.[ch]
 	gcc diptriptestsurface.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o diptriptestsurface -O3 -DNDEBUG -march=native
+
+memprofile: *.[ch]
+	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc -O3 -DNDEBUG -DDEBUGMEMORY -march=native
