@@ -111,7 +111,7 @@ int Seq_read_seq(Seq * seq, FILE * fin, SeqType type)
         {
             // rewind one so parent function sees '>'
             fseek(fin, -1, SEEK_CUR);
-            return;
+            return foundHet;
         }
         if(ch == 'N')
         {
