@@ -37,6 +37,16 @@ inline void * chcalloc(size_t nmemb, size_t size)
     }
     return ptr;
 }
+
+inline void chfree(void * ptr)
+{
+    if(ptr == NULL)
+    {
+        fprintf(stderr, "Double free attempted.\n");
+        exit(1);
+    }
+    free(ptr);
+}
 #endif
 
 #ifdef DEBUGMEMORY
