@@ -68,21 +68,21 @@ void Hmm_init(Hmm * hmm, const int n)
 void Hmm_free(Hmm * hmm)
 {
     int i;
-    free(hmm->lambdas);
-    free(hmm->deltas);
-    free(hmm->ts);
-    free(hmm->Eijs3s);
-    free(hmm->Eijs2s);
-    free(hmm->intervalOmegas);
-    free(hmm->pis);
+    chfree(hmm->lambdas);
+    chfree(hmm->deltas);
+    chfree(hmm->ts);
+    chfree(hmm->Eijs3s);
+    chfree(hmm->Eijs2s);
+    chfree(hmm->intervalOmegas);
+    chfree(hmm->pis);
     for(i = 0; i < hmm->numStates; i++)
     {
-        free(hmm->qts[i]);
-        free(hmm->pts[i]);
+        chfree(hmm->qts[i]);
+        chfree(hmm->pts[i]);
     }
-    free(hmm->qts);
-    free(hmm->pts);
-    free(hmm->emissions);
+    chfree(hmm->qts);
+    chfree(hmm->pts);
+    chfree(hmm->emissions);
     return;
 }
 
@@ -135,26 +135,26 @@ void Hmm_init_dt(Hmm * hmm, const int n)
 void Hmm_free_dt(Hmm * hmm)
 {
     int i;
-    free(hmm->lambdas);
-    free(hmm->deltas);
-    free(hmm->ts);
-    free(hmm->Eijs3s);
-    free(hmm->Eijs2s);
-    free(hmm->intervalOmegas);
-    free(hmm->pis);
+    chfree(hmm->lambdas);
+    chfree(hmm->deltas);
+    chfree(hmm->ts);
+    chfree(hmm->Eijs3s);
+    chfree(hmm->Eijs2s);
+    chfree(hmm->intervalOmegas);
+    chfree(hmm->pis);
     for(i = 0; i < hmm->numStatesDt; i++)
     {
-        free(hmm->qtsDt[i]);
-        free(hmm->pts[i]);
+        chfree(hmm->qtsDt[i]);
+        chfree(hmm->pts[i]);
     }
     for(i = 0; i < hmm->numStates; i++)
     {
-        free(hmm->qts[i]);
+        chfree(hmm->qts[i]);
     }
-    free(hmm->qts);
-    free(hmm->qtsDt);
-    free(hmm->pts);
-    free(hmm->emissions);
+    chfree(hmm->qts);
+    chfree(hmm->qtsDt);
+    chfree(hmm->pts);
+    chfree(hmm->emissions);
     return;
 }
 

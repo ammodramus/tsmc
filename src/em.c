@@ -147,7 +147,7 @@ void Em_init(Em * em, Data * dat, double * ts,
         em->expectTransitions[i] = (double *)chmalloc(sizeof(double) * numHmmStates);
     }
     em->expectEmissions = (sixd *)chmalloc(sizeof(sixd) * numHmmStates);
-    free(lambdas);
+    chfree(lambdas);
     return;
 }
 
@@ -158,26 +158,26 @@ void Em_free(Em * em)
     {
         for(j = 0; j < em->dat->seqs[i].len; j++)
         {
-            free(em->forward[i][j]);
-            free(em->backward[i][j]);
-            free(em->gamma[i][j]);
+            chfree(em->forward[i][j]);
+            chfree(em->backward[i][j]);
+            chfree(em->gamma[i][j]);
         }
-        free(em->forward[i]);
-        free(em->backward[i]);
-        free(em->gamma[i]);
-        free(em->normConst[i]);
+        chfree(em->forward[i]);
+        chfree(em->backward[i]);
+        chfree(em->gamma[i]);
+        chfree(em->normConst[i]);
     }
     for(i = 0; i < em->numHmmStates; i++)
     {
-        free(em->expectTransitions[i]);
+        chfree(em->expectTransitions[i]);
     }
-    free(em->normConst);
-    free(em->expectTransitions);
-    free(em->forward);
-    free(em->backward);
-    free(em->gamma);
-    free(em->freeLambdas);
-    free(em->expectEmissions);
+    chfree(em->normConst);
+    chfree(em->expectTransitions);
+    chfree(em->forward);
+    chfree(em->backward);
+    chfree(em->gamma);
+    chfree(em->freeLambdas);
+    chfree(em->expectEmissions);
     if(!em->flagDt)
     {
         Hmm_free(&(em->hmm[0]));
@@ -218,7 +218,7 @@ double Em_get_initial_rho(Data * dat)
         }
         Em_free(&tempEm);
     }
-    free(ts);
+    chfree(ts);
     double initRho = initRhos[maxLLidx];
     return initRho;
 }
@@ -340,7 +340,7 @@ void Em_get_forward(Em * em)
             }
         }
     }
-    free(pis);
+    chfree(pis);
     return;
 }
 
@@ -549,7 +549,7 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
             }
         }
     }
-    free(pis);
+    chfree(pis);
     return loglike;
 }
 
@@ -595,16 +595,16 @@ double objective_function_asex(double * par)
     Hmm_make_hmm(scratchHmm, lambdas, ts, n, theta, rho, Td, &error);
     if(error)
     {
-        free(lambdas);
-        free(ts);
+        chfree(lambdas);
+        chfree(ts);
         return DBL_MAX;
     }
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
 
-    free(lambdas);
-    free(ts);
+    chfree(lambdas);
+    chfree(ts);
 
     return -loglike;
 }
@@ -654,16 +654,16 @@ double objective_function_dt(double * par)
     Hmm_make_hmm_dt(scratchHmm, lambdas, ts, n, theta, rho, Td, D3, &error);
     if(error)
     {
-        free(lambdas);
-        free(ts);
+        chfree(lambdas);
+        chfree(ts);
         return DBL_MAX;
     }
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
 
-    free(lambdas);
-    free(ts);
+    chfree(lambdas);
+    chfree(ts);
 
     return -loglike;
 }
@@ -805,9 +805,9 @@ void Em_iterate_asex(Em * em)
 
     for(i = 0; i < numOptimStarts; i++)
     {
-        free(steps[i]);
+        chfree(steps[i]);
     }
-    free(steps);
+    chfree(steps);
 
     int minFminIdx = 0;
     double minfmin = fmins[0];
@@ -860,18 +860,18 @@ void Em_iterate_asex(Em * em)
     em->hmmFlag = !em->hmmFlag;
 
     // free things
-    free(lambdas);
-    free(ts);
-    free(start);
+    chfree(lambdas);
+    chfree(ts);
+    chfree(start);
     for(i = 0; i < numOptimStarts; i++)
     {
-        free(fargmins[i]);
-        free(randstarts[i]);
+        chfree(fargmins[i]);
+        chfree(randstarts[i]);
     }
-    free(fargmins);
-    free(randstarts);
-    free(step);
-    free(fmins);
+    chfree(fargmins);
+    chfree(randstarts);
+    chfree(step);
+    chfree(fmins);
 
     return;
 }
@@ -966,9 +966,9 @@ void Em_iterate_dt(Em * em)
 
     for(i = 0; i < numOptimStarts; i++)
     {
-        free(steps[i]);
+        chfree(steps[i]);
     }
-    free(steps);
+    chfree(steps);
 
     int minFminIdx = 0;
     double minfmin = fmins[0];
@@ -1026,18 +1026,18 @@ void Em_iterate_dt(Em * em)
     em->hmmFlag = !em->hmmFlag;
 
     // free things
-    free(lambdas);
-    free(ts);
-    free(start);
+    chfree(lambdas);
+    chfree(ts);
+    chfree(start);
     for(i = 0; i < numOptimStarts; i++)
     {
-        free(fargmins[i]);
-        free(randstarts[i]);
+        chfree(fargmins[i]);
+        chfree(randstarts[i]);
     }
-    free(fargmins);
-    free(randstarts);
-    free(step);
-    free(fmins);
+    chfree(fargmins);
+    chfree(randstarts);
+    chfree(step);
+    chfree(fmins);
 
     return;
 }

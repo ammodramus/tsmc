@@ -60,7 +60,7 @@ int main(int argc, char ** argv)
 
     Em_free(&em);
     Data_free(&dat);
-    free(ts);
+    chfree(ts);
 
     return 0;
 }

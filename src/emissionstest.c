@@ -41,8 +41,8 @@ int main(int argc, char ** argv)
     Hmm_print_emissions(&hmm);
 
     
-    free(ts);
-    free(lambdas);
+    chfree(ts);
+    chfree(lambdas);
 
     //Hmm_print_demography(&hmm);
     //Hmm_print_pis(&hmm);

@@ -91,10 +91,10 @@ int main(int argc, char ** argv)
         }
     }
 
-    free(par);
+    chfree(par);
     Em_free(&em);
     Data_free(&dat);
-    free(ts);
+    chfree(ts);
 
     return 0;
 }

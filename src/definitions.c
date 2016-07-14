@@ -85,6 +85,18 @@ inline void * chcalloc_memdebug(size_t nmemb, size_t size, char * filename, int 
     }
     return ptr;
 }
+
+inline void * chfree_memdebug(void *ptr, char * filename, int lineNumber)
+{
+    if(ptr == NULL)
+    {
+        fprintf(stderr, "Double free attempted.\n");
+        exit(1);
+    }
+    fprintf(stderr, "free %i %s %i\n", (int)sizeof(ptr), filename, lineNumber);
+    free(ptr);
+}
+
 #endif
 
 

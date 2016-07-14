@@ -35,8 +35,8 @@ int main(int argc, char ** argv)
     Hmm_init(&hmm, n, ts);
     Hmm_make_hmm(&hmm, lambdas, n, initTheta, initRho, initTd);
     Hmm_print_qts(&hmm);
-    free(ts);
-    free(lambdas);
+    chfree(ts);
+    chfree(lambdas);
 
     //Hmm_print_pis(&hmm);
     //Hmm_print_expectations(&hmm);

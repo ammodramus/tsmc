@@ -160,7 +160,7 @@ void Seq_print_seq(Seq * seq, int idx)
 void Seq_free(Seq * seq)
 {
     assert(seq->data);
-    free(seq->data);
+    chfree(seq->data);
     return;
 }
 
@@ -182,7 +182,7 @@ void Data_free(Data * dat)
     {
         Seq_free(&(dat->seqs[i]));
     }
-    free(dat->seqs);
+    chfree(dat->seqs);
     return;
 }
 

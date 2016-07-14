@@ -48,8 +48,8 @@ int main(int argc, char ** argv)
     printf("likelihood = %.10e\n", Em_get_expected_log_likelihood(&em, 0));
 
     Data_free(&dat);
-    free(ts);
-    free(lambdas);
+    chfree(ts);
+    chfree(lambdas);
 
     //Hmm_print_demography(&hmm);
     //Hmm_print_pis(&hmm);

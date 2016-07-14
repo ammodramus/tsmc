@@ -48,8 +48,8 @@ int main(int argc, char ** argv)
     Em_print_gamma(&em);
 
     Data_free(&dat);
-    free(ts);
-    free(lambdas);
+    chfree(ts);
+    chfree(lambdas);
 
     //Hmm_print_demography(&hmm);
     //Hmm_print_pis(&hmm);
