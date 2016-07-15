@@ -568,7 +568,34 @@ double objective_function_asex(double * par)
 
     const int numParams = em.numFreeLambdas+4;
 
-    double * lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+    static double * ts = NULL;
+
+    static double * lambdas = NULL;
+    static int arraySizeN = n;
+    if(lambdas == NULL)
+    {
+        lambdas = (double *)chmalloc(sizeof(double) * (n+1));
+    }
+    else
+    {
+        if(n != arraySizeN)
+        {
+            lambdas = (double *)realloc(sizeof(double) * (n+1));
+            arraySizeN = n;
+        }
+    }
+    if(ts == NULL)
+    {
+        ts = (double *)chmalloc(sizeof(double) * (n+1));
+    }
+    else
+    {
+        if(n != arraySizeN)
+        {
+            ts = (double *)realloc(sizeof(double) * (n+1));
+            arraySizeN = n;
+        }
+    }
 
     int i, j;
 
@@ -595,16 +622,16 @@ double objective_function_asex(double * par)
     Hmm_make_hmm(scratchHmm, lambdas, ts, n, theta, rho, Td, &error);
     if(error)
     {
-        chfree(lambdas);
-        chfree(ts);
+        //chfree(lambdas);
+        //chfree(ts);
         return DBL_MAX;
     }
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
 
-    chfree(lambdas);
-    chfree(ts);
+    //chfree(lambdas);
+    //chfree(ts);
 
     return -loglike;
 }

@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#ifdef DEBUGMEMORY
+#include <malloc.h>
+#endif
 #include "definitions.h"
+
 
 #ifndef DEBUGMEMORY
 inline void * chmalloc(size_t size)
@@ -53,7 +57,7 @@ inline void chfree(void * ptr)
 inline void * chmalloc_memdebug(size_t size, char * filename, int lineNumber)
 {
     void * ptr = malloc(size);
-    fprintf(stderr, "all %i %s %i\n", (int)size, filename, lineNumber);
+    fprintf(stdout, "all %i %s %i\n", (int)size, filename, lineNumber);
     if(!ptr)
     {
         fprintf(stderr, "Out of memory.\n");
@@ -65,7 +69,7 @@ inline void * chmalloc_memdebug(size_t size, char * filename, int lineNumber)
 inline void * chrealloc_memdebug(void * oldptr, size_t size, char * filename, int lineNumber)
 {
     void * ptr = realloc(oldptr, size);
-    fprintf(stderr, "reall %i %s %i\n", (int)size, filename, lineNumber);
+    fprintf(stdout, "reall %i %s %i\n", (int)size, filename, lineNumber);
     if(!ptr)
     {
         fprintf(stderr, "Out of memory.\n");
@@ -77,7 +81,7 @@ inline void * chrealloc_memdebug(void * oldptr, size_t size, char * filename, in
 inline void * chcalloc_memdebug(size_t nmemb, size_t size, char * filename, int lineNumber)
 {
     void * ptr = calloc(nmemb, size);
-    fprintf(stderr, "call %i %s %i\n", (int)size, filename, lineNumber);
+    fprintf(stdout, "call %i %s %i\n", (int)size, filename, lineNumber);
     if(!ptr)
     {
         fprintf(stderr, "Out of memory.\n");
@@ -93,7 +97,7 @@ inline void * chfree_memdebug(void *ptr, char * filename, int lineNumber)
         fprintf(stderr, "Double free attempted.\n");
         exit(1);
     }
-    fprintf(stderr, "free %i %s %i\n", (int)sizeof(ptr), filename, lineNumber);
+    fprintf(stdout, "free %i %s %i\n", (int)malloc_usable_size(ptr), filename, lineNumber);
     free(ptr);
 }
 
