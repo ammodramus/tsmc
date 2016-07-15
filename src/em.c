@@ -13,6 +13,12 @@
 
 Em em;
 
+static double * TS = NULL;
+static double * LAMBDAS = NULL;
+static double * PIS = NULL;
+static int ARRAYSIZEN = -1;
+static int PISARRAYSIZE = -1;
+
 inline void copy_pis(double * pis, const double * emPis, int numHmmStates, int flagDt)
 {
     int i;
@@ -518,8 +524,13 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
         assert(em->hmm[hmmIdx].numStatesDt == em->hmm[!hmmIdx].numStatesDt);
     }
 
-    double * pis = (double *)chmalloc(sizeof(double) * numHmmStates);
-    copy_pis(pis, emPis, numHmmStates, hmm->flagDt);
+    if(PISARRAYSIZE == -1)
+    {
+        PISARRAYSIZE = numHmmStates;
+        PIS = realloc(PIS, sizeof(double) * PISARRAYSIZE);
+    }
+
+    copy_pis(PIS, emPis, numHmmStates, hmm->flagDt);
 
     int i,j,k,l, seqLen;
 
@@ -532,7 +543,7 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
         seqLen = em->dat->seqs[i].len;
         for(j = 0; j < numHmmStates; j++)
         {
-            loglike += gamma[i][0][j] * log(pis[j]);
+            loglike += gamma[i][0][j] * log(PIS[j]);
         }
     }
     for(i = 0; i < numHmmStates; i++)
@@ -549,7 +560,6 @@ double Em_get_expected_log_likelihood(Em * em, const int hmmIdx)
             }
         }
     }
-    chfree(pis);
     return loglike;
 }
 
@@ -568,32 +578,31 @@ double objective_function_asex(double * par)
 
     const int numParams = em.numFreeLambdas+4;
 
-    static double * ts = NULL;
-
-    static double * lambdas = NULL;
-    static int arraySizeN = n;
-    if(lambdas == NULL)
+    if(LAMBDAS == NULL)
     {
-        lambdas = (double *)chmalloc(sizeof(double) * (n+1));
-    }
-    else
-    {
-        if(n != arraySizeN)
+        if(TS != NULL)
         {
-            lambdas = (double *)realloc(sizeof(double) * (n+1));
-            arraySizeN = n;
+            PERROR("TS should also be NULL.");
         }
+        LAMBDAS = (double *)chmalloc(sizeof(double) * (n+1));
+        TS = (double *)chmalloc(sizeof(double) * (n+1));
     }
-    if(ts == NULL)
+    if(ARRAYSIZEN == -1)
     {
-        ts = (double *)chmalloc(sizeof(double) * (n+1));
+        ARRAYSIZEN = n;
     }
-    else
+
+    if(LAMBDAS != NULL)
     {
-        if(n != arraySizeN)
+        if(TS == NULL)
         {
-            ts = (double *)realloc(sizeof(double) * (n+1));
-            arraySizeN = n;
+            PERROR("TS should not be NULL.");
+        }
+        if(n != ARRAYSIZEN)
+        {
+            LAMBDAS = (double *)realloc(LAMBDAS, sizeof(double) * (n+1));
+            TS = (double *)realloc(TS, sizeof(double) * (n+1));
+            ARRAYSIZEN = n;
         }
     }
 
@@ -602,36 +611,31 @@ double objective_function_asex(double * par)
     for(i = 0; i < em.lambdaCounts[0]; i++)
     {
         // set the first, fixed lambdas at 1
-        lambdas[i] = 1.0;
+        LAMBDAS[i] = 1.0;
     }
     int lambdaIdx = em.lambdaCounts[0];
     for(i = 0; i < em.numFreeLambdas; i++)
     {
         for(j = 0; j < em.lambdaCounts[i+1]; j++)
         {
-            lambdas[lambdaIdx++] = par[i+4]*par[i+4];
+            LAMBDAS[lambdaIdx++] = par[i+4]*par[i+4];
         }
     }
 
     Hmm * scratchHmm = &(em.hmm[!em.hmmFlag]);
 
-    double * ts = (double *)chmalloc(sizeof(double) * (n+1));
-    get_ts_psmc(ts, maxT, n);
+    //double * ts = (double *)chmalloc(sizeof(double) * (n+1));
+    get_ts_psmc(TS, maxT, n);
 
     int error;
-    Hmm_make_hmm(scratchHmm, lambdas, ts, n, theta, rho, Td, &error);
+    Hmm_make_hmm(scratchHmm, LAMBDAS, TS, n, theta, rho, Td, &error);
     if(error)
     {
-        //chfree(lambdas);
-        //chfree(ts);
         return DBL_MAX;
     }
 
     double loglike = Em_get_expected_log_likelihood(&em, !em.hmmFlag);
     assert(loglike < 0);
-
-    //chfree(lambdas);
-    //chfree(ts);
 
     return -loglike;
 }
