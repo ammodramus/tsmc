@@ -50,6 +50,7 @@ inline void chfree(void * ptr)
         exit(1);
     }
     free(ptr);
+    ptr = NULL;
 }
 #endif
 
