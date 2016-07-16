@@ -6,6 +6,9 @@ optimize: *.[ch]
 debug: *.[ch]
 	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc_debug -g
 
+debugmsg: *.[ch] 
+	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc -O3 -march=native
+
 profile: *.[ch]
 	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c -lm -o tsmcprofile -pg
 
