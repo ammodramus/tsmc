@@ -80,7 +80,7 @@ inline void * chmalloc_memdebug(size_t size, char * filename, int lineNumber)
     void * ptr = malloc(size);
     //fprintf(stdout, "all %i %s %i\n", (int)size, filename, lineNumber);
     char msg[500];
-    sprintf(msg, "all %i %s %i\n", (int)size, filename, lineNumber);
+    sprintf(msg, "all %i %s %i", (int)size, filename, lineNumber);
     timestamp(msg);
     if(!ptr)
     {
@@ -95,7 +95,7 @@ inline void * chrealloc_memdebug(void * oldptr, size_t size, char * filename, in
     void * ptr = realloc(oldptr, size);
     //fprintf(stdout, "reall %i %s %i\n", (int)size, filename, lineNumber);
     char msg[500];
-    sprintf(msg, "reall %i %s %i\n", (int)size, filename, lineNumber);
+    sprintf(msg, "reall %i %s %i", (int)size, filename, lineNumber);
     timestamp(msg);
     if(!ptr)
     {
@@ -110,7 +110,7 @@ inline void * chcalloc_memdebug(size_t nmemb, size_t size, char * filename, int 
     void * ptr = calloc(nmemb, size);
     //fprintf(stdout, "call %i %s %i\n", (int)size, filename, lineNumber);
     char msg[500];
-    sprintf(msg, "call %i %s %i\n", (int)size, filename, lineNumber);
+    sprintf(msg, "call %i %s %i", (int)size, filename, lineNumber);
     timestamp(msg);
     if(!ptr)
     {
@@ -129,7 +129,7 @@ inline void * chfree_memdebug(void *ptr, char * filename, int lineNumber)
     }
     //fprintf(stdout, "free %i %s %i\n", (int)malloc_usable_size(ptr), filename, lineNumber);
     char msg[500];
-    sprintf(msg, "free %i %s %i\n", (int)malloc_usable_size(ptr), filename, lineNumber);
+    sprintf(msg, "free %i %s %i", (int)malloc_usable_size(ptr), filename, lineNumber);
     timestamp(msg);
     free(ptr);
 }
