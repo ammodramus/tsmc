@@ -197,6 +197,14 @@ void Em_free(Em * em)
     return;
 }
 
+void Em_free_globals()
+{
+    chfree(LAMBDAS);
+    chfree(TS);
+    chfree(PIS);
+    return;
+}
+
 double Em_get_initial_rho(Data * dat)
 {
     const int n = 8;

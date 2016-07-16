@@ -131,7 +131,7 @@ void timestamp(const char * msg)
     time(&rawTime);
     timeInfo = localtime(&rawTime);
     strftime(timestmp, 100, "%c", timeInfo);
-    fprintf(stderr, "%s -- %s\n", timestmp, msg);
+    fprintf(stdout, "%s -- %s\n", timestmp, msg);
     return;
 }
 #else
