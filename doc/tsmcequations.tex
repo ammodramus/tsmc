@@ -3,6 +3,7 @@
 \usepackage{amsfonts}
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
+\usepackage{bbm}
 
 \DeclareMathOperator{\Pois}{Pois}
 \DeclareMathOperator{\Prob}{P}
@@ -27,6 +28,7 @@
 \def\b{\mathrm{(b)}}
 \def\P{\mathcal{P}}
 \def\U{\mathcal{U}}
+\def\ind{\mathbbm{1}}
 
 \begin{document}
 
@@ -2189,5 +2191,94 @@ For $k<i=j=l$ and $t_3<s_3;t_2=s_3$, $W = 1$, $W' \in \{0,1\}$:
 \end{align}
 
 (Double-checked these.)
+
+\section{Harris et al.\ algorithm for triploid genealogy}
+
+Define $f(x_{1:l}, j)$ as the joint forward probability of observing the
+partial emitted sequence $x_{1:l} = x_1, \dots, x_l$ and the hidden state
+(coalescence time) $T_l = j$ at locus $l$. Let the number of discretized time
+intervals be $d$, and define $\phi(j \mid k)$ as $\Prob(T_{l+1} = j \mid T_l =
+k)$.
+
+\begin{equation}
+    f(x_{1:l+1}, j) = \xi(x_{l+1} \mid j)
+        \sum_{k=1}^d f(x_{1:l}, k)\phi(j\mid k),
+    \label{eq:harrisforward}
+\end{equation}
+which contains $d$ terms. Since there are $d$ possibilities for $j$, the
+algorithm should take $O(d^2L)$ time to compute.
+
+Decompose the transition from $l$ to $l+1$ as a sequence of component events.
+Let $R_i$ be the event that a recombination event occurs during time interval
+$i$, and let $\bar{R}$ be the event that no recombination occurs. Then
+
+\begin{equation}
+    \phi(j \mid k) = \sum_{i=1}^{\min(j,k)}
+        \Prob(R_i, T_{l+1} = j \mid T_l = k)
+            + \ind_{j=k}\Prob(\bar{R} \mid T_l = k)
+    \label{eq:pcoalsumrecomb}
+\end{equation}
+
+Two events: $C_{>i}$ denotes the event where the recombination event occurs at
+or before $i$ and floats into $i+1$, and $C_i$ denotes the event where the
+recombined lineage coalesces back in interval $i$. Note that $\Prob(R_i, C_i
+\mid T_l = i')$ is independent of $i'$ whenever $i < i'$. (Still working
+between $l$ and $l+1$, here.) This is also true of $\Prob(R_i, C_{>i} \mid T_l
+= i')$. Then we can write
+
+\begin{equation}
+    \Prob(R_i, T_{l+1} = j \mid T_l = k) = 
+    \begin{cases}
+        \Prob(R_i,C_i \mid T_l = i),&i=j=k \\
+        \Prob(R_i, C_i \mid T_l > i),&i = j < k \\
+        \Prob(R_i, C_{>i} \mid T_l = i) \Prob(C_j \mid C_{>j-1})
+            \prod_{m=i}^{j-1}\Prob(C_{>k'+1} \mid C_{>k'}),&i=k<j \\
+        \Prob(R_i, C_{>i} \mid T_l > i)\Prob(C_j \mid C_{>j-1})
+            \prod_{k'=i}^{j-1}\Prob(C_{>k'+1} \mid C_{>k'}), &i < \min(j,k)
+    \end{cases}
+    \label{eq:recombcases}
+\end{equation}
+
+By combining \eqref{eq:pcoalsumrecomb} and \eqref{eq:recombcases}, we can
+remove the sum over $T_l = k$ in computing $f(x_{1:l+1}, j)$. Define the
+additional forward probabilities
+
+\begin{equation}
+    f(x_{1:l},T_l=k) := \Prob(x_{1:l}, T_l = k)
+\end{equation}
+
+\begin{equation}
+    f(x_{1:l}, T_l > k) := \Prob(x_{1:l}, T_l > k) = 
+        \sum_{k'=k+1}^d f(x_{1:l}, T_l = k)
+\end{equation}
+
+\begin{align}
+    \begin{split}
+        f(x_{1:l}, R_{\le j}, C_{>j}) := &
+            \sum_{i=1}^j\Prob(x_{1:l}, R_i, C_{>i}, \dots, C_{>j}) \\
+            &= \sum_{i=1}^j \bigg\{
+                \prod_{i'=i+1}^j\Prob(C_{>i'} \mid C_{>i'-1})
+             \\
+            &\times \big[ f(x_{1:l}, T_l = i)\Prob(R_i,C_{>i}\mid T_l = i) +
+                f(x_{1:l},T_l>i)\Prob(R_i, C_{>i} | T_l > i) \big] \bigg\}.
+    \end{split}
+\end{align}
+
+Then \eqref{eq:harrisforward} can be written as
+
+\begin{align}
+    \begin{split}
+        f(x_{1:l+1},j) &= \xi(x_{l+1} \mid j) \\
+    & \times \bigg[ f(x_{1:l},
+        R_{\le j-1}, C_{>j-1})\Prob(C_j \mid C_{>j-1}) + f(x_{1:l},T_l >
+        j)\Prob(R_j, C_j \mid T_l > j) + \\
+        &\qquad f(x_{1:l}, T_l = j) \Prob(R_j, C_j
+    \mid T_l = j) + f(x_{1:l}, j) \Prob(\bar{R} \mid T_l = j) \bigg].
+    \end{split}
+\end{align}
+
+\section{Genotype likelihoods}
+
+
 
 \end{document}
