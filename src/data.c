@@ -18,10 +18,10 @@
  *   
  */
 
-const int DEFAULTINCREMENT = 1000;
-const int NUMSEQINCREMENT = 100;
-const int INITIALSIZE = 1000;
-const double DEFAULTINCREMENTFACTOR = 1.4;
+static const int DEFAULTINCREMENT = 1000;
+static const int NUMSEQINCREMENT = 100;
+static const int INITIALSIZE = 1000;
+static const double DEFAULTINCREMENTFACTOR = 1.4;
 
 int finish_line(FILE * fin)
 {
