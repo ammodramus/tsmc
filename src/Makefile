@@ -56,3 +56,6 @@ diptriptestsurface: *.[ch]
 
 memprofile: *.[ch]
 	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc -O3 -DDEBUGMEMORY -march=native
+
+testgenlikes: *.[ch]
+	gcc testgenlikedata.c genotypelikelihoods.c definitions.c -lm -g -o testgenlikedata
