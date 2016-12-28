@@ -271,13 +271,13 @@ void SeqGenLikeEmissions_calculate(SeqGenLikeEmissions *se,
 
     if(!polarized)
     {
+        sl_pos = 0;
         // calculate an emission probability for each bin
         for(i = 0; i < se->num_bins; i++)
         {
             // ... for each hidden state
             for(k = 0; k < num_hidden_states; k++)
             {
-                sl_pos = 0;
                 bin_loglike = 0.0;
                 done = 0;
                 // for each site in the bin
@@ -288,7 +288,7 @@ void SeqGenLikeEmissions_calculate(SeqGenLikeEmissions *se,
                     for(l = 0; l < num_emission_states; l++)
                     {
                         site_prob +=
-                            sl->likes[sl_pos*num_emission_states + l] *
+                            exp(sl->likes[sl_pos*num_emission_states + l]) *
                             obs_emissions[k][l];
                     }
                     bin_loglike += log(site_prob);
