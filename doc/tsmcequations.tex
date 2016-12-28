@@ -2283,7 +2283,7 @@ When using observed genotypes, the emissions probability, given the hidden
 state $(t_3, t_2)$ (with $T_d$), is
 
 \begin{equation}
-    P_e(G) = e_G(t_3, t_2, t_d) = 
+    P_e(G) = e_G(t_3, t_2, T_d) = 
     \begin{cases}
         e^{-\frac{\theta b \left(2t_2+t_3+3T_d\right)}{2}}&G=0\\
         e^{-\frac{\theta b \left(t_2-t_3\right)}{2}}\left(1-e^{-\frac{\theta b \left(2t_3+t_2+3T_d\right)}{2}}\right)&G=1\\
@@ -2301,7 +2301,7 @@ emission probability of the reads in that window. This is
     P_e(\nu) = P(S^{(\nu)} \mid T) = \prod_{i \in \nu}P(S_i^{(\nu)} \mid T) = 
     \prod_{i \in \nu}\sum_{G_i} P(S_i^{(\nu)} \mid G_i)P(G_i \mid T),
 \end{equation}
-where $S_i^{(\nu)}$ is the set of reads in the $i$th window in window $\nu$.
+where $S_i^{(\nu)}$ is the set of reads in the $i$th position in window $\nu$.
 Here, $T$ is the hidden state $(t_3, t_2, T_d)$, and $P(G_i \mid T) = e_G(t_3,
 t_2, T_d)$. 
 
