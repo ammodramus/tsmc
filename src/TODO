@@ -1,2 +1,0 @@
-- calculate emission probabilities just once (for each time configuration)
-  rather than at each iteration
