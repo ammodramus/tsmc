@@ -1,6 +1,9 @@
 #ifndef GENOTYPELIKELIHOODS_H
 #define GENOTYPELIKELIHOODS_H
 
+#include <stdio.h>
+#include "hmm.h"
+
 /*
  * 
  * Data structure
@@ -43,6 +46,37 @@ typedef struct genotypelikedata_
     int num_emission_states;
     int polarized;
 } GenotypeLikeData;
+
+struct genlikeemissions_;
+
+typedef struct seqgenlikeemissions_
+{
+    int num_bins;  // (binned sequence length)
+    int num_emission_states;
+    int bin_width;
+    double **loglikes;
+} SeqGenLikeEmissions;
+
+/*
+ *
+ * GenLikeEmissions -- object for emissions probabilities under genotype
+ *                     likelihoods
+ *
+ * Gives P(S^{(\nu)} | T) for each binned window \nu and each hidden state T.
+ *
+ */
+
+typedef struct genlikeemissions_
+{
+    int num_seqs;
+    int num_emission_states;
+    int polarized;
+    int bin_width;
+    int n;
+
+    Hmm *hmm;
+    SeqGenLikeEmissions *seq_likes;
+} GenLikeEmissions;
 
 
 void GenotypeLikeData_init(GenotypeLikeData *dat, int polarized);
