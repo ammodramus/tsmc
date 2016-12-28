@@ -10,6 +10,7 @@
 #include "em.h"
 #include "random.h"
 #include "asa047.h"
+#include "util.h"
 
 Em em;
 
@@ -119,11 +120,11 @@ void Em_init(Em * em, Data * dat, double * ts,
     int numHmmStates;
     if(!diptripflag)
     {
-        numHmmStates = (n+1)*(n+2)/2;
+        numHmmStates = get_num_states(n);
     }
     else
     {
-        numHmmStates = (n+1)*(n+2);
+        numHmmStates = 2*get_num_states(n);
     }
     em->numHmmStates = numHmmStates;
 
