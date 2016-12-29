@@ -75,6 +75,7 @@ static void merge_line_likes(double *linelikes, double *m_linelikes, int polariz
         m_linelikes[0] = log(m_linelikes[0] / 16.0);
         // assume that P(G | het) = 1/4 for homozygous genotypes
         m_linelikes[1] = log(m_linelikes[1] / 4.0);
+        printf("%e\t%e\n", exp(m_linelikes[0]), exp(m_linelikes[1]));
         // but what about GC content, e.g.?
     }
 }
@@ -106,6 +107,13 @@ void SeqGenotypeLike_add_likelihoods(SeqGenotypeLike *seq,
     int i;
     for (i = 0; i < seq->num_emission_states; i++)
     {
+        // some linelikes are close to zero (< 1e-11), presumably from
+        // precision error, so going to just round them down to 0, since these
+        // are loglikes
+        if(m_linelikes[i] > 0.0)
+        {
+            m_linelikes[i] = 0.0;
+        }
         seq->likes[seq->num_emission_states*seq->len+i] = m_linelikes[i];
     }
     seq->len++;
@@ -226,7 +234,7 @@ void GenotypeLikeData_print(GenotypeLikeData *dat, FILE *fout)
  */
 
 void SeqGenLikeEmissions_init(SeqGenLikeEmissions *se, int num_bins,
-        int num_hidden_states, int bin_width);
+        int num_emission_states, int num_hidden_states, int bin_width)
 {
     int i;
 
@@ -253,7 +261,7 @@ void SeqGenLikeEmissions_free(SeqGenLikeEmissions *se)
     int i;
     for (i = 0; i < se->num_bins; i++)
     {
-        chfree(se->loglikes[i])
+        chfree(se->loglikes[i]);
     }
     chfree(se->loglikes);
     return;
@@ -263,7 +271,7 @@ void SeqGenLikeEmissions_calculate(SeqGenLikeEmissions *se,
         SeqGenotypeLike *sl, double **obs_emissions, int num_hidden_states)
 {
     int i, j, k, l, sl_pos, polarized, done;
-    double bin_prob, site_prob;
+    double site_prob, bin_loglike;
     const int bin_width = se->bin_width;
     const int num_emission_states = se->num_emission_states;
     polarized = (se->num_emission_states == 3) ? 1 : 0;
@@ -271,12 +279,12 @@ void SeqGenLikeEmissions_calculate(SeqGenLikeEmissions *se,
 
     if(!polarized)
     {
-        sl_pos = 0;
-        // calculate an emission probability for each bin
-        for(i = 0; i < se->num_bins; i++)
+        // calculate an emission probability for each hidden state
+        for(k = 0; k < num_hidden_states; k++)
         {
-            // ... for each hidden state
-            for(k = 0; k < num_hidden_states; k++)
+            sl_pos = 0;
+            // ... for each bin
+            for(i = 0; i < se->num_bins; i++)
             {
                 bin_loglike = 0.0;
                 done = 0;
@@ -287,6 +295,9 @@ void SeqGenLikeEmissions_calculate(SeqGenLikeEmissions *se,
                     // for each genotype...
                     for(l = 0; l < num_emission_states; l++)
                     {
+                        // assertion for log space
+                        assert(sl->likes[sl_pos*num_emission_states + l]
+                                <= 0.0);
                         site_prob +=
                             exp(sl->likes[sl_pos*num_emission_states + l]) *
                             obs_emissions[k][l];
@@ -322,12 +333,6 @@ void SeqGenLikeEmissions_calculate(SeqGenLikeEmissions *se,
  */
 
 
-void GenLikeEmissions_calculate(GenLikeEmissions *emissions,
-        GenotypeLikeData *dat, int bin_width)
-{
-    emissions->num_seqs = dat->num_seqs;
-
-}
 void GenLikeEmissions_calculate(GenLikeEmissions *emissions,
         GenotypeLikeData *dat, int bin_width, Hmm *hmm)
 {
@@ -391,7 +396,7 @@ void GenLikeEmissions_calculate(GenLikeEmissions *emissions,
         {
             num_bins = dat->seq_likes[i].len / bin_width;
             SeqGenLikeEmissions_init(&(emissions->seq_likes[i]), num_bins,
-                    num_states, bin_width);
+                    dat->num_emission_states, num_states, bin_width);
             SeqGenLikeEmissions_calculate(&(emissions->seq_likes[i]),
                     &(dat->seq_likes[i]), obs_emissions, num_states);
         }
@@ -420,5 +425,19 @@ void GenLikeEmissions_free(GenLikeEmissions *emissions)
         SeqGenLikeEmissions_free(&(emissions->seq_likes[i]));
     }
     chfree(emissions->seq_likes);
+    return;
+}
+
+void GenLikeEmissions_print_first(GenLikeEmissions *emissions)
+{
+    int i, j;
+    for(i = 0; i < emissions->seq_likes[0].num_bins; i++)
+    {
+        for(j = 0; j < emissions->seq_likes[0].num_hidden_states; j++)
+        {
+            printf("%e\t", emissions->seq_likes[0].loglikes[i][j]);
+        }
+        printf("\n");
+    }
     return;
 }

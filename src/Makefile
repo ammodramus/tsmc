@@ -58,4 +58,4 @@ memprofile: *.[ch]
 	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c util.c -lm -o tsmc -O3 -DDEBUGMEMORY -march=native
 
 testgenlikes: *.[ch]
-	gcc testgenlikedata.c genotypelikelihoods.c definitions.c util.c -lm -g -o testgenlikedata
+	gcc testgenlikedata.c genotypelikelihoods.c definitions.c util.c hmm.c qtscases.c qtssuppdt.c data.c -lm -g -o testgenlikedata

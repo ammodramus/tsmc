@@ -53,6 +53,7 @@ typedef struct seqgenlikeemissions_
 {
     int num_bins;  // (binned sequence length)
     int num_emission_states;
+    int num_hidden_states;
     int bin_width;
     double **loglikes;
 } SeqGenLikeEmissions;
@@ -98,6 +99,11 @@ SeqGenotypeLike * GenotypeLikeData_get_next_seq(GenotypeLikeData *dat,
 void GenotypeLikeData_read_data(FILE *fin, GenotypeLikeData *dat,
         int polarized);
 void GenotypeLikeData_print(GenotypeLikeData *dat, FILE *fout);
+// GenLikeEmissions
+void GenLikeEmissions_calculate(GenLikeEmissions *emissions,
+        GenotypeLikeData *dat, int bin_width, Hmm *hmm);
+void GenLikeEmissions_free(GenLikeEmissions *emissions);
+void GenLikeEmissions_print_first(GenLikeEmissions *emissions);
 
 
 #endif
