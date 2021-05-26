@@ -1,7 +1,7 @@
 all: optimize
 
 optimize: *.[ch]
-	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc -O3 -DNDEBUG -march=native
+	gcc definitions.c options.c hmm.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c tsmc.c -lm -o tsmc -O3 -DNDEBUG -march=native
 
 debug: *.[ch]
 	gcc tsmc.c options.c hmm.c definitions.c qtscases.c qtssuppdt.c data.c em.c asa047.c random.c -lm -o tsmc_debug -g
