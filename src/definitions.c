@@ -21,7 +21,7 @@ void timestamp(const char * msg)
     return;
 }
 #else
-inline void timestamp(const char * msg)
+extern inline void timestamp(const char * msg)
 {
     return;
 }
@@ -29,7 +29,7 @@ inline void timestamp(const char * msg)
 
 
 #ifndef DEBUGMEMORY
-inline void * chmalloc(size_t size)
+extern inline void * chmalloc(size_t size)
 {
     void * ptr = malloc(size);
     if(!ptr)
@@ -40,7 +40,7 @@ inline void * chmalloc(size_t size)
     return ptr;
 }
 
-inline void * chrealloc(void * oldptr, size_t size)
+extern inline void * chrealloc(void * oldptr, size_t size)
 {
     void * ptr = realloc(oldptr, size);
     if(!ptr)
@@ -51,7 +51,7 @@ inline void * chrealloc(void * oldptr, size_t size)
     return ptr;
 }
 
-inline void * chcalloc(size_t nmemb, size_t size)
+extern inline void * chcalloc(size_t nmemb, size_t size)
 {
     void * ptr = calloc(nmemb, size);
     if(!ptr)
@@ -62,7 +62,7 @@ inline void * chcalloc(size_t nmemb, size_t size)
     return ptr;
 }
 
-inline void chfree(void * ptr)
+extern inline void chfree(void * ptr)
 {
     if(ptr == NULL)
     {
@@ -75,7 +75,7 @@ inline void chfree(void * ptr)
 #endif
 
 #ifdef DEBUGMEMORY
-inline void * chmalloc_memdebug(size_t size, char * filename, int lineNumber)
+extern inline void * chmalloc_memdebug(size_t size, char * filename, int lineNumber)
 {
     void * ptr = malloc(size);
     //fprintf(stdout, "all %i %s %i\n", (int)size, filename, lineNumber);
@@ -90,7 +90,7 @@ inline void * chmalloc_memdebug(size_t size, char * filename, int lineNumber)
     return ptr;
 }
 
-inline void * chrealloc_memdebug(void * oldptr, size_t size, char * filename, int lineNumber)
+extern inline void * chrealloc_memdebug(void * oldptr, size_t size, char * filename, int lineNumber)
 {
     void * ptr = realloc(oldptr, size);
     //fprintf(stdout, "reall %i %s %i\n", (int)size, filename, lineNumber);
@@ -105,7 +105,7 @@ inline void * chrealloc_memdebug(void * oldptr, size_t size, char * filename, in
     return ptr;
 }
 
-inline void * chcalloc_memdebug(size_t nmemb, size_t size, char * filename, int lineNumber)
+extern inline void * chcalloc_memdebug(size_t nmemb, size_t size, char * filename, int lineNumber)
 {
     void * ptr = calloc(nmemb, size);
     //fprintf(stdout, "call %i %s %i\n", (int)size, filename, lineNumber);
@@ -120,7 +120,7 @@ inline void * chcalloc_memdebug(size_t nmemb, size_t size, char * filename, int 
     return ptr;
 }
 
-inline void * chfree_memdebug(void *ptr, char * filename, int lineNumber)
+extern inline void * chfree_memdebug(void *ptr, char * filename, int lineNumber)
 {
     if(ptr == NULL)
     {
@@ -137,7 +137,7 @@ inline void * chfree_memdebug(void *ptr, char * filename, int lineNumber)
 #endif
 
 
-inline FILE * chfopen(const char * path, const char * mode)
+extern inline FILE * chfopen(const char * path, const char * mode)
 {
     FILE * fi = fopen(path, mode);
     if(!fi)
@@ -148,7 +148,7 @@ inline FILE * chfopen(const char * path, const char * mode)
     return fi;
 }
 
-inline void perror(const char * msg)
+extern inline void perror(const char * msg)
 {
     fprintf(stderr, "%s\n", msg);
     exit(1);

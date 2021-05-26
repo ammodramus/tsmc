@@ -19,7 +19,7 @@ static double * PIS = NULL;
 static int ARRAYSIZEN = -1;
 static int PISARRAYSIZE = -1;
 
-inline void copy_pis(double * pis, const double * emPis, int numHmmStates, int flagDt)
+extern inline void copy_pis(double * pis, const double * emPis, int numHmmStates, int flagDt)
 {
     int i;
     if(flagDt)

@@ -38,14 +38,14 @@ int finish_line(FILE * fin)
     return ch;
 }
 
-inline void Seq_add_buffer_size(Seq * seq, int increment)
+extern inline void Seq_add_buffer_size(Seq * seq, int increment)
 {
     assert(seq);
     seq->data = (char *)chrealloc((void *)seq->data, sizeof(char) * (size_t)(seq->maxLen + increment));
     seq->maxLen += increment;
 }
 
-inline void Seq_multiply_buffer_size(Seq * seq, double factor)
+extern inline void Seq_multiply_buffer_size(Seq * seq, double factor)
 {
     assert(seq);
     assert(factor > 1.0); // should be checked and not asserted...
@@ -53,7 +53,7 @@ inline void Seq_multiply_buffer_size(Seq * seq, double factor)
     seq->data = (char *)chrealloc((void *)seq->data, sizeof(char) * nextLen);
     seq->maxLen = nextLen;
 }
-inline void Seq_increment_length(Seq * seq)
+extern inline void Seq_increment_length(Seq * seq)
 {
     assert(seq);
     assert(seq->len < seq->maxLen);

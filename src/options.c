@@ -76,7 +76,7 @@ int check_char(char ch)
     return 0;
 }
 
-inline int is_numeric(char ch)
+extern inline int is_numeric(char ch)
 {
     char numCh = ch - '0';
     return (numCh >= 0 && numCh <= 9);

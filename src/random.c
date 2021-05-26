@@ -5,14 +5,14 @@
 #include "random.h"
 
 /* runifd() returns an int between lower and upper, inclusive. */
-inline int32_t runifd(int32_t lower, int32_t upper)
+extern inline int32_t runifd(int32_t lower, int32_t upper)
 {
 	/* This is just as efficient as a modulo version, plus it's 
 	 * 100% accurate. */ 
 	return((int32_t)((runif()*(float)(upper-lower+1)))+lower);
 }
 
-inline double runifab(double lower, double upper)
+extern inline double runifab(double lower, double upper)
 {
     assert(lower <= upper);
     double x = lower + (upper-lower) * runif();
@@ -25,7 +25,7 @@ void setseed(unsigned long i1,unsigned long i2)
 }
 
 
-inline int32_t rbern(double prob)
+extern inline int32_t rbern(double prob)
 {
 	if(runif()<prob)
 		return 1;
@@ -394,7 +394,7 @@ void ProbSampleReplace(int n, double *p, int *perm, int nans, int *ans)
                                    well */
 
 //#define LNFACT(x) gsl_sf_lnfact(x)
-inline double Stirling (double y1)
+extern inline double Stirling (double y1)
 {
   double y2 = y1 * y1;
   double s =

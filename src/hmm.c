@@ -7,7 +7,7 @@
 #include "qtscases.h"
 #include "qtssuppdt.h"
 
-inline int get_index(const int i, const int j, const int n)
+extern inline int get_index(const int i, const int j, const int n)
 {
     assert(0 <= i && i <= j && j <= n);
     const int idx = i*n-i*(i-1)/2+j;
@@ -15,7 +15,7 @@ inline int get_index(const int i, const int j, const int n)
     return idx;
 }
 
-inline int get_index_dt(const int i, const int j, const int n, const int W)
+extern inline int get_index_dt(const int i, const int j, const int n, const int W)
 {
     assert(0 <= i && i <= j && j <= n && (W == 0 || W == 1));
     const int idx = i*n-i*(i-1)/2+j + W*(n+1)*(n+2)/2;
@@ -939,31 +939,31 @@ void Hmm_get_emissions_dt(Hmm * hmm)
     return;
 }
 
-inline void Hmm_set_theta(Hmm * hmm, double theta)
+extern inline void Hmm_set_theta(Hmm * hmm, double theta)
 {
     hmm->theta = theta;
     return;
 }
 
-inline void Hmm_set_rho(Hmm * hmm, double rho)
+extern inline void Hmm_set_rho(Hmm * hmm, double rho)
 {
     hmm->rho = rho;
     return;
 }
 
-inline void Hmm_set_Td(Hmm * hmm, double Td)
+extern inline void Hmm_set_Td(Hmm * hmm, double Td)
 {
     hmm->Td = Td;
     return;
 }
 
-inline void Hmm_set_D3(Hmm * hmm, double D3)
+extern inline void Hmm_set_D3(Hmm * hmm, double D3)
 {
     assert(hmm->flagDt);
     hmm->D3 = D3;
 }
 
-inline void Hmm_set_lambdaD(Hmm * hmm, double lamd)
+extern inline void Hmm_set_lambdaD(Hmm * hmm, double lamd)
 {
     assert(hmm->flagDt);
     hmm->lambdaDt = lamd;
